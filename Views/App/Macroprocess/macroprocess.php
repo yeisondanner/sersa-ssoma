@@ -66,11 +66,11 @@
                                 <!-- Campo Nombre -->
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="txtNombre">Nombre <span
+                                        <label class="control-label" for="txtName">Nombre <span
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="txtNombre" name="txtNombre"
-                                                required placeholder="Ingrese el nombre" minlength="3" maxlength="100"
+                                            <input type="text" class="form-control" id="txtName" name="txtName" required
+                                                placeholder="Ingrese el nombre" minlength="3" maxlength="100"
                                                 pattern="^[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s]+$" aria-describedby="iconNombre">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
@@ -84,13 +84,13 @@
                                 <!-- Campo Descripción -->
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="txtDescripcion">Descripción</label>
+                                        <label class="control-label" for="txtDescription">Descripción</label>
                                         <div class="input-group">
-                                            <textarea class="form-control" id="txtDescripcion" name="txtDescripcion"
+                                            <textarea class="form-control" id="txtDescription" name="txtDescription"
                                                 rows="3" placeholder="Ingrese una breve descripción" maxlength="250"
-                                                aria-describedby="iconDescripcion"></textarea>
+                                                aria-describedby="iconDescription"></textarea>
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text" id="iconDescripcion">
+                                                <span class="input-group-text" id="iconDescription">
                                                     <i class="fa fa-info-circle" aria-hidden="true"></i>
                                                 </span>
                                             </div>
