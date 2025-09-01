@@ -70,8 +70,9 @@
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="txtName" name="txtName" required
-                                                placeholder="Ingrese el nombre" minlength="3" maxlength="100"
-                                                pattern="^[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s]+$" aria-describedby="iconNombre">
+                                                placeholder="Ingrese el nombre" minlength="10" maxlength="255"
+                                                pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\. ]{10,255}$"
+                                                aria-describedby="iconNombre">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
                                                     <i class="fa fa-tag" aria-hidden="true"></i>
@@ -87,7 +88,8 @@
                                         <label class="control-label" for="txtDescription">Descripción</label>
                                         <div class="input-group">
                                             <textarea class="form-control" id="txtDescription" name="txtDescription"
-                                                rows="3" placeholder="Ingrese una breve descripción" maxlength="250"
+                                                rows="3" placeholder="Ingrese una breve descripción"
+                                                pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
                                                 aria-describedby="iconDescription"></textarea>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconDescription">
@@ -152,7 +154,7 @@
         <div class="modal-content">
             <!-- Encabezado -->
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title font-weight-bold" id="modalReportLabel">Reporte de Usuario</h5>
+                <h5 class="modal-title font-weight-bold" id="modalReportLabel">Reporte de Macroproceso</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -163,102 +165,29 @@
                 <div class="d-flex justify-content-between  align-items-center">
                     <!-- Nombre -->
                     <div>
-                        <h3 class="text-uppercase font-weight-bold text-primary" id="reportFullName">Yeison Danner
-                            Carhuapoma Dett</h3>
-                    </div>
-                    <!-- Foto de Perfil -->
-                    <div>
-                        <img id="reportPhotoProfile" src="ruta_imagen.jpg" class="img-thumbnail" width="100"
-                            height="100" alt="Foto de usuario">
+                        <h3 class="text-uppercase font-weight-bold text-primary" id="reportTitle">--Titulo--</h3>
                     </div>
                 </div>
-                <!-- Datos Personales -->
-                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Datos Personales</h6>
+                <!-- Datos del registro -->
+                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Información detallada</h6>
                 <hr>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <td><strong>DNI</strong></td>
-                            <td id="reportDNI">12345678</td>
+                            <td><strong>Código</strong></td>
+                            <td id="reportCode">--Code--</td>
                         </tr>
                         <tr>
-                            <td><strong>Género</strong></td>
-                            <td id="reportGender">Masculino</td>
+                            <td><strong>Descripción</strong></td>
+                            <td id="reportDescription">--Description--</td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Estado</strong></td>
+                            <td id="reportEstado">--Estado--</td>
                         </tr>
                     </tbody>
                 </table>
-                <!-- Datos de la Cuenta -->
-                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Datos de la Cuenta</h6>
-                <hr>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td><strong>Usuario</strong></td>
-                            <td id="reportUser">ydcarhuapoma</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Contraseña</strong></td>
-                            <td id="reportPassword">ydcarhuapoma</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Email</strong></td>
-                            <td id="reportEmail">yeison@example.com</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Rol</strong></td>
-                            <td id="reportRole">Administrador</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!-- Datos de almacenamiento de la cuenta -->
-                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Datos de Almacenamiento</h6>
-                <hr>
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td><strong>Carpeta del usuario</strong></td>
-                            <td id="reportStorageFolder"><span class="badge badge-primary">./root</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Espacio utilizado</strong></td>
-                            <td id="reportStorageUsed">
-                                <small class="text-muted">1.5 GB de 2 GB</small>
-                                <div class="progress">
-                                    <div class="progress-bar w-75" role="progressbar" aria-valuenow="75"
-                                        aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!--Estado de recuperacion -->
-                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Estado de recuperación</h6>
-                <hr>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <tbody>
-                            <tr>
-                                <td><strong>Intentos de Inicio de Sesión</strong></td>
-                                <td id="reportAttemp">00</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Token de recuperacion de contraseña</strong></td>
-                                <td id="reportToken">_token_</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Link de recuperación</strong></td>
-                                <td id="reportUrl" style="cursor: pointer;" class="text-primary" title="Copiar enlace">
-                                    https::/url.com</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Estado Link</strong></td>
-                                <td id="reportStatusLink">Activo</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Datos de registro: Fecha de registro y actualización -->
                 <div class="p-3 bg-light border rounded">
                     <p class="text-muted mb-1">
                         <strong>Fecha de registro:</strong> <span class="text-dark"
@@ -283,7 +212,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalUpdateLabel">Actualizar información del Usuario</h5>
+                <h5 class="modal-title" id="modalUpdateLabel">Actualizar información del Macroproceso</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -293,181 +222,66 @@
                 <div class="tile-body">
                     <form id="formUpdate" autocomplete="off">
                         <?= csrf(); ?>
-                        <input type="hidden" name="update_txtId" id="update_txtId">
-                        <h5>Datos Personales</h5>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_txtFullName">Nombres Completos <span
-                                            class="text-danger">*</span> </label>
-
-                                    <div class="input-group">
-                                        <input class="form-control" type="text" id="update_txtFullName"
-                                            name="update_txtFullName" required
-                                            placeholder="Ingrese sus nombres completos" maxlength="200" minlength="20"
-                                            pattern="^[A-ZÁÉÍÓÚÑa-záéíóúñ]+(\s[A-ZÁÉÍÓÚÑa-záéíóúñ]+)*$"
-                                            oninput="this.value = this.value.toUpperCase()"
-                                            aria-describedby="iconFullnameUserUpdate">
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconFullnameUserUpdate"><i
-                                                    class="fa fa-user" aria-hidden="true"></i></span>
+                        <input type="hidden" id="update_txtId" name="update_txtId" value="">
+                        <div class="bg-light p-2 rounded">
+                            <div class="row">
+                                <!-- Campo Nombre -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="update_txtName">Nombre <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="update_txtName"
+                                                name="update_txtName" required placeholder="Ingrese el nombre"
+                                                minlength="10" maxlength="255"
+                                                pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\. ]{10,255}$"
+                                                aria-describedby="iconNombre">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconNombre">
+                                                    <i class="fa fa-tag" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_txtDNI">DNI <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <input class="form-control" type="text" maxlength="8" minlength="8"
-                                            pattern="^\d{8}$" id="update_txtDNI" name="update_txtDNI" required
-                                            placeholder="Ingrese su número de DNI (Documento Nacional de Identidad)"
-                                            aria-describedby="iconDNIUserUpdate">
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconDNIUserUpdate"><i
-                                                    class="fa fa-id-card" aria-hidden="true"></i></span>
+
+                                <!-- Campo Descripción -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="update_txtDescription">Descripción</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" id="update_txtDescription"
+                                                name="update_txtDescription" rows="3"
+                                                placeholder="Ingrese una breve descripción"
+                                                pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
+                                                aria-describedby="iconDescription"></textarea>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconDescription">
+                                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label" for="update_slctStatus">Estado</label>
+                                        <div class="input-group">
+                                            <select class="form-control" id="update_slctStatus" name="update_slctStatus"
+                                                aria-describedby="iconDescription">
+                                                <option value="Activo">Activo</option>
+                                                <option value="Inactivo">Inactivo</option>
+                                            </select>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconDescription">
+                                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">Género <span class="text-danger">*</span></label>
-                            <div class="form-check">
-                                <label class="form-check-label" for="update_Masculino">
-                                    <input class="form-check-input" value="Masculino" type="radio"
-                                        name="update_txtGender" id="update_Masculino">Masculino
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="update_Femenino">
-                                    <input class="form-check-input" value="Femenino" type="radio"
-                                        name="update_txtGender" id="update_Femenino">Femenino
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="update_Otro">
-                                    <input class="form-check-input" value="Otro" type="radio" name="update_txtGender"
-                                        id="update_Otro">Otro
-                                </label>
-                            </div>
-                        </div>
-                        <h5>Datos de la Cuenta</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_txtUser">Usuario <span
-                                            class="text-danger">*</span>
-                                    </label>
-
-                                    <div class="input-group">
-                                        <input type="text" pattern="^[a-zA-Z0-9_-]{3,15}$" class="form-control"
-                                            id="update_txtUser" name="update_txtUser" placeholder="Ingrese su usuario"
-                                            title="El usuario debe tener entre 3 y 15 caracteres y solo puede contener letras, números, guiones bajos (_) o guiones (-)."
-                                            required aria-describedby="iconUserUserUpdate">
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconUserUserUpdate"><i
-                                                    class="fa fa-id-badge" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_txtEmail">Email <span
-                                            class="text-danger">*</span>
-                                    </label>
-
-                                    <div class="input-group">
-                                        <input type="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                                            class="form-control" id="update_txtEmail" name="update_txtEmail"
-                                            placeholder="Ingrese su correo que desea vincular a la cuenta"
-                                            title="Por favor, ingrese un correo electrónico válido (ejemplo: usuario@dominio.com)."
-                                            required oninput="this.value = this.value.toLowerCase();"
-                                            aria-describedby="iconMailUserUpdate">
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconMailUserUpdate"><i
-                                                    class="fa fa-envelope" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_slctRole">Rol <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <select class="form-control" id="update_slctRole" name="update_slctRole"
-                                            aria-describedby="iconRoleUserUpdate" required>
-                                            <option value="" selected disabled>Seleccione un elemento</option>
-                                        </select>
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconRoleUserUpdate"><i
-                                                    class="fa fa-users" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_slctStatus">Estado <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <select class="form-control" id="update_slctStatus" name="update_slctStatus"
-                                            aria-describedby="iconStatusUserUpdate" required>
-                                            <option value="" selected disabled>Seleccione un elemento</option>
-                                            <option value="Activo">Activo</option>
-                                            <option value="Inactivo">Inactivo</option>
-                                        </select>
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconStatusUserUpdate"><i
-                                                    class="fa fa-check-square" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="update_txtPassword">Contraseña <span
-                                            class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <input class="form-control" type="password" id="update_txtPassword"
-                                            name="update_txtPassword" required
-                                            placeholder="Ingrese su correo que desea vincular a la cuenta" minlength="8"
-                                            aria-describedby="iconPasswordUserUpdate" required>
-                                        <div class=" input-group-prepend">
-                                            <span class="input-group-text" id="iconPasswordUserUpdate"><i
-                                                    class="fa fa-lock" aria-hidden="true"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="update_flPhoto">Foto de Perfil (JPG,JPEG,PNG) <span
-                                    class="text-danger">2 MB</span></label>
-
-                            <div class="input-group">
-                                <input class="form-control" type="file" id="update_flPhoto" name="update_flPhoto"
-                                    accept="image/jpg, image/png, image/jpeg" aria-describedby="iconProfileUserUpdate">
-                                <div class=" input-group-prepend">
-                                    <span class="input-group-text" id="iconProfileUserUpdate"><i class="fa fa-upload"
-                                            aria-hidden="true"></i></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex" style="justify-content: center;">
-                            <img class="upload-img-profile" id="imgUpdateProfile" alt="Previsualización"
-                                src="<?= base_url() ?>/loadfile/profile/?f=user.png">
-                        </div>
-                        <input type="hidden" name="update_txtFotoActual" id="update_txtFotoActual">
                         <div class="d-flex justify-content-center mt-3">
                             <button class="btn btn-success btn-block" type="submit">
                                 <i class="fa fa-fw fa-lg fa-pencil"></i>Actualizar</button>

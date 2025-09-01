@@ -4,6 +4,8 @@ class MacroprocessModel extends Mysql
 {
     private string $name;
     private string $description;
+    private string $status;
+    private int $id;
 
     public function __construct()
     {
@@ -33,6 +35,35 @@ class MacroprocessModel extends Mysql
         $arrValues = [$this->name, $this->description];
         $query = "INSERT INTO tb_macroprocess (mp_name, mp_description) VALUES (?, ?)";
         $request = $this->insert($query, $arrValues);
+        return $request;
+    }
+    /**
+     * Metodo que se encarga de actualizar un macroproceso
+     * @param string $name
+     * @param string $description
+     * @param string $status
+     * @return bool
+     */
+    public function update_macroprocess(int $id, string $name, string $description, string $status)
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->status = $status;
+        $this->id = $id;
+        $arrValues = [$this->name, $this->description, $this->status, $this->id];
+        $query = "UPDATE tb_macroprocess SET mp_name = ?, mp_description = ?, mp_status = ? WHERE idMacroprocess = ?";
+        $request = $this->update($query, $arrValues);
+        return $request;
+    }
+    /**
+     * Metodo que permite obtener un macroproceso por su id
+     * @param int $id
+     * @return array
+     */
+    public function select_macroprocess_by_id(int $id): array
+    {
+        $query = "SELECT * FROM tb_macroprocess WHERE idMacroprocess = ?";
+        $request = $this->select($query, [$id]);
         return $request;
     }
 }

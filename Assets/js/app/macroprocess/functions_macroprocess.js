@@ -4,6 +4,9 @@ window.addEventListener("DOMContentLoaded", (e) => {
   loadTable();
   setTimeout(() => {
     saveData();
+    loadDataUpdate();
+    updateDate();
+    loadReport();
   }, 1500);
 });
 
@@ -138,6 +141,8 @@ function loadTable() {
     },
     fnDrawCallback: function () {
       $(".dataTables_paginate > .pagination").addClass("pagination-sm");
+      loadDataUpdate();
+      loadReport();
     },
   });
 }
@@ -193,6 +198,8 @@ function saveData() {
         toastr[data.type](data.message, data.title);
         //recargar las funciones
         setTimeout(() => {
+          loadDataUpdate();
+          loadReport();
           //quitamos el d-none del elementLoader
           elementLoader.classList.add("d-none");
         }, 500);
@@ -212,5 +219,138 @@ function saveData() {
           "Ocurrio un error inesperado"
         );
       });
+  });
+}
+//funcion que se encarga de mostrar el modal para actualizar los datos deel macroproceso
+function loadDataUpdate() {
+  const btnUpdateItem = document.querySelectorAll(".update-item");
+  btnUpdateItem.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      //quitamos el d-none del elementLoader
+      elementLoader.classList.remove("d-none");
+      //obtenemos los atributos del btn update y los almacenamos en una constante
+      const id = item.getAttribute("data-id");
+      const name = item.getAttribute("data-name");
+      const description = item.getAttribute("data-description");
+      const status = item.getAttribute("data-status");
+      //asignamos los valores obtenidos a los inputs del modal
+      document.getElementById("update_txtId").value = id;
+      document.getElementById("update_txtName").value = name;
+      document.getElementById("update_txtDescription").value = description;
+      document.getElementById("update_slctStatus").value = status;
+      setTimeout(() => {
+        //quitamos el d-none del elementLoader
+        elementLoader.classList.add("d-none");
+      }, 500);
+      //abrir el modal
+      $("#modalUpdate").modal("show");
+    });
+  });
+}
+//funcion que actualiza los datos del macroproceso enviandolos al servidor
+function updateDate() {
+  const formUpdate = document.getElementById("formUpdate");
+  formUpdate.addEventListener("submit", (e) => {
+    //enviamos el formulario por metodo PUT con todo archivo de imagen
+    e.preventDefault();
+    const formData = new FormData(formUpdate);
+    const header = new Headers();
+    const config = {
+      method: "POST",
+      headers: header,
+      node: "no-cache",
+      cors: "cors",
+      body: formData,
+    };
+    const url = base_url + "/Macroprocess/updateMacroprocess";
+    //quitamos el d-none del elementLoader
+    elementLoader.classList.remove("d-none");
+    fetch(url, config)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Error en la solicitud " +
+              response.status +
+              " - " +
+              response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toastr.options = {
+          closeButton: true,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          progressBar: true,
+          onclick: null,
+        };
+        if (!data.status) {
+          toastr[data.type](data.message, data.title);
+          return false;
+        }
+        //limpiar el formulario
+        formUpdate.reset();
+        //ocultar el modal abierto
+        $("#modalUpdate").modal("hide");
+        //actualizar la tabla
+        table.ajax.reload(null, false);
+        toastr[data.type](data.message, data.title);
+        //recargar las funciones
+        setTimeout(() => {
+          loadDataUpdate();
+          loadReport();
+          //quitamos el d-none del elementLoader
+          elementLoader.classList.add("d-none");
+        }, 500);
+        return true;
+      })
+      .catch((error) => {
+        toastr.options = {
+          closeButton: true,
+          timeOut: 0,
+          onclick: null,
+        };
+        toastr["error"](
+          "Error en la solicitud al servidor: " +
+            error.message +
+            " - " +
+            error.name,
+          "Ocurrio un error inesperado"
+        );
+      });
+  });
+}
+//Funcion que carga los datos en el reporte del modal del macroproceso
+function loadReport() {
+  const btnReportItem = document.querySelectorAll(".report-item");
+  btnReportItem.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      //quitamos el d-none del elementLoader
+      elementLoader.classList.remove("d-none");
+      ///obtenemos los atributos del btn update y los almacenamos en una constante
+      const id = item.getAttribute("data-id");
+      const name = item.getAttribute("data-name");
+      const description = item.getAttribute("data-description");
+      const dataStatus = item.getAttribute("data-status");
+      const dataRegistrationDate = item.getAttribute("data-registration");
+      const dataUpdateDate = item.getAttribute("data-update");
+      //asignamos los valores obtenidos a los inputs del modal
+      document.getElementById("reportTitle").innerHTML = name;
+      document.getElementById("reportCode").innerHTML = "#" + id;
+      document.getElementById("reportDescription").innerHTML = description;
+      document.getElementById("reportEstado").innerHTML = dataStatus;
+      document.getElementById("reportRegistrationDate").innerHTML =
+        dataRegistrationDate;
+      document.getElementById("reportUpdateDate").innerHTML = dataUpdateDate;
+      //quitamos el d-none del elementLoader
+      elementLoader.classList.add("d-none");
+      //abrimos el modal
+      $("#modalReport").modal("show");
+    });
   });
 }
