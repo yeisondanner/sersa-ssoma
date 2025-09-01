@@ -238,4 +238,103 @@ class Macroprocess extends Controllers
             toJson($data);
         }
     }
+    /**
+     * Función que se encarga de eliminar un rol
+     * @return void
+     */
+    public function deleteMacroprocess()
+    {
+        permissionInterface(12);
+
+        //Validacion de que el Método sea DELETE
+        if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
+            registerLog("Ocurrió un error inesperado", "Método DELETE no encontrado, al momento de eliminar un macroproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "Método DELETE no encontrado",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+
+        // Capturamos la solicitud enviada
+        $request = json_decode(file_get_contents("php://input"), true);
+        // Validación isCsrf
+        isCsrf($request["token"]);
+        // Validamos que la solicitud tenga los campos necesarios
+        $id = strClean($request["id"]);
+        $name = strClean($request["name"]);
+        //validamos que los campos no esten vacios
+        if ($id == "") {
+            registerLog("Ocurrió un error inesperado", "El id del macroproceso es requerido, al momento de eliminar un macroproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del macroproceso es requerido, refresca la página e intenta nuevamente",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //validacion que solo ce acepte numeros en el campo id
+        if (!is_numeric($id)) {
+            registerLog("Ocurrió un error inesperado", "El id del macroproceso debe ser numérico, al momento de eliminar un macroproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del macroproceso debe, ser numérico, refresca la página e intenta nuevamente",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        ///validamos que el id del macroproceso exista en la base de datos
+        $result = $this->model->select_macroprocess_by_id($id);
+        if (!$result) {
+            registerLog("Ocurrió un error inesperado", "No se podra eliminar el macroproceso, ya que el id no existe en la base de datos", 1, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del macroproceso no existe, refresque la página y vuelva a intentarlo",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //validamos si el macroproceso tiene procesos asociados 
+        $dataResult = $this->model->has_associated_records($id);
+        if ($dataResult['totalProcess'] > 0) {
+            registerLog("Ocurrió un error inesperado", "No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso", 1, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El macroproceso tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+
+        $request = $this->model->delete_macroprocess($id);
+        if ($request) {
+            registerLog("Eliminación correcta", "Se eliminó de manera correcta el macroproceso {$name}", 2, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Eliminación correcta",
+                "message" => "Se eliminó de manera correcta el macroproceso {$name}",
+                "type" => "success",
+                "status" => true
+            );
+            toJson($data);
+        } else {
+            registerLog("Ocurrió un error inesperado", "No se pudo eliminar el macroproceso {$name}, por favor inténtalo nuevamente", 1, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se logró eliminar de manera correcta el macroproceso {$name}",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+    }
 }

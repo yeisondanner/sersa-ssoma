@@ -66,4 +66,34 @@ class MacroprocessModel extends Mysql
         $request = $this->select($query, [$id]);
         return $request;
     }
+    /**
+     * Metodo que permite eliminar un macroproceso
+     * @param int $id
+     * @return bool
+     */
+    public function delete_macroprocess(int $id): bool
+    {
+        $query = "DELETE FROM tb_macroprocess WHERE idMacroprocess = ?";
+        $request = $this->delete($query, [$id]);
+        return $request;
+    }
+    /**
+     * consultamos si el macroproceso tiene mas registros asociados a el
+     * @param int $id
+     * @return bool
+     */
+    public function has_associated_records(int $id)
+    {
+        $query = "SELECT
+                        COUNT(*) AS 'totalProcess'
+                    FROM
+                        tb_process AS tbp
+                    WHERE
+                        tbp.macroprocess_id =  ?;";
+        $this->id = $id;
+        $arrValues = [$this->id];
+        $request = $this->select($query, $arrValues);
+        //validamos que el request no esté vacío, esto significa que el macroproceso tiene registros asociados, devolvera true y si no false
+        return $request;
+    }
 }
