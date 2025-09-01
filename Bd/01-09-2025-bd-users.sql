@@ -153,9 +153,9 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   KEY `user_id` (`user_id`),
   KEY `tb_log_ibfk_1` (`typelog_id`),
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3168 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3208 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla bd_ssoma.tb_log: ~3,174 rows (aproximadamente)
+-- Volcando datos para la tabla bd_ssoma.tb_log: ~3,179 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1),
@@ -3359,7 +3359,30 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(3199, 'Información de navegación', 'El usuario entro a :Gestión de Roles', '2025-09-01 15:32:47', '2025-09-01 15:32:47', 3, 1),
 	(3200, 'Información de navegación', 'El usuario entro a :Configuracion del Sistema', '2025-09-01 15:32:49', '2025-09-01 15:32:49', 3, 1),
 	(3201, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 15:32:53', '2025-09-01 15:32:53', 3, 1),
-	(3202, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 15:32:59', '2025-09-01 15:32:59', 3, 1);
+	(3202, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 15:32:59', '2025-09-01 15:32:59', 3, 1),
+	(3203, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 16:11:28', '2025-09-01 16:11:28', 3, 1),
+	(3204, 'Notificación actualizada', 'La notificacion se leyo correctamente', '2025-09-01 16:11:40', '2025-09-01 16:11:40', 1, 1),
+	(3205, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 16:11:43', '2025-09-01 16:11:43', 3, 1),
+	(3206, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 16:20:25', '2025-09-01 16:20:25', 3, 1),
+	(3207, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 16:20:28', '2025-09-01 16:20:28', 3, 1);
+
+-- Volcando estructura para tabla bd_ssoma.tb_macroprocess
+DROP TABLE IF EXISTS `tb_macroprocess`;
+CREATE TABLE IF NOT EXISTS `tb_macroprocess` (
+  `idMacroprocess` int(11) NOT NULL AUTO_INCREMENT,
+  `mp_name` varchar(255) NOT NULL COMMENT 'aqui va el nombre del macroproceso',
+  `mp_description` text DEFAULT NULL,
+  `mp_status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
+  `mp_registrationDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `mp_updateDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`idMacroprocess`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+
+-- Volcando datos para la tabla bd_ssoma.tb_macroprocess: ~2 rows (aproximadamente)
+DELETE FROM `tb_macroprocess`;
+INSERT INTO `tb_macroprocess` (`idMacroprocess`, `mp_name`, `mp_description`, `mp_status`, `mp_registrationDate`, `mp_updateDate`) VALUES
+	(1, 'Gestion de documentos y normativas en SSOMA', NULL, 'Activo', '2025-09-01 16:27:29', '2025-09-01 16:27:48'),
+	(2, 'Aplicaciones de Gestion de SSOMA', NULL, 'Activo', '2025-09-01 16:27:43', '2025-09-01 16:27:43');
 
 -- Volcando estructura para tabla bd_ssoma.tb_module
 DROP TABLE IF EXISTS `tb_module`;
@@ -3410,6 +3433,30 @@ DELETE FROM `tb_notification`;
 INSERT INTO `tb_notification` (`idNotification`, `user_id`, `n_title`, `n_description`, `n_link`, `n_icon`, `n_color`, `n_type`, `n_priority`, `n_is_read`, `n_status`, `n_created_at`, `n_updated_at`, `n_notification_email`) VALUES
 	(11, 1, 'Hola esto es una prueba', 'NnFMcm8yNkRDRU9JNytlVFlLdE1iUmpaeUFkdEhTQS9zNHovTkx1WUc2RE5vekNYaHVRNkxERm9IekhiaUdpeGRvM3VoU2NwOUNiR3ZmU1NXOERxdmc9PQ', '', 'fa-battery-full', 'warning', 'warning', 2, 1, 'activo', '2025-08-13 16:34:31', '2025-08-13 16:34:35', 'No');
 
+-- Volcando estructura para tabla bd_ssoma.tb_process
+DROP TABLE IF EXISTS `tb_process`;
+CREATE TABLE IF NOT EXISTS `tb_process` (
+  `idProcess` int(11) NOT NULL AUTO_INCREMENT,
+  `p_name` varchar(255) NOT NULL COMMENT 'aqui va el nombre del macroproceso',
+  `p_description` text DEFAULT NULL,
+  `p_status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
+  `macroprocess_id` int(11) NOT NULL,
+  `p_registrationDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `p_updateDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`idProcess`),
+  KEY `macroprocess_id` (`macroprocess_id`),
+  CONSTRAINT `tb_process_ibfk_1` FOREIGN KEY (`macroprocess_id`) REFERENCES `tb_macroprocess` (`idMacroprocess`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+
+-- Volcando datos para la tabla bd_ssoma.tb_process: ~5 rows (aproximadamente)
+DELETE FROM `tb_process`;
+INSERT INTO `tb_process` (`idProcess`, `p_name`, `p_description`, `p_status`, `macroprocess_id`, `p_registrationDate`, `p_updateDate`) VALUES
+	(1, 'Introduccion', NULL, 'Activo', 1, '2025-09-01 16:28:11', '2025-09-01 16:28:15'),
+	(2, 'Politica SSOMA', NULL, 'Activo', 1, '2025-09-01 16:28:42', '2025-09-01 16:28:45'),
+	(5, 'Implementacion y operacion', NULL, 'Activo', 2, '2025-09-01 16:32:59', '2025-09-01 16:32:59'),
+	(6, 'Actividades Diarias de Gestion de Seguridad', NULL, 'Activo', 2, '2025-09-01 16:33:22', '2025-09-01 16:33:22'),
+	(7, 'Incidencias y condiciones de riesgo en el sistio', NULL, 'Activo', 2, '2025-09-01 16:34:44', '2025-09-01 16:34:44');
+
 -- Volcando estructura para tabla bd_ssoma.tb_role
 DROP TABLE IF EXISTS `tb_role`;
 CREATE TABLE IF NOT EXISTS `tb_role` (
@@ -3420,13 +3467,43 @@ CREATE TABLE IF NOT EXISTS `tb_role` (
   `r_registrationDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `r_updateDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idRole`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla bd_ssoma.tb_role: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla bd_ssoma.tb_role: ~2 rows (aproximadamente)
 DELETE FROM `tb_role`;
 INSERT INTO `tb_role` (`idRole`, `r_name`, `r_description`, `r_status`, `r_registrationDate`, `r_updateDate`) VALUES
 	(1, 'Root', 'El rol Root es el usuario con los privilegios más elevados dentro del sistema. Tiene control total sobre la configuración, la administración de usuarios, la seguridad y la gestión de recursos. Este rol está destinado exclusivamente a tareas de administración crítica y debe ser utilizado con precaución para evitar daños en el sistema.', 'Activo', '2025-01-26 21:34:50', '2025-07-02 13:43:04'),
 	(20, 'Administrador', '', 'Activo', '2025-09-01 15:31:57', '2025-09-01 15:31:57');
+
+-- Volcando estructura para tabla bd_ssoma.tb_threads
+DROP TABLE IF EXISTS `tb_threads`;
+CREATE TABLE IF NOT EXISTS `tb_threads` (
+  `idThreads` int(11) NOT NULL AUTO_INCREMENT,
+  `t_name` varchar(255) NOT NULL COMMENT 'aqui va el nombre del macroproceso',
+  `t_description` text DEFAULT NULL,
+  `t_status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
+  `process_id` int(11) NOT NULL,
+  `threads_father` int(11) DEFAULT NULL,
+  `t_type` enum('open_file','open_menu','open_form') NOT NULL DEFAULT 'open_menu',
+  `t_date` date DEFAULT NULL,
+  `t_registrationDate` timestamp NOT NULL DEFAULT current_timestamp(),
+  `t_updateDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`idThreads`),
+  KEY `tb_threads_ibfk_1` (`process_id`),
+  KEY `threads_father_key` (`threads_father`) USING BTREE,
+  CONSTRAINT `FK_tb_threads_tb_threads` FOREIGN KEY (`threads_father`) REFERENCES `tb_threads` (`idThreads`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tb_threads_ibfk_1` FOREIGN KEY (`process_id`) REFERENCES `tb_process` (`idProcess`) ON DELETE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+
+-- Volcando datos para la tabla bd_ssoma.tb_threads: ~6 rows (aproximadamente)
+DELETE FROM `tb_threads`;
+INSERT INTO `tb_threads` (`idThreads`, `t_name`, `t_description`, `t_status`, `process_id`, `threads_father`, `t_type`, `t_date`, `t_registrationDate`, `t_updateDate`) VALUES
+	(1, 'Alcanse del Sist. de Gestion', NULL, 'Activo', 1, NULL, 'open_menu', NULL, '2025-09-01 16:31:30', '2025-09-01 16:31:36'),
+	(5, 'ATS', NULL, 'Activo', 6, NULL, 'open_menu', NULL, '2025-09-01 16:35:55', '2025-09-01 16:36:27'),
+	(6, 'Ampliacion de redes BT y M', NULL, 'Activo', 6, 5, 'open_file', NULL, '2025-09-01 16:37:02', '2025-09-01 17:11:29'),
+	(8, 'prueba', NULL, 'Activo', 6, 5, 'open_file', NULL, '2025-09-01 17:02:11', '2025-09-01 17:15:40'),
+	(9, 'prueba 2', NULL, 'Activo', 6, 5, 'open_menu', NULL, '2025-09-01 17:03:19', '2025-09-01 17:03:19'),
+	(10, 'PDI', NULL, 'Activo', 2, 8, 'open_form', NULL, '2025-09-01 17:06:18', '2025-09-01 17:07:23');
 
 -- Volcando estructura para tabla bd_ssoma.tb_typelog
 DROP TABLE IF EXISTS `tb_typelog`;
@@ -3494,7 +3571,7 @@ CREATE TABLE IF NOT EXISTS `tb_userroledetail` (
   KEY `tb_userroledetail_ibfk_2` (`role_id`),
   CONSTRAINT `tb_userroledetail_ibfk_1` FOREIGN KEY (`interface_id`) REFERENCES `tb_interface` (`idInterface`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tb_userroledetail_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `tb_role` (`idRole`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4;
 
 -- Volcando datos para la tabla bd_ssoma.tb_userroledetail: ~18 rows (aproximadamente)
 DELETE FROM `tb_userroledetail`;
