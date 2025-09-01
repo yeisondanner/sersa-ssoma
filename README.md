@@ -1,5 +1,5 @@
-# sis-predios
-Sistema de gestión de predios
+# sersa-ssoma
+Sistema SSOMA
 =====================================
 Esta aplicacion es para gestionar los roles de los usuarios, los permisos, faltan modulos por construir.
 #Modulos que faltan:
