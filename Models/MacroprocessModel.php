@@ -1,5 +1,4 @@
 <?php
-
 class MacroprocessModel extends Mysql
 {
     private string $name;
