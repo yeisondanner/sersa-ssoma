@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `tb_configuration` (
 -- Volcando datos para la tabla bd_ssoma.tb_configuration: ~1 rows (aproximadamente)
 DELETE FROM `tb_configuration`;
 INSERT INTO `tb_configuration` (`idConfiguration`, `c_name`, `c_logo`, `c_description`, `c_color_primary`, `c_color_secondary`, `c_company_name`, `c_ruc`, `c_address`, `c_phone`, `c_mail`, `c_duration_lock`, `c_typeLoader`, `c_contentLoader`, `c_textLoader`, `c_key_api_reniec_sunat`, `c_user_api_reniec_sunat`, `c_password_api_reniec_sunat`, `c_registrationDate`, `c_updateDate`, `c_email_server_smtp`, `c_email_port`, `c_email_encryption`, `c_email_user_smtp`, `c_email_password_smtp`, `c_email_sender`, `c_email_sender_name`) VALUES
-	(1, 'SSOMA', '68b5bc5942628.png', 'Sistema SSOMA', '#00667a', '#00eeff', 'SERSA RIOJA SA', '20206603501', 'Rioja', '951531171', 'noreply@sersa.pe', 0, 13, '<div class="loader-lines mx-auto mb-2">\r\n                                                        <div></div>\r\n                                                        <div></div>\r\n                                                        <div></div>\r\n                                                        <div></div>\r\n                                                    </div>', 'Espere un momento por favor ...', 'RVZsZUpWSTExVzBXejJuYThwWCt6QUNEeEdFL0RxSFIrY1VIQ3loSnVDZDQ2WVNKQ0E4ekUyY3ZXRTBoUStrczNCZEVwbG1DNUNMTVJmR09uMVN3T0E9PQ==', 'cnBNTHNoSGFNRlVuN2d0eXpTS1FSQ1JmaEFyeWRCL3FXWWpoQXFMVXE0VT0=', 'OEpjVnZla2lGZERtZjh4MEZmdXpNZz09', '2025-07-03 16:53:40', '2025-09-01 15:31:37', 'aFhRdGM4Wlpjci9iUDlMUXRvWSthZVE2T251UkJTQ2FJQ3ZQSUVlNHQrMD0=', 465, 'ssl', 'TnNwOStSYXRPNGJySnpndzA4eWsrT2tXYkdRdFJzRVkzRGw4VUZobjJiVT0=', 'R2d3dGMxdmNCT3VJazJwT0E2SzFVUT09', 'OUp2aW5sYWFyWm1yMW0raEdzekJJb0hpNjhKNXE3WW1oTDRWSkVXUGFTQT0=', 'K2ljdnhIYmlzbWlCNnN3R1AyZHpaQitSbERocFBjc1lrenA1aDRtdS9STT0=');
+	(1, 'SSOMA', '68b5bc5942628.png', 'Sistema SSOMA', '#00667a', '#00eeff', 'SERSA RIOJA SA', '20206603501', 'Rioja', '951531171', 'noreply@sersa.pe', 0, 12, '<div class="loader-rotate-square mx-auto mb-2"></div>', 'Espere un momento por favor ...', 'RVZsZUpWSTExVzBXejJuYThwWCt6QUNEeEdFL0RxSFIrY1VIQ3loSnVDZDQ2WVNKQ0E4ekUyY3ZXRTBoUStrczNCZEVwbG1DNUNMTVJmR09uMVN3T0E9PQ==', 'cnBNTHNoSGFNRlVuN2d0eXpTS1FSQ1JmaEFyeWRCL3FXWWpoQXFMVXE0VT0=', 'OEpjVnZla2lGZERtZjh4MEZmdXpNZz09', '2025-07-03 16:53:40', '2025-09-01 20:23:01', 'aFhRdGM4Wlpjci9iUDlMUXRvWSthZVE2T251UkJTQ2FJQ3ZQSUVlNHQrMD0=', 465, 'ssl', 'TnNwOStSYXRPNGJySnpndzA4eWsrT2tXYkdRdFJzRVkzRGw4VUZobjJiVT0=', 'R2d3dGMxdmNCT3VJazJwT0E2SzFVUT09', 'OUp2aW5sYWFyWm1yMW0raEdzekJJb0hpNjhKNXE3WW1oTDRWSkVXUGFTQT0=', 'K2ljdnhIYmlzbWlCNnN3R1AyZHpaQitSbERocFBjc1lrenA1aDRtdS9STT0=');
 
 -- Volcando estructura para tabla bd_ssoma.tb_file
 DROP TABLE IF EXISTS `tb_file`;
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `tb_interface` (
   CONSTRAINT `tb_interface_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `tb_module` (`idModule`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla bd_ssoma.tb_interface: ~12 rows (aproximadamente)
+-- Volcando datos para la tabla bd_ssoma.tb_interface: ~15 rows (aproximadamente)
 DELETE FROM `tb_interface`;
 INSERT INTO `tb_interface` (`idInterface`, `i_name`, `i_description`, `i_url`, `i_isOption`, `i_isPublic`, `i_isListNav`, `i_status`, `i_registrationDate`, `i_updateDate`, `module_id`) VALUES
 	(1, 'Inicio de Sesion', NULL, 'login', '0', '1', '0', 'Activo', '2025-01-26 15:17:34', '2025-02-02 22:06:32', 1),
@@ -137,6 +137,9 @@ INSERT INTO `tb_interface` (`idInterface`, `i_name`, `i_description`, `i_url`, `
 	(9, 'Gestionar notificaciones', NULL, 'notification', '0', '0', '1', 'Activo', '2025-07-05 21:55:52', '2025-07-05 22:00:07', 3),
 	(10, 'Cambio de contraseña', NULL, 'pwreset', '0', '1', '0', 'Activo', '2025-08-25 01:21:10', '2025-08-25 01:21:10', 1),
 	(11, 'Gestion de archivos personales', NULL, 'clust', '0', '0', '1', 'Activo', '2025-08-20 19:16:18', '2025-08-20 19:16:18', 4),
+	(12, 'Gestion de macroprocesos', NULL, 'macroprocess', '0', '0', '1', 'Activo', '2025-09-01 17:36:17', '2025-09-01 17:36:17', 5),
+	(13, 'Gestion de procesos', NULL, 'process', '0', '0', '1', 'Activo', '2025-09-01 17:36:45', '2025-09-01 17:36:45', 5),
+	(14, 'Gestion de subprocesos', NULL, 'subprocess', '0', '0', '1', 'Activo', '2025-09-01 17:37:02', '2025-09-01 17:37:06', 5),
 	(20, 'Bloqueo de Sesión', NULL, 'lock', '0', '0', '0', 'Activo', '2025-05-20 13:21:56', '2025-05-20 13:21:56', 1);
 
 -- Volcando estructura para tabla bd_ssoma.tb_log
@@ -155,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=3208 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla bd_ssoma.tb_log: ~3,179 rows (aproximadamente)
+-- Volcando datos para la tabla bd_ssoma.tb_log: ~3,207 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1),
@@ -3364,7 +3367,317 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(3204, 'Notificación actualizada', 'La notificacion se leyo correctamente', '2025-09-01 16:11:40', '2025-09-01 16:11:40', 1, 1),
 	(3205, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 16:11:43', '2025-09-01 16:11:43', 3, 1),
 	(3206, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 16:20:25', '2025-09-01 16:20:25', 3, 1),
-	(3207, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 16:20:28', '2025-09-01 16:20:28', 3, 1);
+	(3207, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 16:20:28', '2025-09-01 16:20:28', 3, 1),
+	(3208, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 17:32:31', '2025-09-01 17:32:31', 3, 1),
+	(3209, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 17:38:05', '2025-09-01 17:38:05', 3, 1),
+	(3210, 'Información de navegación', 'El usuario entro a: Error 404', '2025-09-01 17:38:10', '2025-09-01 17:38:10', 3, 1),
+	(3211, 'Información de navegación', 'El usuario entro a: Error 404', '2025-09-01 17:39:06', '2025-09-01 17:39:06', 3, 1),
+	(3212, 'Información de navegación', 'El usuario entro a: Error 404', '2025-09-01 17:41:22', '2025-09-01 17:41:22', 3, 1),
+	(3213, 'Información de navegación', 'El usuario entro a: Error 404', '2025-09-01 17:43:01', '2025-09-01 17:43:01', 3, 1),
+	(3214, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 17:43:06', '2025-09-01 17:43:06', 3, 1),
+	(3215, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:43:43', '2025-09-01 17:43:43', 3, 1),
+	(3216, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:43:58', '2025-09-01 17:43:58', 3, 1),
+	(3217, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:43:59', '2025-09-01 17:43:59', 3, 1),
+	(3218, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:00', '2025-09-01 17:44:00', 3, 1),
+	(3219, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:00', '2025-09-01 17:44:00', 3, 1),
+	(3220, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:01', '2025-09-01 17:44:01', 3, 1),
+	(3221, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:01', '2025-09-01 17:44:01', 3, 1),
+	(3222, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:01', '2025-09-01 17:44:01', 3, 1),
+	(3223, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:02', '2025-09-01 17:44:02', 3, 1),
+	(3224, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:02', '2025-09-01 17:44:02', 3, 1),
+	(3225, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:02', '2025-09-01 17:44:02', 3, 1),
+	(3226, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:02', '2025-09-01 17:44:02', 3, 1),
+	(3227, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:44:30', '2025-09-01 17:44:30', 3, 1),
+	(3228, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:46:33', '2025-09-01 17:46:33', 3, 1),
+	(3229, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:46:40', '2025-09-01 17:46:40', 3, 1),
+	(3230, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:46:46', '2025-09-01 17:46:46', 3, 1),
+	(3231, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:47:18', '2025-09-01 17:47:18', 3, 1),
+	(3232, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:47:54', '2025-09-01 17:47:54', 3, 1),
+	(3233, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:50:23', '2025-09-01 17:50:23', 3, 1),
+	(3234, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:50:44', '2025-09-01 17:50:44', 3, 1),
+	(3235, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:50:56', '2025-09-01 17:50:56', 3, 1),
+	(3236, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:53:27', '2025-09-01 17:53:27', 3, 1),
+	(3237, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:54:00', '2025-09-01 17:54:00', 3, 1),
+	(3238, 'Información de navegación', 'El usuario entro a :Perfil del Usuario', '2025-09-01 17:55:11', '2025-09-01 17:55:11', 3, 1),
+	(3239, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 17:55:14', '2025-09-01 17:55:14', 3, 1),
+	(3240, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:55:26', '2025-09-01 17:55:26', 3, 1),
+	(3241, 'Información de navegación', 'El usuario entro a: Error 404', '2025-09-01 17:57:46', '2025-09-01 17:57:46', 3, 1),
+	(3242, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:58:54', '2025-09-01 17:58:54', 3, 1),
+	(3243, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 17:59:28', '2025-09-01 17:59:28', 3, 1),
+	(3244, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 18:04:34', '2025-09-01 18:04:34', 3, 1),
+	(3245, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 18:04:43', '2025-09-01 18:04:43', 3, 1),
+	(3246, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 18:05:05', '2025-09-01 18:05:05', 3, 1),
+	(3247, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 19:55:46', '2025-09-01 19:55:46', 3, 1),
+	(3248, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 19:56:37', '2025-09-01 19:56:37', 3, 1),
+	(3249, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 19:58:53', '2025-09-01 19:58:53', 3, 1),
+	(3250, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 19:59:29', '2025-09-01 19:59:29', 3, 1),
+	(3251, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:01:12', '2025-09-01 20:01:12', 3, 1),
+	(3252, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:01:27', '2025-09-01 20:01:27', 3, 1),
+	(3253, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:01:54', '2025-09-01 20:01:54', 3, 1),
+	(3254, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:01:59', '2025-09-01 20:01:59', 3, 1),
+	(3255, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:03:11', '2025-09-01 20:03:11', 3, 1),
+	(3256, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:04:04', '2025-09-01 20:04:04', 3, 1),
+	(3257, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:04:26', '2025-09-01 20:04:26', 3, 1),
+	(3258, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:04:36', '2025-09-01 20:04:36', 3, 1),
+	(3259, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:05:24', '2025-09-01 20:05:24', 3, 1),
+	(3260, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:05:37', '2025-09-01 20:05:37', 3, 1),
+	(3261, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:07:02', '2025-09-01 20:07:02', 3, 1),
+	(3262, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:07:25', '2025-09-01 20:07:25', 3, 1),
+	(3263, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:07:38', '2025-09-01 20:07:38', 3, 1),
+	(3264, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:07:59', '2025-09-01 20:07:59', 3, 1),
+	(3265, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:08:38', '2025-09-01 20:08:38', 3, 1),
+	(3266, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:08:56', '2025-09-01 20:08:56', 3, 1),
+	(3267, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:09:07', '2025-09-01 20:09:07', 3, 1),
+	(3268, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:09:14', '2025-09-01 20:09:14', 3, 1),
+	(3269, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:10:08', '2025-09-01 20:10:08', 3, 1),
+	(3270, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:10:19', '2025-09-01 20:10:19', 3, 1),
+	(3271, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:12:07', '2025-09-01 20:12:07', 3, 1),
+	(3272, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:13:32', '2025-09-01 20:13:32', 3, 1),
+	(3273, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:20:39', '2025-09-01 20:20:39', 3, 1),
+	(3274, 'Registro exitoso', 'El macroproceso se ha registrado correctamente, al momento de registrar un usuario', '2025-09-01 20:20:48', '2025-09-01 20:20:48', 2, 1),
+	(3275, 'Registro exitoso', 'El macroproceso se ha registrado correctamente, al momento de registrar un usuario', '2025-09-01 20:21:33', '2025-09-01 20:21:33', 2, 1),
+	(3276, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:21:40', '2025-09-01 20:21:40', 3, 1),
+	(3277, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:22:52', '2025-09-01 20:22:52', 3, 1),
+	(3278, 'Información de navegación', 'El usuario entro a :Configuracion del Sistema', '2025-09-01 20:22:56', '2025-09-01 20:22:56', 3, 1),
+	(3279, 'Actualizacion exitosa', 'Se actualizo la informacion del sistema correctamente', '2025-09-01 20:23:01', '2025-09-01 20:23:01', 2, 1),
+	(3280, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 20:23:03', '2025-09-01 20:23:03', 3, 1),
+	(3281, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:23:07', '2025-09-01 20:23:07', 3, 1),
+	(3282, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:23:11', '2025-09-01 20:23:11', 3, 1),
+	(3283, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:27:17', '2025-09-01 20:27:17', 3, 1),
+	(3284, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:30:48', '2025-09-01 20:30:48', 3, 1),
+	(3285, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:33:28', '2025-09-01 20:33:28', 3, 1),
+	(3286, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:33:48', '2025-09-01 20:33:48', 3, 1),
+	(3287, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:35:20', '2025-09-01 20:35:20', 3, 1),
+	(3288, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:35:49', '2025-09-01 20:35:49', 3, 1),
+	(3289, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:36:19', '2025-09-01 20:36:19', 3, 1),
+	(3290, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:50:06', '2025-09-01 20:50:06', 3, 1),
+	(3291, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:50:11', '2025-09-01 20:50:11', 3, 1),
+	(3292, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:50:14', '2025-09-01 20:50:14', 3, 1),
+	(3293, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:50:18', '2025-09-01 20:50:18', 3, 1),
+	(3294, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:50:26', '2025-09-01 20:50:26', 3, 1),
+	(3295, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:50:34', '2025-09-01 20:50:34', 3, 1),
+	(3296, 'Ocurrio un error inesperado', 'Error: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens - HY093', '2025-09-01 20:50:41', '2025-09-01 20:50:41', 1, 1),
+	(3297, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:51:39', '2025-09-01 20:51:39', 3, 1),
+	(3298, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 4', '2025-09-01 20:51:45', '2025-09-01 20:51:45', 1, 1),
+	(3299, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:51:51', '2025-09-01 20:51:51', 3, 1),
+	(3300, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 20:51:57', '2025-09-01 20:51:57', 1, 1),
+	(3301, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 2', '2025-09-01 20:52:01', '2025-09-01 20:52:01', 1, 1),
+	(3302, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 3', '2025-09-01 20:52:04', '2025-09-01 20:52:04', 1, 1),
+	(3303, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:52:20', '2025-09-01 20:52:20', 3, 1),
+	(3304, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:51', '2025-09-01 20:54:51', 3, 1),
+	(3305, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:54', '2025-09-01 20:54:54', 3, 1),
+	(3306, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:58', '2025-09-01 20:54:58', 3, 1),
+	(3307, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:59', '2025-09-01 20:54:59', 3, 1),
+	(3308, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:59', '2025-09-01 20:54:59', 3, 1),
+	(3309, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:59', '2025-09-01 20:54:59', 3, 1),
+	(3310, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:54:59', '2025-09-01 20:54:59', 3, 1),
+	(3311, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:00', '2025-09-01 20:55:00', 3, 1),
+	(3312, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:00', '2025-09-01 20:55:00', 3, 1),
+	(3313, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:00', '2025-09-01 20:55:00', 3, 1),
+	(3314, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:00', '2025-09-01 20:55:00', 3, 1),
+	(3315, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:00', '2025-09-01 20:55:00', 3, 1),
+	(3316, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:01', '2025-09-01 20:55:01', 3, 1),
+	(3317, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:01', '2025-09-01 20:55:01', 3, 1),
+	(3318, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:01', '2025-09-01 20:55:01', 3, 1),
+	(3319, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:01', '2025-09-01 20:55:01', 3, 1),
+	(3320, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:02', '2025-09-01 20:55:02', 3, 1),
+	(3321, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:02', '2025-09-01 20:55:02', 3, 1),
+	(3322, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:02', '2025-09-01 20:55:02', 3, 1),
+	(3323, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:03', '2025-09-01 20:55:03', 3, 1),
+	(3324, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 20:55:25', '2025-09-01 20:55:25', 1, 1),
+	(3325, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 20:55:38', '2025-09-01 20:55:38', 1, 1),
+	(3326, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-01 20:55:47', '2025-09-01 20:55:47', 3, 1),
+	(3327, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 20:55:55', '2025-09-01 20:55:55', 3, 1),
+	(3328, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 20:56:13', '2025-09-01 20:56:13', 1, 1),
+	(3329, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 20:56:19', '2025-09-01 20:56:19', 1, 1),
+	(3330, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 20:58:11', '2025-09-01 20:58:11', 1, 1),
+	(3331, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:02:00', '2025-09-01 21:02:00', 3, 1),
+	(3332, 'Registro exitoso', 'El macroproceso se ha registrado correctamente, al momento de registrar un usuario', '2025-09-01 21:02:18', '2025-09-01 21:02:18', 2, 1),
+	(3333, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:02:53', '2025-09-01 21:02:53', 3, 1),
+	(3334, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 2', '2025-09-01 21:03:02', '2025-09-01 21:03:02', 1, 1),
+	(3335, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 3', '2025-09-01 21:03:08', '2025-09-01 21:03:08', 1, 1),
+	(3336, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 21:03:13', '2025-09-01 21:03:13', 1, 1),
+	(3337, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:05:24', '2025-09-01 21:05:24', 3, 1),
+	(3338, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:05:26', '2025-09-01 21:05:26', 3, 1),
+	(3339, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:14:46', '2025-09-01 21:14:46', 3, 1),
+	(3340, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:15:48', '2025-09-01 21:15:48', 3, 1),
+	(3341, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 21:15:52', '2025-09-01 21:15:52', 1, 1),
+	(3342, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:19:10', '2025-09-01 21:19:10', 3, 1),
+	(3343, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:19:43', '2025-09-01 21:19:43', 3, 1),
+	(3344, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 21:19:47', '2025-09-01 21:19:47', 1, 1),
+	(3345, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:21:32', '2025-09-01 21:21:32', 3, 1),
+	(3346, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:24:55', '2025-09-01 21:24:55', 3, 1),
+	(3347, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:25:01', '2025-09-01 21:25:01', 3, 1),
+	(3348, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:25:01', '2025-09-01 21:25:01', 3, 1),
+	(3349, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:25:01', '2025-09-01 21:25:01', 3, 1),
+	(3350, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:25:02', '2025-09-01 21:25:02', 3, 1),
+	(3351, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:26:56', '2025-09-01 21:26:56', 3, 1),
+	(3352, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:31:40', '2025-09-01 21:31:40', 3, 1),
+	(3353, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:31:59', '2025-09-01 21:31:59', 3, 1),
+	(3354, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:32:11', '2025-09-01 21:32:11', 3, 1),
+	(3355, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:34:56', '2025-09-01 21:34:56', 3, 1),
+	(3356, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:35:14', '2025-09-01 21:35:14', 3, 1),
+	(3357, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:43', '2025-09-01 21:37:43', 3, 1),
+	(3358, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3359, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3360, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3361, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3362, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3363, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3364, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:37:56', '2025-09-01 21:37:56', 3, 1),
+	(3365, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:38:11', '2025-09-01 21:38:11', 3, 1),
+	(3366, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:38:11', '2025-09-01 21:38:11', 3, 1),
+	(3367, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:39:39', '2025-09-01 21:39:39', 3, 1),
+	(3368, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:40:43', '2025-09-01 21:40:43', 3, 1),
+	(3369, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:43:15', '2025-09-01 21:43:15', 3, 1),
+	(3370, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:43:43', '2025-09-01 21:43:43', 3, 1),
+	(3371, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:46:14', '2025-09-01 21:46:14', 3, 1),
+	(3372, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:47:39', '2025-09-01 21:47:39', 3, 1),
+	(3373, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 21:47:45', '2025-09-01 21:47:45', 3, 1),
+	(3374, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:47:55', '2025-09-01 21:47:55', 3, 1),
+	(3375, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:50:25', '2025-09-01 21:50:25', 3, 1),
+	(3376, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:51:02', '2025-09-01 21:51:02', 3, 1),
+	(3377, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:56:12', '2025-09-01 21:56:12', 3, 1),
+	(3378, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:56:47', '2025-09-01 21:56:47', 3, 1),
+	(3379, 'Eliminación correcta', 'Se eliminó de manera correcta el macroproceso Prueba De Insersion De Datos', '2025-09-01 21:56:51', '2025-09-01 21:56:51', 2, 1),
+	(3380, 'Eliminación correcta', 'Se eliminó de manera correcta el macroproceso Prueba De Macroproceso', '2025-09-01 21:56:53', '2025-09-01 21:56:53', 2, 1),
+	(3381, 'Eliminación correcta', 'Se eliminó de manera correcta el macroproceso Prueba De Macroproceso', '2025-09-01 21:56:55', '2025-09-01 21:56:55', 2, 1),
+	(3382, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`bd_ssoma`.`tb_process`, CONSTRAINT `tb_process_ibfk_1` FOREIGN KEY (`macroprocess_id`) REFERENCES `tb_macroprocess` (`idMacroprocess`)) - 23000', '2025-09-01 21:56:57', '2025-09-01 21:56:57', 1, 1),
+	(3383, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:57:48', '2025-09-01 21:57:48', 3, 1),
+	(3384, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:15', '2025-09-01 21:58:15', 3, 1),
+	(3385, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`bd_ssoma`.`tb_process`, CONSTRAINT `tb_process_ibfk_1` FOREIGN KEY (`macroprocess_id`) REFERENCES `tb_macroprocess` (`idMacroprocess`)) - 23000', '2025-09-01 21:58:18', '2025-09-01 21:58:18', 1, 1),
+	(3386, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:22', '2025-09-01 21:58:22', 3, 1),
+	(3387, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:22', '2025-09-01 21:58:22', 3, 1),
+	(3388, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:23', '2025-09-01 21:58:23', 3, 1),
+	(3389, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:23', '2025-09-01 21:58:23', 3, 1),
+	(3390, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:23', '2025-09-01 21:58:23', 3, 1),
+	(3391, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:23', '2025-09-01 21:58:23', 3, 1),
+	(3392, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:23', '2025-09-01 21:58:23', 3, 1),
+	(3393, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:23', '2025-09-01 21:58:23', 3, 1),
+	(3394, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:24', '2025-09-01 21:58:24', 3, 1),
+	(3395, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:24', '2025-09-01 21:58:24', 3, 1),
+	(3396, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:24', '2025-09-01 21:58:24', 3, 1),
+	(3397, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:24', '2025-09-01 21:58:24', 3, 1),
+	(3398, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:25', '2025-09-01 21:58:25', 3, 1),
+	(3399, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`bd_ssoma`.`tb_process`, CONSTRAINT `tb_process_ibfk_1` FOREIGN KEY (`macroprocess_id`) REFERENCES `tb_macroprocess` (`idMacroprocess`)) - 23000', '2025-09-01 21:58:31', '2025-09-01 21:58:31', 1, 1),
+	(3400, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:49', '2025-09-01 21:58:49', 3, 1),
+	(3401, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 21:58:52', '2025-09-01 21:58:52', 3, 1),
+	(3402, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:05:03', '2025-09-01 22:05:03', 3, 1),
+	(3403, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:10', '2025-09-01 22:05:10', 1, 1),
+	(3404, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:05:33', '2025-09-01 22:05:33', 3, 1),
+	(3405, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:37', '2025-09-01 22:05:37', 1, 1),
+	(3406, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:38', '2025-09-01 22:05:38', 1, 1),
+	(3407, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:38', '2025-09-01 22:05:38', 1, 1),
+	(3408, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:38', '2025-09-01 22:05:38', 1, 1),
+	(3409, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:39', '2025-09-01 22:05:39', 1, 1),
+	(3410, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:39', '2025-09-01 22:05:39', 1, 1),
+	(3411, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:05:39', '2025-09-01 22:05:39', 1, 1),
+	(3412, 'Ocurrió un error inesperado', 'El campo Nombre no cumple con el formato de texto al registrar un macroproceso', '2025-09-01 22:05:49', '2025-09-01 22:05:49', 1, 1),
+	(3413, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:06:23', '2025-09-01 22:06:23', 3, 1),
+	(3414, 'Registro exitoso', 'El macroproceso se ha registrado correctamente, al momento de registrar un usuario', '2025-09-01 22:06:32', '2025-09-01 22:06:32', 2, 1),
+	(3415, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:38', '2025-09-01 22:06:38', 1, 1),
+	(3416, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:39', '2025-09-01 22:06:39', 1, 1),
+	(3417, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:40', '2025-09-01 22:06:40', 1, 1),
+	(3418, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:40', '2025-09-01 22:06:40', 1, 1),
+	(3419, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:40', '2025-09-01 22:06:40', 1, 1),
+	(3420, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:40', '2025-09-01 22:06:40', 1, 1),
+	(3421, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:41', '2025-09-01 22:06:41', 1, 1),
+	(3422, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:41', '2025-09-01 22:06:41', 1, 1),
+	(3423, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:41', '2025-09-01 22:06:41', 1, 1),
+	(3424, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:41', '2025-09-01 22:06:41', 1, 1),
+	(3425, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:41', '2025-09-01 22:06:41', 1, 1),
+	(3426, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:42', '2025-09-01 22:06:42', 1, 1),
+	(3427, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:42', '2025-09-01 22:06:42', 1, 1),
+	(3428, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:42', '2025-09-01 22:06:42', 1, 1),
+	(3429, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:42', '2025-09-01 22:06:42', 1, 1),
+	(3430, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:43', '2025-09-01 22:06:43', 1, 1),
+	(3431, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:43', '2025-09-01 22:06:43', 1, 1),
+	(3432, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:43', '2025-09-01 22:06:43', 1, 1),
+	(3433, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:43', '2025-09-01 22:06:43', 1, 1),
+	(3434, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:44', '2025-09-01 22:06:44', 1, 1),
+	(3435, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:47', '2025-09-01 22:06:47', 1, 1),
+	(3436, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:48', '2025-09-01 22:06:48', 1, 1),
+	(3437, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:48', '2025-09-01 22:06:48', 1, 1),
+	(3438, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:48', '2025-09-01 22:06:48', 1, 1),
+	(3439, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:06:48', '2025-09-01 22:06:48', 1, 1),
+	(3440, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:07:46', '2025-09-01 22:07:46', 3, 1),
+	(3441, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:07:50', '2025-09-01 22:07:50', 1, 1),
+	(3442, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, para poder eliminarlo primero debe eliminar los procesos asociados', '2025-09-01 22:07:51', '2025-09-01 22:07:51', 1, 1),
+	(3443, 'Ocurrio un error inesperado', 'Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column \'tbp.idMacroprocess\' in \'where clause\' - 42S22', '2025-09-01 22:09:11', '2025-09-01 22:09:11', 1, 1),
+	(3444, 'Ocurrio un error inesperado', 'Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column \'tbp.idMacroprocess\' in \'where clause\' - 42S22', '2025-09-01 22:09:12', '2025-09-01 22:09:12', 1, 1),
+	(3445, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:09:45', '2025-09-01 22:09:45', 3, 1),
+	(3446, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:11:18', '2025-09-01 22:11:18', 3, 1),
+	(3447, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:12:27', '2025-09-01 22:12:27', 3, 1),
+	(3448, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados', '2025-09-01 22:12:30', '2025-09-01 22:12:30', 1, 1),
+	(3449, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados', '2025-09-01 22:12:41', '2025-09-01 22:12:41', 1, 1),
+	(3450, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados', '2025-09-01 22:12:41', '2025-09-01 22:12:41', 1, 1),
+	(3451, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:13:11', '2025-09-01 22:13:11', 3, 1),
+	(3452, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:13:33', '2025-09-01 22:13:33', 3, 1),
+	(3453, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados', '2025-09-01 22:13:38', '2025-09-01 22:13:38', 1, 1),
+	(3454, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:16:10', '2025-09-01 22:16:10', 3, 1),
+	(3455, 'Eliminación correcta', 'Se eliminó de manera correcta el macroproceso Dsfs Dfsd Fsdf Sdf 3.', '2025-09-01 22:16:13', '2025-09-01 22:16:13', 2, 1),
+	(3456, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados', '2025-09-01 22:16:17', '2025-09-01 22:16:17', 1, 1),
+	(3457, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:16:40', '2025-09-01 22:16:40', 1, 1),
+	(3458, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:16:43', '2025-09-01 22:16:43', 1, 1),
+	(3459, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:16:44', '2025-09-01 22:16:44', 3, 1),
+	(3460, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:16:49', '2025-09-01 22:16:49', 3, 1),
+	(3461, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:04', '2025-09-01 22:18:04', 1, 1),
+	(3462, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:06', '2025-09-01 22:18:06', 1, 1),
+	(3463, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:06', '2025-09-01 22:18:06', 1, 1),
+	(3464, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:06', '2025-09-01 22:18:06', 1, 1),
+	(3465, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:06', '2025-09-01 22:18:06', 1, 1),
+	(3466, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:06', '2025-09-01 22:18:06', 1, 1),
+	(3467, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:07', '2025-09-01 22:18:07', 1, 1),
+	(3468, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:07', '2025-09-01 22:18:07', 1, 1),
+	(3469, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:07', '2025-09-01 22:18:07', 1, 1),
+	(3470, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:07', '2025-09-01 22:18:07', 1, 1),
+	(3471, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:07', '2025-09-01 22:18:07', 1, 1),
+	(3472, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:07', '2025-09-01 22:18:07', 1, 1),
+	(3473, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:08', '2025-09-01 22:18:08', 1, 1),
+	(3474, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:08', '2025-09-01 22:18:08', 1, 1),
+	(3475, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:08', '2025-09-01 22:18:08', 1, 1),
+	(3476, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:08', '2025-09-01 22:18:08', 1, 1),
+	(3477, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:16', '2025-09-01 22:18:16', 1, 1),
+	(3478, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:16', '2025-09-01 22:18:16', 1, 1),
+	(3479, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:16', '2025-09-01 22:18:16', 1, 1),
+	(3480, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:16', '2025-09-01 22:18:16', 1, 1),
+	(3481, 'Ocurrió un error inesperado', 'No se podra eliminar el macroproceso, ya que tiene procesos asociados, elimínalos primero para poder eliminar el macroproceso', '2025-09-01 22:18:16', '2025-09-01 22:18:16', 1, 1),
+	(3482, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:18:20', '2025-09-01 22:18:20', 3, 1),
+	(3483, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 2', '2025-09-01 22:18:34', '2025-09-01 22:18:34', 1, 1),
+	(3484, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 2', '2025-09-01 22:18:44', '2025-09-01 22:18:44', 1, 1),
+	(3485, 'Información de navegación', 'El usuario entro a: Error 404', '2025-09-01 22:18:47', '2025-09-01 22:18:47', 3, 1),
+	(3486, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:18:51', '2025-09-01 22:18:51', 3, 1),
+	(3487, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:19:19', '2025-09-01 22:19:19', 3, 1),
+	(3488, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 22:19:36', '2025-09-01 22:19:36', 1, 1),
+	(3489, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 22:19:43', '2025-09-01 22:19:43', 1, 1),
+	(3490, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 2', '2025-09-01 22:19:51', '2025-09-01 22:19:51', 1, 1),
+	(3491, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:20:23', '2025-09-01 22:20:23', 3, 1),
+	(3492, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 22:20:26', '2025-09-01 22:20:26', 3, 1),
+	(3493, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 22:20:28', '2025-09-01 22:20:28', 3, 1),
+	(3494, 'Información de navegación', 'El usuario entro a :Gestión de Roles', '2025-09-01 22:20:30', '2025-09-01 22:20:30', 3, 1),
+	(3495, 'Atención a petición de información', 'Petición de modulos activos y disponibles devueltas correctamente: ss[{"idModule":"1","m_name":"Configuracion del sistema","m_icon":"<i class=\\"fa fa-cog\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"1","i_name":"Inicio de Sesion","i_description":null,"i_url":"login","i_isOption":"0","i_isPublic":"1","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-01-26 10:17:34","i_updateDate":"2025-02-02 17:06:32","module_id":"1"},{"idInterface":"2","i_name":"Dashboard","i_description":null,"i_url":"dashboard","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-01-26 14:37:54","i_updateDate":"2025-02-02 13:58:08","module_id":"1"},{"idInterface":"3","i_name":"Gestion de Usuarios","i_description":null,"i_url":"users","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-01-26 15:10:27","i_updateDate":"2025-01-30 18:30:05","module_id":"1"},{"idInterface":"4","i_name":"Gestion de Roles","i_description":null,"i_url":"roles","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-01-28 17:21:22","i_updateDate":"2025-02-02 16:52:15","module_id":"1"},{"idInterface":"6","i_name":"Configuracion del Sistema","i_description":null,"i_url":"system","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-02-01 17:29:47","i_updateDate":"2025-02-01 17:29:47","module_id":"1"},{"idInterface":"7","i_name":"Perfil del usuario","i_description":null,"i_url":"profile","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-02-02 11:23:26","i_updateDate":"2025-02-02 11:34:31","module_id":"1"},{"idInterface":"8","i_name":"Pagina de error 404","i_description":null,"i_url":"404","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-07-05 14:38:02","i_updateDate":"2025-07-05 14:38:02","module_id":"1"},{"idInterface":"10","i_name":"Cambio de contrase\\u00f1a","i_description":null,"i_url":"pwreset","i_isOption":"0","i_isPublic":"1","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-08-24 20:21:10","i_updateDate":"2025-08-24 20:21:10","module_id":"1"},{"idInterface":"20","i_name":"Bloqueo de Sesi\\u00f3n","i_description":null,"i_url":"lock","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-05-20 08:21:56","i_updateDate":"2025-05-20 08:21:56","module_id":"1"}]},{"idModule":"2","m_name":"Logs","m_icon":"<i class=\\"fa fa-microchip\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"5","i_name":"Listado de Logs","i_description":null,"i_url":"logs","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-01-31 16:49:03","i_updateDate":"2025-01-31 16:49:03","module_id":"2"}]},{"idModule":"3","m_name":"Gestion de notificaciones","m_icon":"<i class=\\"fa fa-bell-o\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"9","i_name":"Gestionar notificaciones","i_description":null,"i_url":"notification","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-07-05 16:55:52","i_updateDate":"2025-07-05 17:00:07","module_id":"3"}]},{"idModule":"4","m_name":"Gestion de archivos","m_icon":"<i class=\\"fa fa-hdd-o\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"11","i_name":"Gestion de archivos personales","i_description":null,"i_url":"clust","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-08-20 14:16:18","i_updateDate":"2025-08-20 14:16:18","module_id":"4"}]},{"idModule":"5","m_name":"Modulo de GSSOHMA","m_icon":"<i class=\\"fa fa-folder-open\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"12","i_name":"Gestion de macroprocesos","i_description":null,"i_url":"macroprocess","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-09-01 12:36:17","i_updateDate":"2025-09-01 12:36:17","module_id":"5"},{"idInterface":"13","i_name":"Gestion de procesos","i_description":null,"i_url":"process","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-09-01 12:36:45","i_updateDate":"2025-09-01 12:36:45","module_id":"5"},{"idInterface":"14","i_name":"Gestion de subprocesos","i_description":null,"i_url":"subprocess","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-09-01 12:37:02","i_updateDate":"2025-09-01 12:37:06","module_id":"5"}]}]', '2025-09-01 22:20:32', '2025-09-01 22:20:32', 3, 1),
+	(3496, 'Atención a petición de información', 'Petición de modulos activos y disponibles devueltas correctamente: ss[{"idModule":"1","m_name":"Configuracion del sistema","m_icon":"<i class=\\"fa fa-cog\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"1","i_name":"Inicio de Sesion","i_description":null,"i_url":"login","i_isOption":"0","i_isPublic":"1","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-01-26 10:17:34","i_updateDate":"2025-02-02 17:06:32","module_id":"1"},{"idInterface":"2","i_name":"Dashboard","i_description":null,"i_url":"dashboard","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-01-26 14:37:54","i_updateDate":"2025-02-02 13:58:08","module_id":"1"},{"idInterface":"3","i_name":"Gestion de Usuarios","i_description":null,"i_url":"users","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-01-26 15:10:27","i_updateDate":"2025-01-30 18:30:05","module_id":"1"},{"idInterface":"4","i_name":"Gestion de Roles","i_description":null,"i_url":"roles","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-01-28 17:21:22","i_updateDate":"2025-02-02 16:52:15","module_id":"1"},{"idInterface":"6","i_name":"Configuracion del Sistema","i_description":null,"i_url":"system","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-02-01 17:29:47","i_updateDate":"2025-02-01 17:29:47","module_id":"1"},{"idInterface":"7","i_name":"Perfil del usuario","i_description":null,"i_url":"profile","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-02-02 11:23:26","i_updateDate":"2025-02-02 11:34:31","module_id":"1"},{"idInterface":"8","i_name":"Pagina de error 404","i_description":null,"i_url":"404","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-07-05 14:38:02","i_updateDate":"2025-07-05 14:38:02","module_id":"1"},{"idInterface":"10","i_name":"Cambio de contrase\\u00f1a","i_description":null,"i_url":"pwreset","i_isOption":"0","i_isPublic":"1","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-08-24 20:21:10","i_updateDate":"2025-08-24 20:21:10","module_id":"1"},{"idInterface":"20","i_name":"Bloqueo de Sesi\\u00f3n","i_description":null,"i_url":"lock","i_isOption":"0","i_isPublic":"0","i_isListNav":"0","i_status":"Activo","i_registrationDate":"2025-05-20 08:21:56","i_updateDate":"2025-05-20 08:21:56","module_id":"1"}]},{"idModule":"2","m_name":"Logs","m_icon":"<i class=\\"fa fa-microchip\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"5","i_name":"Listado de Logs","i_description":null,"i_url":"logs","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-01-31 16:49:03","i_updateDate":"2025-01-31 16:49:03","module_id":"2"}]},{"idModule":"3","m_name":"Gestion de notificaciones","m_icon":"<i class=\\"fa fa-bell-o\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"9","i_name":"Gestionar notificaciones","i_description":null,"i_url":"notification","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-07-05 16:55:52","i_updateDate":"2025-07-05 17:00:07","module_id":"3"}]},{"idModule":"4","m_name":"Gestion de archivos","m_icon":"<i class=\\"fa fa-hdd-o\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"11","i_name":"Gestion de archivos personales","i_description":null,"i_url":"clust","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-08-20 14:16:18","i_updateDate":"2025-08-20 14:16:18","module_id":"4"}]},{"idModule":"5","m_name":"Modulo de GSSOHMA","m_icon":"<i class=\\"fa fa-folder-open\\" aria-hidden=\\"true\\"><\\/i>","interface":[{"idInterface":"12","i_name":"Gestion de macroprocesos","i_description":null,"i_url":"macroprocess","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-09-01 12:36:17","i_updateDate":"2025-09-01 12:36:17","module_id":"5"},{"idInterface":"13","i_name":"Gestion de procesos","i_description":null,"i_url":"process","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-09-01 12:36:45","i_updateDate":"2025-09-01 12:36:45","module_id":"5"},{"idInterface":"14","i_name":"Gestion de subprocesos","i_description":null,"i_url":"subprocess","i_isOption":"0","i_isPublic":"0","i_isListNav":"1","i_status":"Activo","i_registrationDate":"2025-09-01 12:37:02","i_updateDate":"2025-09-01 12:37:06","module_id":"5"}]}]', '2025-09-01 22:20:32', '2025-09-01 22:20:32', 3, 1),
+	(3497, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"}]', '2025-09-01 22:20:34', '2025-09-01 22:20:34', 3, 1),
+	(3498, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"}]', '2025-09-01 22:20:35', '2025-09-01 22:20:35', 3, 1),
+	(3499, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"}]', '2025-09-01 22:20:37', '2025-09-01 22:20:37', 3, 1),
+	(3500, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"13","status":"Activo"}]', '2025-09-01 22:20:38', '2025-09-01 22:20:38', 3, 1),
+	(3501, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"13","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"14","status":"Activo"}]', '2025-09-01 22:20:38', '2025-09-01 22:20:38', 3, 1),
+	(3502, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"13","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"14","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"8","status":"Activo"}]', '2025-09-01 22:20:43', '2025-09-01 22:20:43', 3, 1),
+	(3503, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"13","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"14","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"8","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"20","status":"Activo"}]', '2025-09-01 22:20:43', '2025-09-01 22:20:43', 3, 1),
+	(3504, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"13","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"14","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"8","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"20","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"7","status":"Activo"}]', '2025-09-01 22:20:45', '2025-09-01 22:20:45', 3, 1),
+	(3505, 'Atención alerta de información', 'Se modificó o creó nuevo registro de los permisos, información detallada: [{"idDetail":"Fail","idRole":"20","idInterface":"1","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"2","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"12","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"13","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"14","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"8","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"20","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"7","status":"Activo"},{"idDetail":"Fail","idRole":"20","idInterface":"10","status":"Activo"}]', '2025-09-01 22:20:47', '2025-09-01 22:20:47', 3, 1),
+	(3506, 'Registro de permisos correcto', 'Se registró de manera correcta los permisos para el rol', '2025-09-01 22:20:51', '2025-09-01 22:20:51', 2, 1),
+	(3507, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-09-01 22:20:52', '2025-09-01 22:20:52', 3, 1),
+	(3508, 'Registro exitoso', 'El usuario se ha actualizado correctamente en el sistema.', '2025-09-01 22:21:20', '2025-09-01 22:21:20', 2, 1),
+	(3509, 'Consulta correcta por DNI', 'Se logró consultar de manera correcta los datos de la persona {"nombres":"YEISON DANNER","apellidoPaterno":"CARHUAPOMA","apellidoMaterno":"DETT","nombreCompleto":"YEISON DANNER CARHUAPOMA DETT","tipoDocumento":"1","numeroDocumento":"73448652","digitoVerificador":"9"}', '2025-09-01 22:21:28', '2025-09-01 22:21:28', 2, 1),
+	(3510, 'Error al crear carpeta', 'No se pudo crear la carpeta para el usuario.', '2025-09-01 22:21:47', '2025-09-01 22:21:47', 2, 1),
+	(3511, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-09-01 22:21:59', '2025-09-01 22:21:59', 2, 1),
+	(3512, 'Inicio de sesión exitoso', 'El usuario YEISON DANNER CARHUAPOMA DETT, completo de manera satisfactoria el inicio de sesion', '2025-09-01 22:22:05', '2025-09-01 22:22:05', 2, 41),
+	(3513, 'Información de navegación', 'El usuario entro a :Panel de control', '2025-09-01 22:22:06', '2025-09-01 22:22:06', 3, 41),
+	(3514, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:22:09', '2025-09-01 22:22:09', 3, 41),
+	(3515, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 1', '2025-09-01 22:22:14', '2025-09-01 22:22:14', 1, 41),
+	(3516, 'Macroproceso actualizado', 'Se actualizo la informacion del macroproceso con el id: 2', '2025-09-01 22:22:16', '2025-09-01 22:22:16', 1, 41),
+	(3517, 'Información de navegación', 'El usuario entro a: Gestión de Macroprocesos', '2025-09-01 22:22:37', '2025-09-01 22:22:37', 3, 41);
 
 -- Volcando estructura para tabla bd_ssoma.tb_macroprocess
 DROP TABLE IF EXISTS `tb_macroprocess`;
@@ -3381,8 +3694,8 @@ CREATE TABLE IF NOT EXISTS `tb_macroprocess` (
 -- Volcando datos para la tabla bd_ssoma.tb_macroprocess: ~2 rows (aproximadamente)
 DELETE FROM `tb_macroprocess`;
 INSERT INTO `tb_macroprocess` (`idMacroprocess`, `mp_name`, `mp_description`, `mp_status`, `mp_registrationDate`, `mp_updateDate`) VALUES
-	(1, 'Gestion de documentos y normativas en SSOMA', NULL, 'Activo', '2025-09-01 16:27:29', '2025-09-01 16:27:48'),
-	(2, 'Aplicaciones de Gestion de SSOMA', NULL, 'Activo', '2025-09-01 16:27:43', '2025-09-01 16:27:43');
+	(1, 'I. Gestión De Documentos Y Normativas En SSOMA', '', 'Activo', '2025-09-01 16:27:29', '2025-09-01 22:19:43'),
+	(2, 'II. Aplicaciones De Gestion De SSOMA', '', 'Inactivo', '2025-09-01 16:27:43', '2025-09-01 22:19:51');
 
 -- Volcando estructura para tabla bd_ssoma.tb_module
 DROP TABLE IF EXISTS `tb_module`;
@@ -3397,13 +3710,14 @@ CREATE TABLE IF NOT EXISTS `tb_module` (
   PRIMARY KEY (`idModule`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla bd_ssoma.tb_module: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla bd_ssoma.tb_module: ~5 rows (aproximadamente)
 DELETE FROM `tb_module`;
 INSERT INTO `tb_module` (`idModule`, `m_name`, `m_icon`, `m_description`, `m_status`, `m_registrationDate`, `m_updateDate`) VALUES
 	(1, 'Configuracion del sistema', '<i class="fa fa-cog" aria-hidden="true"></i>', 'Aqui se encuentra toda la configuracion inicial del sistema', 'Activo', '2025-01-26 15:17:10', '2025-02-02 22:46:08'),
 	(2, 'Logs', '<i class="fa fa-microchip" aria-hidden="true"></i>', 'Aqui se visualizara los logs del sistema', 'Activo', '2025-01-31 21:32:16', '2025-01-31 21:48:21'),
 	(3, 'Gestion de notificaciones', '<i class="fa fa-bell-o" aria-hidden="true"></i>', 'Aqui se gestiona todas las notificaciones que se realiza, como tambien enviar notificaciones a los usuarios o todos los usuarios dle sistema', 'Activo', '2025-07-05 21:54:58', '2025-07-05 21:54:58'),
-	(4, 'Gestion de archivos', '<i class="fa fa-hdd-o" aria-hidden="true"></i>', 'Aqui se gestiona los archivos que tiene la cuenta', 'Activo', '2025-08-19 17:30:55', '2025-08-19 17:30:55');
+	(4, 'Gestion de archivos', '<i class="fa fa-hdd-o" aria-hidden="true"></i>', 'Aqui se gestiona los archivos que tiene la cuenta', 'Activo', '2025-08-19 17:30:55', '2025-08-19 17:30:55'),
+	(5, 'Modulo de GSSOHMA', '<i class="fa fa-folder-open" aria-hidden="true"></i>', 'Modulo del sistema de Gestion Seguridad Ocupacional Higiene y Medio Ambiente', 'Activo', '2025-09-01 17:35:02', '2025-09-01 17:35:45');
 
 -- Volcando estructura para tabla bd_ssoma.tb_notification
 DROP TABLE IF EXISTS `tb_notification`;
@@ -3431,7 +3745,8 @@ CREATE TABLE IF NOT EXISTS `tb_notification` (
 -- Volcando datos para la tabla bd_ssoma.tb_notification: ~1 rows (aproximadamente)
 DELETE FROM `tb_notification`;
 INSERT INTO `tb_notification` (`idNotification`, `user_id`, `n_title`, `n_description`, `n_link`, `n_icon`, `n_color`, `n_type`, `n_priority`, `n_is_read`, `n_status`, `n_created_at`, `n_updated_at`, `n_notification_email`) VALUES
-	(11, 1, 'Hola esto es una prueba', 'NnFMcm8yNkRDRU9JNytlVFlLdE1iUmpaeUFkdEhTQS9zNHovTkx1WUc2RE5vekNYaHVRNkxERm9IekhiaUdpeGRvM3VoU2NwOUNiR3ZmU1NXOERxdmc9PQ', '', 'fa-battery-full', 'warning', 'warning', 2, 1, 'activo', '2025-08-13 16:34:31', '2025-08-13 16:34:35', 'No');
+	(11, 1, 'Hola esto es una prueba', 'NnFMcm8yNkRDRU9JNytlVFlLdE1iUmpaeUFkdEhTQS9zNHovTkx1WUc2RE5vekNYaHVRNkxERm9IekhiaUdpeGRvM3VoU2NwOUNiR3ZmU1NXOERxdmc9PQ', '', 'fa-battery-full', 'warning', 'warning', 2, 1, 'activo', '2025-08-13 16:34:31', '2025-08-13 16:34:35', 'No'),
+	(56, 41, '¡Bienvenido(a) al sistema,  YEISON DANNER CARHUAPOMA DETT!', 'WEt2d3lWRDZ0Vkd6T1owb0tNKzVoU1EwMzBJWGxuZHFpL0VDd2hsZXA0YmlhaklDV3hleExabjFWVC9hRmVsVmEwam5PRk16aTNhVThIbU9XUlo1K2JKRkpkbzk0R3pTcDJQbGlPaDBBVDBvNHZoUHFhSExHOEFldWF2TUtrbVlPdFR2WFV0b1VYdVFDWW5RazhSaGNjLzduWHN5WitrVE5sbVRBR2hEeWhjblNYR3VPU2s1TjU0R2lhblFPODZUb2prQTBuQUcyMEZ1R2xMVXgySVJYSDhVTVlyWlBzd1BEUDJYb29WQStDQmlHMHJrcjRKQldDakVkckhlVGVzQ0FqODBjbjVTVUZzWVJtb0hkV1RjMUIxUlFsbGtpRllwbDZiVVQ3Sk1iUVNsemZjWDJOUXhjVnAwaW9xQ3dZODZSUlBlbUlLTXVvU0pxYlFoV3JZbWpCQ2hyQ3BZU1NsUTc0aXd0VFhlRnpoNjdyTEZkU0k5MW5QTDBndFFMcHUrbFlvRVZJRVhOSi9HbUN6aUxOVXBSQT09', '', 'fa-bullhorn', 'success', 'success', 1, 0, 'activo', '2025-09-01 17:21:47', '2025-09-01 17:21:47', 'No');
 
 -- Volcando estructura para tabla bd_ssoma.tb_process
 DROP TABLE IF EXISTS `tb_process`;
@@ -3555,7 +3870,8 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 -- Volcando datos para la tabla bd_ssoma.tb_user: ~1 rows (aproximadamente)
 DELETE FROM `tb_user`;
 INSERT INTO `tb_user` (`idUser`, `u_user`, `u_password`, `u_email`, `u_profile`, `u_fullname`, `u_gender`, `u_dni`, `u_status`, `u_registrationDate`, `u_updateDate`, `u_online`, `role_id`, `u_login_attempts`, `u_reset_token_password`, `u_space_limit`, `u_personal_folder_name`) VALUES
-	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'cnBNTHNoSGFNRlVuN2d0eXpTS1FSQ1JmaEFyeWRCL3FXWWpoQXFMVXE0VT0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-09-01 15:32:41', 1, 1, 0, '', 0, 'root');
+	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-09-01 22:21:59', 0, 1, 0, '', 0, 'root'),
+	(41, 'dTdvdGNNb2ZGU1dzZzdOOUtUeVd0QT09', 'dTdvdGNNb2ZGU1dzZzdOOUtUeVd0QT09', 'cnBNTHNoSGFNRlVuN2d0eXpTS1FSQ1JmaEFyeWRCL3FXWWpoQXFMVXE0VT0=', '', 'YEISON DANNER CARHUAPOMA DETT', 'Masculino', '73448652', 'Activo', '2025-09-01 22:21:47', '2025-09-01 22:22:05', 1, 20, 0, '', 2, '73448652');
 
 -- Volcando estructura para tabla bd_ssoma.tb_userroledetail
 DROP TABLE IF EXISTS `tb_userroledetail`;
@@ -3573,7 +3889,7 @@ CREATE TABLE IF NOT EXISTS `tb_userroledetail` (
   CONSTRAINT `tb_userroledetail_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `tb_role` (`idRole`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4;
 
--- Volcando datos para la tabla bd_ssoma.tb_userroledetail: ~18 rows (aproximadamente)
+-- Volcando datos para la tabla bd_ssoma.tb_userroledetail: ~15 rows (aproximadamente)
 DELETE FROM `tb_userroledetail`;
 INSERT INTO `tb_userroledetail` (`idUserRoleDetail`, `interface_id`, `role_id`, `urd_status`, `urd_registrationDate`, `urd_updateDate`) VALUES
 	(1, 1, 1, 'Activo', '2025-01-30 22:56:54', '2025-07-05 21:57:19'),
@@ -3587,13 +3903,19 @@ INSERT INTO `tb_userroledetail` (`idUserRoleDetail`, `interface_id`, `role_id`, 
 	(9, 9, 1, 'Activo', '2025-05-20 13:22:11', '2025-07-05 21:57:56'),
 	(10, 10, 1, 'Activo', '2025-08-25 01:21:20', '2025-08-25 01:21:20'),
 	(11, 11, 1, 'Activo', '2025-08-20 19:16:30', '2025-08-20 19:16:30'),
+	(12, 12, 1, 'Activo', '2025-09-01 17:37:38', '2025-09-01 17:37:38'),
+	(13, 13, 1, 'Activo', '2025-09-01 17:37:52', '2025-09-01 17:37:52'),
+	(14, 14, 1, 'Activo', '2025-09-01 17:38:01', '2025-09-01 17:38:01'),
 	(20, 20, 1, 'Activo', '2025-02-02 21:49:55', '2025-07-05 21:58:12'),
-	(52, 1, 20, 'Activo', '2025-09-01 15:32:13', '2025-09-01 15:32:13'),
-	(53, 2, 20, 'Activo', '2025-09-01 15:32:13', '2025-09-01 15:32:13'),
-	(54, 20, 20, 'Activo', '2025-09-01 15:32:13', '2025-09-01 15:32:13'),
-	(55, 10, 20, 'Activo', '2025-09-01 15:32:13', '2025-09-01 15:32:13'),
-	(56, 8, 20, 'Activo', '2025-09-01 15:32:13', '2025-09-01 15:32:13'),
-	(57, 7, 20, 'Activo', '2025-09-01 15:32:13', '2025-09-01 15:32:13');
+	(58, 1, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(59, 2, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(60, 12, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(61, 13, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(62, 14, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(63, 8, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(64, 20, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(65, 7, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51'),
+	(66, 10, 20, 'Activo', '2025-09-01 22:20:51', '2025-09-01 22:20:51');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
