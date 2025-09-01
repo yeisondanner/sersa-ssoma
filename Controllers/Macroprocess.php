@@ -27,4 +27,13 @@ class Macroprocess extends Controllers
         registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
         $this->views->getView($this, "macroprocess", $data);
     }
+    /**
+     * Metodo que devuelve todos los macroprocesos a la vista de macroprocesos
+     * @return void
+     */
+    public function getMacroprocess()
+    {
+        $data = $this->model->select_macroprocess();
+        toJson($data);
+    }
 }
