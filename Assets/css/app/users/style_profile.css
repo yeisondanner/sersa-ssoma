@@ -1,0 +1,24 @@
+.profile-container {
+  width: 100%;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-self: center;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+.profile-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 100%;
+  border: 4px solid #007bff;
+}
+.btn-edit {
+  margin-top: 15px;
+}
