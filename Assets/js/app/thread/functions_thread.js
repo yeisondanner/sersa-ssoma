@@ -4,6 +4,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
   loadTable();
   setTimeout(() => {
     // Aquí puedes agregar cualquier acción que desees realizar después de 1.5 segundos
+    loadSelectProcess();
   }, 1500);
 });
 
@@ -21,6 +22,7 @@ function loadTable() {
       { data: "mp_name" },
       { data: "p_name" },
       { data: "threads_father" },
+      { data: "idThreads" },
       { data: "t_name" },
       { data: "t_description" },
       { data: "t_type" },
@@ -37,7 +39,7 @@ function loadTable() {
         titleAttr: "Copiar",
         className: "btn btn-secondary",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         },
       },
       {
@@ -46,7 +48,7 @@ function loadTable() {
         title: "Reporte de gestion de subprocesos en Excel",
         className: "btn btn-success",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         },
       },
       {
@@ -55,7 +57,7 @@ function loadTable() {
         title: "Reporte de gestion de subprocesos en CSV",
         className: "btn btn-info",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         },
       },
       {
@@ -66,7 +68,7 @@ function loadTable() {
         orientation: "landscape",
         pageSize: "LEGAL",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+          columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         },
       },
     ],
@@ -105,14 +107,28 @@ function loadTable() {
         render: function (data, type, row) {
           //validamos que si el valor es vacio y si no
           if (data !== "" && data !== null) {
-            return `<span class="badge badge-danger"><i class="fa fa-sitemap"></i>  ${data}</span>`;
+            return `<span class="badge badge-danger" title="Subproceso tiene asignado un padre de id ${data}" onclick="alert('Subproceso tiene asignado un padre de id ${data}')" style="cursor:pointer;"><i class="fa fa-sitemap"></i>  ${data}</span>`;
           } else {
-            return `<span class="badge badge-warning"><i class="fa fa-star"></i></span>`;
+            return `<span class="badge badge-warning" title="Subproceso no tiene asignado un padre" onclick="alert('Subproceso no tiene asignado un padre, esto significa que es un subproceso raíz')" style="cursor:pointer;"><i class="fa fa-star"></i></span>`;
           }
         },
       },
       {
-        targets: [5],
+        targets: [4],
+        orderable: true,
+        className: "text-center",
+        searchable: true,
+        render: function (data, type, row) {
+          //validamos que el campo no esté vacío
+          if (data !== "" && data !== null) {
+            return `<span class="badge badge-primary"><i class="fa fa-tag"></i>  ${data}</span>`;
+          } else {
+            return `<span class="badge badge-secondary">Sin ID</span>`;
+          }
+        },
+      },
+      {
+        targets: [6],
         orderable: true,
         className: "text-justify",
         searchable: true,
@@ -126,7 +142,7 @@ function loadTable() {
         },
       },
       {
-        targets: [7],
+        targets: [8],
         orderable: true,
         className: "text-center",
         searchable: true,
@@ -145,7 +161,7 @@ function loadTable() {
         },
       },
       {
-        targets: [6],
+        targets: [7],
         className: "text-center",
         render: function (data, type, row) {
           //validamos que el campo no esté vacío
@@ -166,7 +182,7 @@ function loadTable() {
         },
       },
       {
-        targets: [8, 9],
+        targets: [9, 10],
         orderable: false,
         className: "text-center",
         searchable: false,
@@ -181,7 +197,7 @@ function loadTable() {
         },
       },
       {
-        targets: [10],
+        targets: [11],
         orderable: false,
         className: "text-center",
         searchable: false,
@@ -198,5 +214,26 @@ function loadTable() {
     fnDrawCallback: function () {
       $(".dataTables_paginate > .pagination").addClass("pagination-sm");
     },
+  });
+}
+//Funcion que se encarga de obtener los procesos de acuerdo a la seleccion del macroproceso
+function loadSelectProcess() {
+  const slctMacroprocess = document.getElementById("slctMacroprocess");
+  slctMacroprocess.addEventListener("change", function (e) {
+    const selectedValue = this.value;
+    // Realiza una solicitud fetch para obtener los procesos del macroproceso seleccionado
+    fetch(`${base_url}/Process/getProcesesById?id=${selectedValue}`)
+      .then((response) => response.json())
+      .then((data) => {
+        // Aquí puedes llenar el select de procesos con los datos obtenidos
+        const slctProcess = document.getElementById("slctProcess");
+        slctProcess.innerHTML = "";
+        data.forEach((process) => {
+          const option = document.createElement("option");
+          option.value = process.idProcess;
+          option.textContent = process.p_name;
+          slctProcess.appendChild(option);
+        });
+      });
   });
 }

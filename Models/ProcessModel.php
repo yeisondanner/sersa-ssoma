@@ -77,6 +77,17 @@ class ProcessModel extends Mysql
         return $request;
     }
     /**
+     * Metodo que permite obtener todos los procesos por su id
+     * @param int $id
+     * @return array
+     */
+    public function select_processes_by_id(int $id): array
+    {
+        $query = "SELECT * FROM tb_process WHERE macroprocess_id = ? ORDER BY p_name ASC";
+        $request = $this->select_all($query, [$id]);
+        return $request;
+    }
+    /**
      * Metodo que permite eliminar un proceso
      * @param int $id
      * @return bool

@@ -27,7 +27,9 @@
                                     <th>#</th>
                                     <th>Macroproceso</th>
                                     <th>Proceso</th>
-                                    <th>Subproceso Padre</th>
+                                    <th title="Se asocia al id del subproceso que hace en este caso de padre">Subproceso
+                                        Padre</th>
+                                    <th>Id Subproceso</th>
                                     <th>Subproceso</th>
                                     <th>Descripción</th>
                                     <th>Tipo</th>
@@ -55,7 +57,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalSaveLabel">Nuevo Proceso</h5>
+                <h5 class="modal-title" id="modalSaveLabel">Nuevo Subproceso</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -68,7 +70,7 @@
                         <div class="bg-light p-2 rounded">
                             <div class="row">
                                 <!-- Campo Macroproceso -->
-                                <div class="col-md-12">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label" for="slctMacroprocess">Macroproceso <span
                                                 class="text-danger">*</span></label>
@@ -92,8 +94,46 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Campo Proceso -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="slctProcess">Proceso <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <select type="text" class="form-control" id="slctProcess" name="slctProcess"
+                                                required aria-describedby="iconProcess">
+                                            </select>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconProcess">
+                                                    <i class="fa fa-bookmark" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Campo Sub proceso -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="slctSubProcess">Sub Proceso <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <select type="text" class="form-control" id="slctSubProcess"
+                                                name="slctSubProcess" required aria-describedby="iconSubProcess">
+                                            </select>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconSubProcess"
+                                                    title="Los subprocesos que sirven como padres son aquellos que tiene como tipo open_menu">
+                                                    <i class="fa fa-tag" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted"><span class="text-danger">*</span>Solo se
+                                            mostraran los subprocesos que tienen
+                                            como tipo open_menu.</small>
+                                    </div>
+                                </div>
                                 <!-- Campo Nombre -->
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="form-group">
                                         <label class="control-label" for="txtName">Nombre <span
                                                 class="text-danger">*</span></label>
@@ -110,7 +150,27 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- Campo tipo -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="slctType">Tipo <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <select type="text" class="form-control" id="slctType" name="slctType"
+                                                required aria-describedby="iconType">
+                                                <option value="" selected disabled>Seleccione un tipo</option>
+                                                <option value="open_menu">Abrir o desglozar un menú</option>
+                                                <option value="open_file">Abrir un archivo</option>
+                                                <option value="open_form">Abrir un formulario</option>
+                                            </select>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconType">
+                                                    <i class="fa fa-tags" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Campo Descripción -->
                                 <div class="col-md-12">
                                     <div class="form-group">

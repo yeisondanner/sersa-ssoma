@@ -28,7 +28,7 @@ class ThreadModel extends Mysql
                         INNER JOIN tb_process AS tbp ON tbp.idProcess = tbt.process_id
                         INNER JOIN tb_macroprocess AS tbmp ON tbmp.idMacroprocess = tbp.macroprocess_id
                     ORDER BY
-                        tbmp.idMacroprocess DESC;";
+                        tbt.idThreads DESC;";
         $request = $this->select_all($query, []);
         return $request;
     }

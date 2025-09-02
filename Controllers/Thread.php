@@ -25,18 +25,18 @@ class Thread extends Controllers
         $data['page_js_css'] = "thread";
         $data['page_vars'] = ["login", "login_info", "lastConsult"];
         //requieremos el modelo de macroprocesos
-        /* require_once "Models/MacroprocessModel.php";
-         $objMP = new MacroprocessModel();
-         $dataMacroprocess = $objMP->select_macroprocess();*/
+        require_once "Models/MacroprocessModel.php";
+        $objMP = new MacroprocessModel();
+        $dataMacroprocess = $objMP->select_macroprocess();
         //limpiamos solo registros que estan con el estado activo
-        /*$datosActive = array_filter($dataMacroprocess, function ($var) {
+        $datosActive = array_filter($dataMacroprocess, function ($var) {
             return $var['mp_status'] !== 'Inactivo';
-        });*/
+        });
         //reindexamos el array para que no queden huecos en las claves
-        // $datosActive = array_values($datosActive);
-        //$data["page_macroprocess"] = $datosActive;
+        $datosActive = array_values($datosActive);
+        $data["page_macroprocess"] = $datosActive;
         //destruimos el objeto
-        // unset($objMP);
+        unset($objMP);
         registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
         $this->views->getView($this, "thread", $data);
     }

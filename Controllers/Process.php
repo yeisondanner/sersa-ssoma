@@ -41,7 +41,7 @@ class Process extends Controllers
         $this->views->getView($this, "process", $data);
     }
     /**
-     * Metodo que devuelve todos los macroprocesos a la vista de macroprocesos
+     * Metodo que devuelve todos los macroprocesos a la vista de procesos
      * @return void
      */
     public function getProcess()
@@ -60,6 +60,48 @@ class Process extends Controllers
                                             <button class="btn btn-danger delete-item" data-id="' . $value['idProcess'] . '" data-name="' . $value['p_name'] . '" data-description="' . $value['p_description'] . '"  type="button"><i class="fa fa-remove"></i></button>
                                         </div>';
         }
+        toJson($data);
+    }
+    /**
+     * Metodo que se encarga de obtener los procesos por su ID para la vista de thread
+     * @return void
+     */
+    public function getProcesesById()
+    {
+        permissionInterface(14);
+        validateFields(["id"], 'GET');
+        // Obtenemos el ID del proceso
+        $id = intval($_GET['id']);
+        // Validamos que el ID sea válido
+        if ($id <= 0) {
+            registerLog("Ocurrió un error inesperado", "ID de proceso no válido", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "ID de proceso no válido",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        // Obtenemos el proceso por su ID
+        $data = $this->model->select_processes_by_id($id);
+        if (!$data) {
+            registerLog("Ocurrió un error inesperado", "No se encontró el proceso con ID $id", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se encontró el proceso",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //validamos si el p_status es activo si no se lo quita
+        $datosActive = array_filter($data, function ($var) {
+            return $var['p_status'] !== 'Inactivo';
+        });
+        //reindexamos el array para que no queden huecos en las claves
+        $datosActive = array_values($datosActive);
+        $data = $datosActive;
         toJson($data);
     }
     /**
