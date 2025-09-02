@@ -63,15 +63,61 @@ class Thread extends Controllers
         toJson($data);
     }
     /**
-     * Método para registrar un nuevo macroproceso
+     * Metodo que se encarga de obtener los subprocesos por su id asociado a un proceso en especifico, esto devuelve a la vista de thread
      * @return void
      */
-    public function setProcess()
+    public function getThreadsById()
     {
-        permissionInterface(13);
+        permissionInterface(14);
+        validateFields(["id"], 'GET');
+        // Obtenemos el ID del proceso
+        $id = intval($_GET['id']);
+        // Validamos que el ID sea válido
+        if ($id <= 0) {
+            registerLog("Ocurrió un error inesperado", "ID de Proceso no válido", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "ID de proceso no válido",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        // Obtenemos el proceso por su ID
+        $data = $this->model->select_threads_by_process_id($id);
+        if (!$data) {
+            registerLog("Ocurrió un error inesperado", "No se encontró ningun subproceso asociado al macroproceso con  ID $id", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se encontro ningun subproceso asociado a este Proceso",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //validamos si el t_status es activo si no se lo quita
+        $datosActive = array_filter($data, function ($var) {
+            return $var['t_status'] !== 'Inactivo';
+        });
+        //reindexamos el array para que no queden huecos en las claves
+        $datosActive = array_values($datosActive);
+        $data = $datosActive;
+        //validamos si no esta vacios el array final
+        if (empty($data)) {
+            toJson(["status" => false, "message" => "No se encontraron subprocesos activos", "type" => "error", "title" => "Ocurrio un Error Inesperado"]);
+        }
+        toJson(["status" => true, "data" => $data]);
+    }
+    /**
+     * Método para registrar un nuevo subproceso
+     * @return void
+     */
+    public function setThread()
+    {
+        permissionInterface(14);
         // Validación del método POST
         if (!$_POST) {
-            registerLog("Ocurrió un error inesperado", "Método POST no encontrado al registrar un nuevo proceso", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Método POST no encontrado al registrar un nuevo subproceso", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "Método POST no encontrado",
@@ -82,19 +128,24 @@ class Thread extends Controllers
         }
         isCsrf(); //validacion de ataque CSRF
         //validamos que existan los inputs necesarios        
-        validateFields(["txtName", "txtDescription", "slctMacroprocess"]);
+        validateFields(["slctMacroprocess", "slctProcess", "slctSubProcess", "txtName", "slctType"]);
         // Limpieza de los inputs
-        $strName = strClean($_POST["txtName"]);
-        $strDescription = strClean($_POST["txtDescription"]);
-        $intMacroprocessId = intval($_POST["slctMacroprocess"]);
+        $slctMacroprocess = strClean($_POST["slctMacroprocess"]);
+        $slctProcess = strClean($_POST["slctProcess"]);
+        $slctSubProcess = strClean($_POST["slctSubProcess"]);
+        $txtName = strClean($_POST["txtName"]);
+        $txtDescription = strClean($_POST["txtDescription"]);
+        $slctType = strClean($_POST["slctType"]);
         // Validación de campos vacíos
         validateFieldsEmpty(array(
-            "NOMBRE" => $strName,
-            "MACROPROCESO" => $intMacroprocessId
+            "MACROPROCESO" => $slctMacroprocess,
+            "PROCESO" => $slctProcess,
+            "NOMBRE" => $txtName,
+            "TIPO" => $slctType
         ));
         // Validación del formato de texto en el nombre del macroproceso (solo letras y espacios, mínimo 4 caracteres, máximo 250)
-        if (verifyData("[\p{L}\p{M}\p{N}\. ]{10,255}", $strName)) {
-            registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
+        if (verifyData("[\p{L}\p{M}\p{N}\. ]{10,255}", $txtName)) {
+            registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un subprocesos", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "El campo nombre no cumple con el formato de texto",
@@ -104,20 +155,31 @@ class Thread extends Controllers
             toJson($data);
         }
         //Validamos que el macro proceso sea numerico
-        if (!is_numeric($intMacroprocessId)) {
-            registerLog("Ocurrió un error inesperado", "El campo Macroproceso no es numérico", 1, $_SESSION['login_info']['idUser']);
+        if (!is_numeric($slctProcess)) {
+            registerLog("Ocurrió un error inesperado", "El campo proceso no es numérico", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El campo macroproceso debe ser un número, por favor recargue la página e inténtelo de nuevo.",
+                "message" => "El campo proceso debe ser un número, por favor recargue la página e inténtelo de nuevo.",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //Validamos que el campo subproceso sea numerico
+        if (!is_numeric($slctSubProcess)) {
+            registerLog("Ocurrió un error inesperado", "El campo subproceso no es numérico", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El campo subproceso debe ser un número, por favor recargue la página e inténtelo de nuevo.",
                 "type" => "error",
                 "status" => false
             );
             toJson($data);
         }
         // Validación del formato de la descripción del rol (permite letras, números, guiones, espacios, mínimo 20 caracteres)
-        if ($strDescription != "") {
-            if (verifyData("[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9\s.,;:!?()-]+", $strDescription)) {
-                registerLog("Ocurrió un error inesperado", "El campo Descripción no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
+        if ($txtDescription != "") {
+            if (verifyData("[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9\s.,;:!?()-]+", $txtDescription)) {
+                registerLog("Ocurrió un error inesperado", "El campo Descripción no cumple con el formato de texto al registrar un subproceso", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrió un error inesperado",
                     "message" => "El campo descripción no cumple con el formato de texto",
@@ -129,10 +191,10 @@ class Thread extends Controllers
         }
         //falta valida que el nombre no exista en la base de datos
         //convertimos que el nombre tenga la primera letra en mayuscula
-        $strName = ucwords($strName);
-        $request = $this->model->insert_process($strName, $strDescription, $intMacroprocessId); //insert  process in database
+        $txtName = ucwords($txtName);
+        $request = $this->model->insert_thread($txtName, $txtDescription, $slctProcess, $slctSubProcess, $slctType); //insert  subproceso in database
         if ($request > 0) {
-            registerLog("Registro exitoso", "El proceso se ha registrado correctamente, al momento de registrar un usuario", 2, $_SESSION['login_info']['idUser']);
+            registerLog("Registro exitoso", "El subproceso se ha registrado correctamente, al momento de registrar un usuario", 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Registro exitoso",
                 "message" => "El proceso se ha registrado correctamente",
@@ -141,251 +203,10 @@ class Thread extends Controllers
             );
             toJson($data);
         } else {
-            registerLog("Ocurrió un error inesperado", "El proceso no se ha registrado correctamente", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "El subproceso no se ha registrado correctamente", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El proceso no se ha registrado correctamente",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-    }
-    /**
-     * Metodo que se encarga de actualizar un proceso
-     * @return void
-     */
-    public function updateProcess()
-    {
-        permissionInterface(13);
-        //validacion del Método POST
-        if (!$_POST) {
-            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de actualizar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "Método POST no encontrado",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        isCsrf(); //validacion de ataque CSRF
-        //validamos que existan los inputs necesarios               
-        validateFields(["update_txtId", "update_txtName", "update_txtDescription", "update_slctStatus", "update_slctMacroprocess"]);
-        //Captura de datos enviamos
-        $update_txtId = strClean($_POST["update_txtId"]);
-        $update_txtName = strClean($_POST["update_txtName"]);
-        $update_txtDescription = strClean($_POST["update_txtDescription"]);
-        $update_slctStatus = strClean($_POST["update_slctStatus"]);
-        $update_slctMacroprocess = strClean($_POST["update_slctMacroprocess"]);
-        //validacion de los campos que no llegen vacios
-        validateFieldsEmpty(array(
-            "ID MACROPROCESO" => $update_txtId,
-            "NOMBRE DEL MACROPROCESO" => $update_txtName,
-            "ESTADO DEL MACROPROCESO" => $update_slctStatus,
-            "MACROPROCESO" => $update_slctMacroprocess
-        ));
-        //Validamos que el macroproceso sea un valor numerico
-        if (!is_numeric($update_slctMacroprocess)) {
-            registerLog("Ocurrió un error inesperado", "El macroproceso debe ser un valor numérico, al momento de actualizar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El macroproceso debe ser un valor numérico",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //validacion de que el id sea numérico
-        if (!is_numeric($update_txtId)) {
-            registerLog("Ocurrió un error inesperado", "El id del proceso debe ser numérico, al momento de actualizar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El id del proceso debe ser numérico",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //validamos que los procesos no sean mayores a 255 caracteres
-        if (strlen($update_txtName) > 255) {
-            registerLog("Ocurrió un error inesperado", "El nombre del proceso no puede ser mayor a 255 caracteres, al momento de actualizar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El nombre del proceso no puede ser mayor a 255 caracteres",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //Validamos los caracteres permitidos en el nombre
-        if (verifyData("[\p{L}\p{M}\p{N}\. ]{10,255}", $update_txtName)) {
-            registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El campo nombre no cumple con el formato de texto",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        if ($update_txtDescription != "") {
-            if (verifyData("[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9\s.,;:!?()-]+", $update_txtDescription)) {
-                registerLog("Ocurrió un error inesperado", "El campo Descripción no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
-                $data = array(
-                    "title" => "Ocurrió un error inesperado",
-                    "message" => "El campo descripción no cumple con el formato de texto",
-                    "type" => "error",
-                    "status" => false
-                );
-                toJson($data);
-            }
-        }
-        //validamos que el id del proceso exista en la base de datos
-        $result = $this->model->select_process_by_id($update_txtId);
-        if (!$result) {
-            registerLog("Ocurrió un error inesperado", "No se pudo actualizar el proceso, ya que el id no existe en la base de datos", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El id del proceso no existe, refresque la página y vuelva a intentarlo",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //validamos que exista el macroproceso que se esta eligiendo, para ellos instanciamos el modelo del macroproceso mediante un objeto para luego destruirlo
-        require_once "./Models/MacroprocessModel.php";
-        $objMP = new MacroprocessModel();
-        $dataMP = $objMP->select_macroprocess_by_id($update_slctMacroprocess);
-        //validamos si no tiene ningun registro asociado a ese id
-        if (!$dataMP) {
-            registerLog("Ocurrió un error inesperado", "No se pudo actualizar el proceso, ya que el macroproceso no existe en la base de datos", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El macroproceso no existe, refresque la página y vuelva a intentarlo",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //destruimos el obj
-        unset($objMP);
-        $update_txtName = ucwords($update_txtName);
-        //registramos el proceso en la base de datos
-        $result = $this->model->update_process($update_txtId, $update_txtName, $update_txtDescription, $update_slctStatus, $update_slctMacroprocess);
-        if ($result) {
-            registerLog("Proceso actualizado", "Se actualizo la informacion del proceso con el id: " . $update_txtId, 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Proceso actualizado",
-                "message" => "Se actualizo el proceso con el id: " . $update_txtId,
-                "type" => "success",
-                "status" => true
-            );
-            toJson($data);
-        } else {
-            registerLog("Ocurrió un error inesperado", "No se pudo actualizar el proceso, al momento de actualizar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "No se pudo actualizar el proceso, al momento de actualizar un proceso",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-    }
-    /**
-     * Función que se encarga de eliminar un proceso
-     * @return void
-     */
-    public function deleteProcess()
-    {
-        permissionInterface(13);
-
-        //Validacion de que el Método sea DELETE
-        if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
-            registerLog("Ocurrió un error inesperado", "Método DELETE no encontrado, al momento de eliminar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "Método DELETE no encontrado",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-
-        // Capturamos la solicitud enviada
-        $request = json_decode(file_get_contents("php://input"), true);
-        // Validación isCsrf
-        isCsrf($request["token"]);
-        // Validamos que la solicitud tenga los campos necesarios
-        $id = strClean($request["id"]);
-        $name = strClean($request["name"]);
-        //validamos que los campos no esten vacios
-        if ($id == "") {
-            registerLog("Ocurrió un error inesperado", "El id del proceso es requerido, al momento de eliminar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El id del proceso es requerido, refresca la página e intenta nuevamente",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //validacion que solo ce acepte numeros en el campo id
-        if (!is_numeric($id)) {
-            registerLog("Ocurrió un error inesperado", "El id del proceso debe ser numérico, al momento de eliminar un proceso", 1, $_SESSION['login_info']['idUser']);
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El id del proceso debe, ser numérico, refresca la página e intenta nuevamente",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        ///validamos que el id del proceso exista en la base de datos
-        $result = $this->model->select_process_by_id($id);
-        if (!$result) {
-            registerLog("Ocurrió un error inesperado", "No se podra eliminar el proceso, ya que el id no existe en la base de datos", 1, $_SESSION['login_info']['idUser']);
-
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El id del proceso no existe, refresque la página y vuelva a intentarlo",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-        //validamos si el proceso tiene subprocesos asociados
-        $dataResult = $this->model->has_associated_threads($id);
-        if ($dataResult['totalThreads'] > 0) {
-            registerLog("Ocurrió un error inesperado", "No se podra eliminar el proceso, ya que tiene subprocesos asociados, elimínalos primero para poder eliminar el proceso", 1, $_SESSION['login_info']['idUser']);
-
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "El proceso tiene subprocesos asociados, elimínalos primero para poder eliminar el proceso",
-                "type" => "error",
-                "status" => false
-            );
-            toJson($data);
-        }
-
-        $request = $this->model->delete_process($id);
-        if ($request) {
-            registerLog("Eliminación correcta", "Se eliminó de manera correcta el proceso {$name}", 2, $_SESSION['login_info']['idUser']);
-
-            $data = array(
-                "title" => "Eliminación correcta",
-                "message" => "Se eliminó de manera correcta el proceso {$name}",
-                "type" => "success",
-                "status" => true
-            );
-            toJson($data);
-        } else {
-            registerLog("Ocurrió un error inesperado", "No se pudo eliminar el proceso {$name}, por favor inténtalo nuevamente", 1, $_SESSION['login_info']['idUser']);
-
-            $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "No se logró eliminar de manera correcta el proceso {$name}",
+                "message" => "El subproceso no se ha registrado correctamente",
                 "type" => "error",
                 "status" => false
             );

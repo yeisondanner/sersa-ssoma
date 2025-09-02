@@ -7,6 +7,8 @@ class ThreadModel extends Mysql
     private int $id;
     private int $macroprocess_id;
     private int $process_id;
+    private int $threads_father;
+    private string $type;
 
     public function __construct()
     {
@@ -33,81 +35,42 @@ class ThreadModel extends Mysql
         return $request;
     }
     /**
-     * Metodo que permite el registro de un nuevo proceso
+     * Metodo que se encarga de traer todos los subprocesos asociados al proceso
+     */
+    public function select_threads_by_process_id(int $process_id): array
+    {
+        $this->process_id = $process_id;
+        $query = "SELECT * FROM tb_threads WHERE process_id = ? AND t_type='open_menu'";
+        $request = $this->select_all($query, [$this->process_id]);
+        return $request;
+    }
+    /**
+     * Metodo que se encarga de registrar un nuevo subproceso
      * @param string $name
      * @param string $description
-     * @param int $macroprocess_id
+     * @param int $process_id
+     * @param int $threads_father
+     * @param string $type
      * @return bool|int|string
      */
-    public function insert_process(string $name, string $description, int $macroprocess_id)
+    public function insert_thread(string $name, string $description, int $process_id, int $threads_father, string $type)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->macroprocess_id = $macroprocess_id;
-        $arrValues = [$this->name, $this->description, $this->macroprocess_id];
-        $query = "INSERT INTO `tb_process` (`p_name`, `p_description`, `macroprocess_id`) VALUES (?, ?, ?)";
-        $request = $this->insert($query, $arrValues);
-        return $request;
-    }
-    /**
-     * Metodo que se encarga de actualizar un proceso
-     * @param string $name
-     * @param string $description
-     * @param string $status
-     * @param int $macroprocess_id
-     * @return bool
-     */
-    public function update_process(int $id, string $name, string $description, string $status, int $macroprocess_id)
-    {
-        $this->name = $name;
-        $this->description = $description;
-        $this->status = $status;
-        $this->id = $id;
-        $this->macroprocess_id = $macroprocess_id;
-        $arrValues = [$this->name, $this->description, $this->status, $this->macroprocess_id, $this->id];
-        $query = "UPDATE tb_process SET p_name = ?, p_description = ?, p_status = ?, macroprocess_id = ? WHERE idProcess = ?";
-        $request = $this->update($query, $arrValues);
-        return $request;
-    }
-    /**
-     * Metodo que permite obtener un prceso por su id
-     * @param int $id
-     * @return array
-     */
-    public function select_process_by_id(int $id): array
-    {
-        $query = "SELECT * FROM tb_process WHERE idProcess = ?";
-        $request = $this->select($query, [$id]);
-        return $request;
-    }
-    /**
-     * Metodo que permite eliminar un proceso
-     * @param int $id
-     * @return bool
-     */
-    public function delete_process(int $id): bool
-    {
-        $query = "DELETE FROM tb_process WHERE idProcess = ?";
-        $request = $this->delete($query, [$id]);
-        return $request;
-    }
-    /**
-     * consultamos si el proceso tiene mas registros asociados a el
-     * @param int $id
-     * @return bool
-     */
-    public function has_associated_threads(int $id)
-    {
-        $query = "SELECT
-                        COUNT(*) AS 'totalThreads'
-                    FROM
-                        tb_threads AS tbt
-                    WHERE
-                        tbt.process_id = ?;";
-        $this->id = $id;
-        $arrValues = [$this->id];
-        $request = $this->select($query, $arrValues);
-        //validamos que el request no esté vacío, esto significa que el proceso tiene registros asociados, devolvera true y si no false
+        $this->process_id = $process_id;
+        $this->threads_father = $threads_father;
+        $this->type = $type;
+        $sql = "INSERT INTO 
+                        `tb_threads` (`t_name`, `t_description`, `process_id`, `threads_father`, `t_type`) 
+                VALUES 
+                        (?, ?, ?, ?, ?);";
+        $request = $this->insert($sql, [
+            $this->name,
+            $this->description,
+            $this->process_id,
+            $this->threads_father == 0 ? null : $this->threads_father,
+            $this->type
+        ]);
         return $request;
     }
 }

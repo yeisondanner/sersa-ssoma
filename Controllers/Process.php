@@ -89,7 +89,7 @@ class Process extends Controllers
             registerLog("Ocurrió un error inesperado", "No se encontró el proceso con ID $id", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "No se encontró el proceso",
+                "message" => "No se encontro ningun proceso asociado a este Macroproceso",
                 "type" => "error",
                 "status" => false
             );
@@ -102,7 +102,7 @@ class Process extends Controllers
         //reindexamos el array para que no queden huecos en las claves
         $datosActive = array_values($datosActive);
         $data = $datosActive;
-        toJson($data);
+        toJson(["status" => true, "data" => $data]);
     }
     /**
      * Método para registrar un nuevo macroproceso

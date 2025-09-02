@@ -114,7 +114,7 @@
                                 <!-- Campo Sub proceso -->
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="control-label" for="slctSubProcess">Sub Proceso <span
+                                        <label class="control-label" for="slctSubProcess">Sub Proceso Padre<span
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <select type="text" class="form-control" id="slctSubProcess"
@@ -129,7 +129,8 @@
                                         </div>
                                         <small class="form-text text-muted"><span class="text-danger">*</span>Solo se
                                             mostraran los subprocesos que tienen
-                                            como tipo open_menu.</small>
+                                            como tipo open_menu, asi mismo si en caso no se selecciona un subproceso
+                                            padre, se creara como un subproceso raíz (Sin Subproceso Padre).</small>
                                     </div>
                                 </div>
                                 <!-- Campo Nombre -->

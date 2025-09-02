@@ -5,6 +5,8 @@ window.addEventListener("DOMContentLoaded", (e) => {
   setTimeout(() => {
     // Aquí puedes agregar cualquier acción que desees realizar después de 1.5 segundos
     loadSelectProcess();
+    loadSelectThreads();
+    saveData();
   }, 1500);
 });
 
@@ -221,19 +223,228 @@ function loadSelectProcess() {
   const slctMacroprocess = document.getElementById("slctMacroprocess");
   slctMacroprocess.addEventListener("change", function (e) {
     const selectedValue = this.value;
+    elementLoader.classList.remove("d-none");
     // Realiza una solicitud fetch para obtener los procesos del macroproceso seleccionado
     fetch(`${base_url}/Process/getProcesesById?id=${selectedValue}`)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Error en la solicitud" +
+              response.status +
+              " - " +
+              response.statusText
+          );
+        }
+        return response.json();
+      })
       .then((data) => {
-        // Aquí puedes llenar el select de procesos con los datos obtenidos
+        // Aquí puedes llenar el select de procesos con los datos obtenidos y tambien el select que se va vaciar por si tengad datos asociados
         const slctProcess = document.getElementById("slctProcess");
+        const slctSubProcess = document.getElementById("slctSubProcess");
+        //validamos si el estado llega en false
+        toastr.options = {
+          closeButton: true,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          progressBar: true,
+          onclick: null,
+        };
+        if (!data.status) {
+          toastr[data.type](data.message, data.title);
+          //limpiamos los selects
+          slctProcess.innerHTML = "";
+          slctSubProcess.innerHTML = "";
+          elementLoader.classList.add("d-none");
+          return false;
+        }
+
+        //limpiamos los selects
         slctProcess.innerHTML = "";
+        slctSubProcess.innerHTML = "";
+        data = data.data;
+        //creamos un option primero que este sleccionado desactivado y sin valor y que seleccione un elemento
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Seleccione un subproceso";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        slctProcess.appendChild(defaultOption);
         data.forEach((process) => {
           const option = document.createElement("option");
           option.value = process.idProcess;
           option.textContent = process.p_name;
           slctProcess.appendChild(option);
         });
+        elementLoader.classList.add("d-none");
+      })
+      .catch((error) => {
+        toastr.options = {
+          closeButton: true,
+          timeOut: 0,
+          onclick: null,
+        };
+        toastr["error"](
+          "Error en la solicitud al servidor: " +
+            error.message +
+            " - " +
+            error.name,
+          "Ocurrio un error inesperado"
+        );
+        elementLoader.classList.add("d-none");
+      });
+  });
+}
+//Funcion que se encarga de obtener los subproceso de acuerdo a la seleccion del proceso
+function loadSelectThreads() {
+  const slctProcess = document.getElementById("slctProcess");
+  slctProcess.addEventListener("change", function (e) {
+    const selectedValue = this.value;
+    elementLoader.classList.remove("d-none");
+    // Realiza una solicitud fetch para obtener los subprocesos del proceso seleccionado
+    fetch(`${base_url}/Thread/getThreadsById?id=${selectedValue}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Error en la solicitud" +
+              response.status +
+              " - " +
+              response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Aquí puedes llenar el select de subprocesos con los datos obtenidos
+        const slctSubProcess = document.getElementById("slctSubProcess");
+        //validamos si el estado llega en false
+        toastr.options = {
+          closeButton: true,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          progressBar: true,
+          onclick: null,
+        };
+        if (!data.status) {
+          toastr[data.type](data.message, data.title);
+          //limpiamos los selects
+          slctSubProcess.innerHTML = "";
+          elementLoader.classList.add("d-none");
+          return false;
+        }
+
+        data = data.data;
+        slctSubProcess.innerHTML = "";
+        //creamos un option primero que este sleccionado desactivado y sin valor y que seleccione un elemento
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "0";
+        defaultOption.textContent = "Sin Subproceso Padre";
+        defaultOption.selected = true;
+        slctSubProcess.appendChild(defaultOption);
+        data.forEach((thread) => {
+          const option = document.createElement("option");
+          option.value = thread.idThreads;
+          if (thread.threads_father === null) {
+            option.textContent = `${thread.t_name}`;
+          } else {
+            option.textContent = `Padre : ${thread.threads_father} - ${thread.t_name}`;
+          }
+          slctSubProcess.appendChild(option);
+        });
+        elementLoader.classList.add("d-none");
+      })
+      .catch((error) => {
+        toastr.options = {
+          closeButton: true,
+          timeOut: 0,
+          onclick: null,
+        };
+        toastr["error"](
+          "Error en la solicitud al servidor: " +
+            error.message +
+            " - " +
+            error.name,
+          "Ocurrio un error inesperado"
+        );
+        elementLoader.classList.add("d-none");
+      });
+  });
+}
+// Función que guarda los datos en la base de datos
+function saveData() {
+  const formSave = document.getElementById("formSave");
+  formSave.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(formSave);
+    const header = new Headers();
+    const config = {
+      method: "POST",
+      headers: header,
+      node: "no-cache",
+      cors: "cors",
+      body: formData,
+    };
+    const url = base_url + "/Thread/setThread";
+    //quitamos el d-none del elementLoader
+    elementLoader.classList.remove("d-none");
+    fetch(url, config)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Error en la solicitud " +
+              response.status +
+              " - " +
+              response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toastr.options = {
+          closeButton: true,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          progressBar: true,
+          onclick: null,
+        };
+        if (!data.status) {
+          toastr[data.type](data.message, data.title);
+          elementLoader.classList.add("d-none");
+          return false;
+        }
+        //limpiar el formulario
+        formSave.reset();
+        //ocultar el modal abierto
+        $("#modalSave").modal("hide");
+        //actualizar la tabla
+        table.ajax.reload(null, false);
+        toastr[data.type](data.message, data.title);
+        //recargar las funciones
+        setTimeout(() => {
+          //quitamos el d-none del elementLoader
+          elementLoader.classList.add("d-none");
+        }, 500);
+        return true;
+      })
+      .catch((error) => {
+        toastr.options = {
+          closeButton: true,
+          timeOut: 0,
+          onclick: null,
+        };
+        toastr["error"](
+          "Error en la solicitud al servidor: " +
+            error.message +
+            " - " +
+            error.name,
+          "Ocurrio un error inesperado"
+        );
+        elementLoader.classList.add("d-none");
       });
   });
 }
