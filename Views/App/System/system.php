@@ -286,12 +286,12 @@
                                     <div class="input-group">
                                         <select id="smtpEncryption" name="smtpEncryption" class="form-control"
                                             aria-describedby="iconSmtpEncryption">
-                                            <option value="SSL">SSL</option>
-                                            <option value="TLS">TLS</option>
+                                            <option value="ssl">SSL</option>
+                                            <option value="tls">TLS</option>
                                             <option value="N/A">Ninguno</option>
                                             <option selected
                                                 value="<?= (getSystemInfo()) ? getSystemInfo()["c_email_encryption"] : ''; ?>">
-                                                <?= (getSystemInfo()) ? getSystemInfo()["c_email_encryption"] : ''; ?>
+                                                <?= (getSystemInfo()) ? strtoupper(getSystemInfo()["c_email_encryption"]) : ''; ?>
                                             </option>
                                         </select>
                                         <div class="input-group-prepend">
