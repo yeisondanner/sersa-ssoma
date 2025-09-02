@@ -3,6 +3,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
   e.preventDefault();
   loadTable();
   setTimeout(() => {
+    // Aquí puedes agregar cualquier acción que desees realizar después de 1.5 segundos
     saveData();
     loadDataUpdate();
     updateDate();
@@ -18,16 +19,17 @@ function loadTable() {
     aProcessing: true,
     aServerSide: true,
     ajax: {
-      url: "" + base_url + "/Macroprocess/getMacroprocess",
+      url: "" + base_url + "/Process/getProcess",
       dataSrc: "",
     },
     columns: [
       { data: "cont" },
       { data: "mp_name" },
-      { data: "mp_description" },
-      { data: "mp_status" },
-      { data: "mp_registrationDate" },
-      { data: "mp_updateDate" },
+      { data: "p_name" },
+      { data: "p_description" },
+      { data: "p_status" },
+      { data: "p_registrationDate" },
+      { data: "p_updateDate" },
       { data: "actions" },
     ],
     dom: "lBfrtip",
@@ -38,36 +40,36 @@ function loadTable() {
         titleAttr: "Copiar",
         className: "btn btn-secondary",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5],
+          columns: [0, 1, 2, 3, 4, 5, 6],
         },
       },
       {
         extend: "excelHtml5",
         text: "<i class='fa fa-file-excel-o'></i> Excel",
-        title: "Reporte de gestion de macroprocesos en Excel",
+        title: "Reporte de gestion de procesos en Excel",
         className: "btn btn-success",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5],
+          columns: [0, 1, 2, 3, 4, 5, 6],
         },
       },
       {
         extend: "csvHtml5",
         text: "<i class='fa fa-file-text'></i> CSV",
-        title: "Reporte de gestion de macroprocesos en CSV",
+        title: "Reporte de gestion de procesos en CSV",
         className: "btn btn-info",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5],
+          columns: [0, 1, 2, 3, 4, 5, 6],
         },
       },
       {
         extend: "pdfHtml5",
         text: "<i class='fa fa-file-pdf-o'></i> PDF",
-        title: "Reporte de gestion de macroprocesos en PDF",
+        title: "Reporte de gestion de procesos en PDF",
         className: "btn btn-danger",
         orientation: "landscape",
         pageSize: "LEGAL",
         exportOptions: {
-          columns: [0, 1, 2, 3, 4, 5],
+          columns: [0, 1, 2, 3, 4, 5, 6],
         },
       },
     ],
@@ -83,9 +85,13 @@ function loadTable() {
         orderable: true,
         className: "text-left",
         searchable: true,
+        render: function (data, type, row) {
+          //hacemos que se muestre en un bagde con un icono de university
+          return `<span class="badge badge-primary"><i class="fa fa-university"></i>  ${data}</span>`;
+        },
       },
       {
-        targets: [2],
+        targets: [3],
         orderable: true,
         className: "text-justify",
         searchable: true,
@@ -99,7 +105,7 @@ function loadTable() {
         },
       },
       {
-        targets: [3],
+        targets: [4],
         orderable: true,
         className: "text-center",
         searchable: true,
@@ -118,7 +124,7 @@ function loadTable() {
         },
       },
       {
-        targets: [4, 5],
+        targets: [5, 6],
         orderable: false,
         className: "text-center",
         searchable: false,
@@ -135,8 +141,8 @@ function loadTable() {
       {
         targets: [6],
         orderable: false,
-        searchable: false,
         className: "text-center",
+        searchable: false,
       },
     ],
     responsive: "true",
@@ -169,7 +175,7 @@ function saveData() {
       cors: "cors",
       body: formData,
     };
-    const url = base_url + "/Macroprocess/setMacroprocess";
+    const url = base_url + "/Process/setProcess";
     //quitamos el d-none del elementLoader
     elementLoader.classList.remove("d-none");
     fetch(url, config)
@@ -229,6 +235,7 @@ function saveData() {
             error.name,
           "Ocurrio un error inesperado"
         );
+        elementLoader.classList.add("d-none");
       });
   });
 }
@@ -245,11 +252,13 @@ function loadDataUpdate() {
       const name = item.getAttribute("data-name");
       const description = item.getAttribute("data-description");
       const status = item.getAttribute("data-status");
+      const macroprocess = item.getAttribute("data-macroprocess-id");
       //asignamos los valores obtenidos a los inputs del modal
       document.getElementById("update_txtId").value = id;
       document.getElementById("update_txtName").value = name;
       document.getElementById("update_txtDescription").value = description;
       document.getElementById("update_slctStatus").value = status;
+      document.getElementById("update_slctMacroprocess").value = macroprocess;
       setTimeout(() => {
         //quitamos el d-none del elementLoader
         elementLoader.classList.add("d-none");
@@ -274,7 +283,7 @@ function updateDate() {
       cors: "cors",
       body: formData,
     };
-    const url = base_url + "/Macroprocess/updateMacroprocess";
+    const url = base_url + "/Process/updateProcess";
     //quitamos el d-none del elementLoader
     elementLoader.classList.remove("d-none");
     fetch(url, config)
@@ -352,6 +361,7 @@ function loadReport() {
       const dataStatus = item.getAttribute("data-status");
       const dataRegistrationDate = item.getAttribute("data-registration");
       const dataUpdateDate = item.getAttribute("data-update");
+      const dataMacroprocessName = item.getAttribute("data-macroprocess-name");
       //asignamos los valores obtenidos a los inputs del modal
       document.getElementById("reportTitle").innerHTML = name;
       document.getElementById("reportCode").innerHTML = "#" + id;
@@ -359,6 +369,9 @@ function loadReport() {
       document.getElementById("reportEstado").innerHTML = dataStatus;
       document.getElementById("reportRegistrationDate").innerHTML =
         dataRegistrationDate;
+      document.getElementById(
+        "reportMacroprocess"
+      ).innerHTML = `<span class="fa fa-university" aria-hidden="true"></span> ${dataMacroprocessName}`;
       document.getElementById("reportUpdateDate").innerHTML = dataUpdateDate;
       //quitamos el d-none del elementLoader
       elementLoader.classList.add("d-none");
@@ -377,9 +390,7 @@ function confirmationDelete() {
       const id = item.getAttribute("data-id");
       //Preguntamos en el modal si esta seguro de eliminar el registro
       document.getElementById("txtDelete").innerHTML =
-        "¿Está seguro de eliminar el Macroproceso <strong>" +
-        name +
-        " </strong>?";
+        "¿Está seguro de eliminar el Proceso <strong>" + name + " </strong>?";
       //Asiganamos los valores obtenidos y los enviamos a traves de un atributo dentro del btn de confirmacion de eliminar
       const confirmDelete = document.getElementById("confirmDelete");
       confirmDelete.setAttribute("data-id", id);
@@ -411,7 +422,7 @@ function deleteData() {
       body: JSON.stringify(arrValues),
     };
     //La ruta donde se apunta del controlador
-    const url = base_url + "/Macroprocess/deleteMacroprocess";
+    const url = base_url + "/Process/deleteProcess";
     //quitamos el d-none del elementLoader
     elementLoader.classList.remove("d-none");
     fetch(url, config)
