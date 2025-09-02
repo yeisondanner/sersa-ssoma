@@ -254,7 +254,7 @@ function toJson($data)
 /**Funcion verificar datos*/
 function verifyData($filtro, $cadena): bool
 {
-    if (preg_match('/^' . $filtro . '$/', $cadena)) {
+    if (preg_match('/^' . $filtro . '$/u', $cadena)) {
         return false;
     } else {
         return true;

@@ -71,7 +71,8 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="txtName" name="txtName" required
                                                 placeholder="Ingrese el nombre" minlength="10" maxlength="255"
-                                                pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\. ]{10,255}$"
+                                                pattern="^(?=.{10,255}$)[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\.,;:\-_() ]+$"
+                                                title="10–255 caracteres. Permitidos: letras (con acentos), números, . , ; : - _ ( ) y espacios."
                                                 aria-describedby="iconNombre">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
@@ -234,7 +235,8 @@
                                             <input type="text" class="form-control" id="update_txtName"
                                                 name="update_txtName" required placeholder="Ingrese el nombre"
                                                 minlength="10" maxlength="255"
-                                                pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\. ]{10,255}$"
+                                                pattern="^(?=.{10,255}$)[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\.,;:\-_() ]+$"
+                                                title="10–255 caracteres. Permitidos: letras (con acentos), números, . , ; : - _ ( ) y espacios."
                                                 aria-describedby="iconNombre">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">

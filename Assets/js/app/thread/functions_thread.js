@@ -334,6 +334,12 @@ function loadSelectThreads() {
           toastr[data.type](data.message, data.title);
           //limpiamos los selects
           slctSubProcess.innerHTML = "";
+          //creamos un option primero que este sleccionado desactivado y sin valor y que seleccione un elemento
+          const defaultOption = document.createElement("option");
+          defaultOption.value = "0";
+          defaultOption.textContent = "Sin Subproceso Padre";
+          defaultOption.selected = true;
+          slctSubProcess.appendChild(defaultOption);
           elementLoader.classList.add("d-none");
           return false;
         }
@@ -428,6 +434,12 @@ function saveData() {
         toastr[data.type](data.message, data.title);
         //recargar las funciones
         setTimeout(() => {
+          //limpiamos los select
+          const slctProcess = document.getElementById("slctProcess");
+          const slctSubProcess = document.getElementById("slctSubProcess");
+          slctProcess.innerHTML = "";
+          slctSubProcess.innerHTML = "";
+
           //quitamos el d-none del elementLoader
           elementLoader.classList.add("d-none");
         }, 500);

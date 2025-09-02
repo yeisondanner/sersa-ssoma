@@ -135,7 +135,7 @@ class Process extends Controllers
             "MACROPROCESO" => $intMacroprocessId
         ));
         // Validación del formato de texto en el nombre del macroproceso (solo letras y espacios, mínimo 4 caracteres, máximo 250)
-        if (verifyData("[\p{L}\p{M}\p{N}\. ]{10,255}", $strName)) {
+        if (verifyData("(?=.{10,255}$)[\p{L}0-9\.,;:\-_()\s]+", $strName)) {
             registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
@@ -261,7 +261,7 @@ class Process extends Controllers
             toJson($data);
         }
         //Validamos los caracteres permitidos en el nombre
-        if (verifyData("[\p{L}\p{M}\p{N}\. ]{10,255}", $update_txtName)) {
+        if (verifyData("(?=.{10,255}$)[\p{L}0-9\.,;:\-_()\s]+", $update_txtName)) {
             registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
