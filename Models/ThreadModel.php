@@ -73,4 +73,25 @@ class ThreadModel extends Mysql
         ]);
         return $request;
     }
+    /**
+     * Metodo que permite obtener un subproceso por su id
+     * @param int $id
+     * @return array
+     */
+    public function select_thread_by_id(int $id): array
+    {
+        $query = "SELECT * FROM tb_threads WHERE idThreads = ?";
+        $request = $this->select($query, [$id]);
+        return $request;
+    }    /**
+         * Metodo que permite eliminar un subproceso
+         * @param int $id
+         * @return bool
+         */
+    public function delete_thread(int $id): bool
+    {
+        $query = "DELETE FROM tb_threads WHERE idThreads = ?";
+        $request = $this->delete($query, [$id]);
+        return $request;
+    }
 }

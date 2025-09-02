@@ -57,7 +57,7 @@ class Thread extends Controllers
             $data[$key]['actions'] = ' <div class="btn-group btn-group-sm" role="group">
                                             <button class="btn btn-success update-item" type="button"><i class="fa fa-pencil"></i></button>
                                             <button class="btn btn-info report-item"  type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>      
-                                            <button class="btn btn-danger delete-item"   type="button"><i class="fa fa-remove"></i></button>
+                                            <button class="btn btn-danger delete-item" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" type="button"><i class="fa fa-remove"></i></button>
                                         </div>';
         }
         toJson($data);
@@ -207,6 +207,93 @@ class Thread extends Controllers
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "El subproceso no se ha registrado correctamente",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+    }
+    /**
+     * Función que se encarga de eliminar un subproceso
+     * @return void
+     */
+    public function deleteThread()
+    {
+        permissionInterface(14);
+
+        //Validacion de que el Método sea DELETE
+        if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
+            registerLog("Ocurrió un error inesperado", "Método DELETE no encontrado, al momento de eliminar un subproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "Método DELETE no encontrado",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+
+        // Capturamos la solicitud enviada
+        $request = json_decode(file_get_contents("php://input"), true);
+        // Validación isCsrf
+        isCsrf($request["token"]);
+        // Validamos que la solicitud tenga los campos necesarios
+        $id = strClean($request["id"]);
+        $name = strClean($request["name"]);
+        //validamos que los campos no esten vacios
+        if ($id == "") {
+            registerLog("Ocurrió un error inesperado", "El id del proceso es requerido, al momento de eliminar un proceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del proceso es requerido, refresca la página e intenta nuevamente",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //validacion que solo ce acepte numeros en el campo id
+        if (!is_numeric($id)) {
+            registerLog("Ocurrió un error inesperado", "El id del proceso debe ser numérico, al momento de eliminar un proceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del proceso debe, ser numérico, refresca la página e intenta nuevamente",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        ///validamos que el id del proceso exista en la base de datos
+        $result = $this->model->select_thread_by_id($id);
+        if (!$result) {
+            registerLog("Ocurrió un error inesperado", "No se podra eliminar el subproceso, ya que el id no existe en la base de datos", 1, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del subproceso no existe, refresque la página y vuelva a intentarlo",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+
+
+        $request = $this->model->delete_thread($id);
+        if ($request) {
+            registerLog("Eliminación correcta", "Se eliminó de manera correcta el subproceso {$name}", 2, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Eliminación correcta",
+                "message" => "Se eliminó de manera correcta el subproceso {$name}",
+                "type" => "success",
+                "status" => true
+            );
+            toJson($data);
+        } else {
+            registerLog("Ocurrió un error inesperado", "No se pudo eliminar el subproceso {$name}, por favor inténtalo nuevamente", 1, $_SESSION['login_info']['idUser']);
+
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se logró eliminar de manera correcta el subproceso {$name}",
                 "type" => "error",
                 "status" => false
             );

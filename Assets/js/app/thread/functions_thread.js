@@ -7,6 +7,8 @@ window.addEventListener("DOMContentLoaded", (e) => {
     loadSelectProcess();
     loadSelectThreads();
     saveData();
+    confirmationDelete();
+    deleteData();
   }, 1500);
 });
 
@@ -427,6 +429,109 @@ function saveData() {
         //recargar las funciones
         setTimeout(() => {
           //quitamos el d-none del elementLoader
+          elementLoader.classList.add("d-none");
+        }, 500);
+        return true;
+      })
+      .catch((error) => {
+        toastr.options = {
+          closeButton: true,
+          timeOut: 0,
+          onclick: null,
+        };
+        toastr["error"](
+          "Error en la solicitud al servidor: " +
+            error.message +
+            " - " +
+            error.name,
+          "Ocurrio un error inesperado"
+        );
+        elementLoader.classList.add("d-none");
+      });
+  });
+}
+// Función que confirma la eliminación
+function confirmationDelete() {
+  const arrBtnDeleteItem = document.querySelectorAll(".delete-item");
+  arrBtnDeleteItem.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      //obtenemos los atributos del btn delete y los almacenamos en una constante
+      const name = item.getAttribute("data-name");
+      const id = item.getAttribute("data-id");
+      //Preguntamos en el modal si esta seguro de eliminar el registro
+      document.getElementById("txtDelete").innerHTML =
+        "¿Está seguro de eliminar el Subproceso <strong>" +
+        name +
+        " </strong>?";
+      //Asiganamos los valores obtenidos y los enviamos a traves de un atributo dentro del btn de confirmacion de eliminar
+      const confirmDelete = document.getElementById("confirmDelete");
+      confirmDelete.setAttribute("data-id", id);
+      confirmDelete.setAttribute("data-name", name);
+      //abrimos el modal de confirmacion
+      $("#confirmModalDelete").modal("show");
+    });
+  });
+}
+// Función que se encarga de eliminar un registro
+function deleteData() {
+  const confirmDelete = document.getElementById("confirmDelete");
+  confirmDelete.addEventListener("click", (e) => {
+    e.preventDefault();
+    //recibimos las variables del atributo del btn de confirmacion de eliminar en sus constantes
+    const id = confirmDelete.getAttribute("data-id");
+    const name = confirmDelete.getAttribute("data-name");
+    const token = confirmDelete.getAttribute("data-token");
+    //creamos un array con los valores recuperados
+    const arrValues = {
+      id: id,
+      name: name,
+      token: token,
+    };
+    const header = { "Content-Type": "application/json" };
+    const config = {
+      method: "DELETE",
+      headers: header,
+      body: JSON.stringify(arrValues),
+    };
+    //La ruta donde se apunta del controlador
+    const url = base_url + "/Thread/deleteThread";
+    //quitamos el d-none del elementLoader
+    elementLoader.classList.remove("d-none");
+    fetch(url, config)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Error en la solicitud" +
+              response.status +
+              " - " +
+              response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toastr.options = {
+          closeButton: true,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          progressBar: true,
+          onclick: null,
+        };
+        if (!data.status) {
+          toastr[data.type](data.message, data.title);
+          elementLoader.classList.add("d-none");
+          return false;
+        }
+        //ocultar el modal abierto
+        $("#confirmModalDelete").modal("hide");
+        //actualizar la tabla
+        table.ajax.reload(null, false);
+        toastr[data.type](data.message, data.title);
+        ///recargar las funciones
+        setTimeout(() => {
+          confirmationDelete();
           elementLoader.classList.add("d-none");
         }, 500);
         return true;
