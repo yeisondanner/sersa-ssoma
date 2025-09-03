@@ -745,7 +745,7 @@ function loadReport() {
       const selectedNode = document.getElementById(dataIdJs);
       if (!selectedNode) return;
       selectedNode.classList.add("active-node");
-
+      console.log(dataIdJs);
       // Ocultamos loader y abrimos modal
       elementLoader.classList.add("d-none");
       $("#modalReport").modal("show");

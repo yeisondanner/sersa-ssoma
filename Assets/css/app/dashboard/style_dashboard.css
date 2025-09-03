@@ -1,0 +1,30 @@
+.card-hover .card-body {
+  background: rgba(255, 255, 255, 0.1); /* transparencia */
+  backdrop-filter: blur(12px); /* el efecto vidrio */
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  color: black;
+}
+
+/* Animación al pasar el mouse */
+.card-hover:hover .card-body {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+.icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle i {
+  color: black;
+}
