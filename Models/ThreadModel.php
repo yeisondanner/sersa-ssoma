@@ -94,4 +94,16 @@ class ThreadModel extends Mysql
         $request = $this->delete($query, [$id]);
         return $request;
     }
+    /**
+     * Metodo que permite verificar si un subproceso tiene subprocesos hijos
+     * @param int $id
+     * @return bool
+     */
+    public function has_children_threads(int $id): bool
+    {
+        $this->threads_father = $id;
+        $query = "SELECT COUNT(*) FROM tb_threads WHERE threads_father = ?";
+        $request = $this->select($query, [$this->threads_father]);
+        return $request > 0;
+    }
 }

@@ -217,6 +217,7 @@ function loadTable() {
     },
     fnDrawCallback: function () {
       $(".dataTables_paginate > .pagination").addClass("pagination-sm");
+      confirmationDelete();
     },
   });
 }
@@ -439,7 +440,7 @@ function saveData() {
           const slctSubProcess = document.getElementById("slctSubProcess");
           slctProcess.innerHTML = "";
           slctSubProcess.innerHTML = "";
-
+          confirmationDelete();
           //quitamos el d-none del elementLoader
           elementLoader.classList.add("d-none");
         }, 500);

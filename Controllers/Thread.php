@@ -262,6 +262,18 @@ class Thread extends Controllers
             );
             toJson($data);
         }
+        //validamos que el registro que vamos a eliminar no tenga subprocesos hijos de ser asi no te dejara eliminar
+        $hasChildren = $this->model->has_children_threads($id);
+        if ($hasChildren) {
+            registerLog("Ocurrió un error inesperado", "No se puede eliminar el subproceso, ya que tiene subprocesos hijos", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se puede eliminar el subproceso, ya que tiene subprocesos hijos",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
         ///validamos que el id del proceso exista en la base de datos
         $result = $this->model->select_thread_by_id($id);
         if (!$result) {
