@@ -56,7 +56,7 @@ class Thread extends Controllers
             $data[$key]['t_updateDate'] = dateFormat($value['t_updateDate']);
             $data[$key]['actions'] = ' <div class="btn-group btn-group-sm" role="group">
                                             <button class="btn btn-success update-item" type="button"><i class="fa fa-pencil"></i></button>
-                                            <button class="btn btn-info report-item"  type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>      
+                                            <button class="btn btn-info report-item" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" data-description="' . $value['t_description'] . '" data-status="' . $value['t_status'] . '" data-registration="' . dateFormat($value['t_registrationDate']) . '" data-update="' . dateFormat($value['t_updateDate']) . '" data-macroprocess-name="' . $value['mp_name'] . '" data-process-name="' . $value['p_name'] . '" type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>      
                                             <button class="btn btn-danger delete-item" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" type="button"><i class="fa fa-remove"></i></button>
                                         </div>';
         }
@@ -220,7 +220,6 @@ class Thread extends Controllers
     public function deleteThread()
     {
         permissionInterface(14);
-
         //Validacion de que el Método sea DELETE
         if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
             registerLog("Ocurrió un error inesperado", "Método DELETE no encontrado, al momento de eliminar un subproceso", 1, $_SESSION['login_info']['idUser']);
@@ -311,5 +310,15 @@ class Thread extends Controllers
             );
             toJson($data);
         }
+    }
+    /**
+     * Metodo que obtiene la estructura inicial de todos los macroprocesos, procesos, subprocesos e hijos de los hijos hasta N niveles
+     * @return array
+     */
+    public function get_initial_structure()
+    {
+        permissionInterface(14);
+        $data = $this->model->select_all_macroprocesses_and_processes_with_children();
+        toJson($data);
     }
 }

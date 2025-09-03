@@ -240,11 +240,11 @@
 <!-- Modal de Report -->
 <div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="modalReportLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <!-- Encabezado -->
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title font-weight-bold" id="modalReportLabel">Reporte de Proceso</h5>
+                <h5 class="modal-title font-weight-bold" id="modalReportLabel">Reporte de Subproceso</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -273,13 +273,93 @@
                         </tr>
                         <tr>
                             <td><strong>Macroproceso Padre</strong></td>
-                            <td id="reportMacroprocess" class="bg-info text-white">--Macroproceso--</td>
+                            <td id="reportMacroprocess" class="bg-primary text-white">--Macroproceso--</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Proceso Padre</strong></td>
+                            <td id="reportProcess" class="bg-info text-white">--Proceso--</td>
                         </tr>
                         <tr>
                             <td><strong>Estado</strong></td>
                             <td id="reportEstado">--Estado--</td>
                     </tbody>
                 </table>
+                <!--Estructura de orden del proceso-->
+                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Estructura de orden del proceso</h6>
+                <hr>
+                <div class="container-fluid">
+                    <!-- Contenedor con scroll -->
+                    <div class="org-container">
+                        <div class="org-chart" id="orgChart">
+                            <!-- Nivel 1 -->
+                            <div class="org-node">
+                                <i class="fa fa-user-circle text-primary"></i>
+                                <h5 class="mb-1">CEO</h5>
+                                <small>Dirección General</small>
+                            </div>
+
+                            <!-- Hijos -->
+                            <div class="org-children">
+                                <div class="org-child">
+                                    <div class="org-node">
+                                        <i class="fa fa-user text-success"></i>
+                                        <h6 class="mb-1">CFO</h6>
+                                        <small>Finanzas</small>
+                                    </div>
+                                </div>
+                                <div class="org-child">
+                                    <div class="org-node active-node">
+                                        <i class="fa fa-user text-info"></i>
+                                        <h6 class="mb-1">CTO</h6>
+                                        <small>Tecnología</small>
+                                    </div>
+                                    <!-- Hijos del CTO -->
+                                    <div class="org-children">
+                                        <div class="org-child">
+                                            <div class="org-node">
+                                                <i class="fa fa-user text-warning"></i>
+                                                <h6 class="mb-1">Dev Lead</h6>
+                                                <small>Backend</small>
+                                            </div>
+                                        </div>
+                                        <div class="org-child">
+                                            <div class="org-node">
+                                                <i class="fa fa-user text-danger"></i>
+                                                <h6 class="mb-1">UI/UX</h6>
+                                                <small>Diseño</small>
+                                            </div>
+                                        </div>
+                                        <div class="org-child">
+                                            <div class="org-node">
+                                                <i class="fa fa-user text-primary"></i>
+                                                <h6 class="mb-1">QA</h6>
+                                                <small>Testing</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="org-child">
+                                    <div class="org-node">
+                                        <i class="fa fa-user text-danger"></i>
+                                        <h6 class="mb-1">CMO</h6>
+                                        <small>Marketing</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    // Activar nodo al hacer click
+                    document.querySelectorAll('.org-node').forEach(node => {
+                        node.addEventListener('click', function () {
+                            document.querySelectorAll('.org-node').forEach(n => n.classList.remove('active-node'));
+                            this.classList.add('active-node');
+                        });
+                    });
+                </script>
+                <!-- Fechas de registro y actualización -->
                 <div class="p-3 bg-light border rounded">
                     <p class="text-muted mb-1">
                         <strong>Fecha de registro:</strong> <span class="text-dark"
@@ -320,8 +400,8 @@
                                 <!-- Campo Macroproceso -->
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="update_slctMacroprocess">Macroproceso <span
-                                                class="text-danger">*</span></label>
+                                        <label class="control-label" for="update_slctMacroprocess">Macroproceso
+                                            <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <select type="text" class="form-control" id="update_slctMacroprocess"
                                                 name="update_slctMacroprocess" required aria-describedby="iconProcess">

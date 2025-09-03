@@ -9,6 +9,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
     saveData();
     confirmationDelete();
     deleteData();
+    loadReport();
   }, 1500);
 });
 
@@ -218,6 +219,7 @@ function loadTable() {
     fnDrawCallback: function () {
       $(".dataTables_paginate > .pagination").addClass("pagination-sm");
       confirmationDelete();
+      loadReport();
     },
   });
 }
@@ -441,6 +443,7 @@ function saveData() {
           slctProcess.innerHTML = "";
           slctSubProcess.innerHTML = "";
           confirmationDelete();
+          loadReport();
           //quitamos el d-none del elementLoader
           elementLoader.classList.add("d-none");
         }, 500);
@@ -545,6 +548,7 @@ function deleteData() {
         ///recargar las funciones
         setTimeout(() => {
           confirmationDelete();
+          loadReport();
           elementLoader.classList.add("d-none");
         }, 500);
         return true;
@@ -564,5 +568,79 @@ function deleteData() {
         );
         elementLoader.classList.add("d-none");
       });
+  });
+}
+//Funcion que carga los datos en el reporte del modal del thread
+function loadReport() {
+  const btnReportItem = document.querySelectorAll(".report-item");
+  btnReportItem.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      //quitamos el d-none del elementLoader
+      elementLoader.classList.remove("d-none");
+      ///obtenemos los atributos del btn update y los almacenamos en una constante
+      const id = item.getAttribute("data-id");
+      const name = item.getAttribute("data-name");
+      const description = item.getAttribute("data-description");
+      const dataStatus = item.getAttribute("data-status");
+      const dataRegistrationDate = item.getAttribute("data-registration");
+      const dataUpdateDate = item.getAttribute("data-update");
+      const dataMacroprocessName = item.getAttribute("data-macroprocess-name");
+      const dataProcessName = item.getAttribute("data-process-name");
+      //asignamos los valores obtenidos a los inputs del modal
+      document.getElementById("reportTitle").innerHTML = name;
+      document.getElementById("reportCode").innerHTML = "#" + id;
+      document.getElementById("reportDescription").innerHTML = description;
+      document.getElementById("reportEstado").innerHTML = dataStatus;
+      document.getElementById("reportRegistrationDate").innerHTML =
+        dataRegistrationDate;
+      document.getElementById(
+        "reportMacroprocess"
+      ).innerHTML = `<span class="fa fa-university" aria-hidden="true"></span> ${dataMacroprocessName}`;
+      document.getElementById(
+        "reportProcess"
+      ).innerHTML = `<span class="fa fa-bookmark" aria-hidden="true"></span> ${dataProcessName}`;
+      document.getElementById("reportUpdateDate").innerHTML = dataUpdateDate;
+      //obtenemos mediante fetch los valores que iran en el organigrama
+      fetch(`${base_url}/Thread/get_initial_structure`)
+        .then((response) => response.json())
+        .then((data) => {
+          //armamos el organigrama
+          const orgChart = document.getElementById("orgChart");
+          orgChart.innerHTML = "";
+          let htmlOrg;
+          //cargamos el primer bloque
+          htmlOrg = ` <div class="org-node">
+                                <i class="fa fa fa-star text-primary"></i>
+                                <h5 class="mb-1">${data.N1}</h5>
+                                <small>Dirección General</small>
+                            </div>`;
+          //ahora recorremos los Macroprocesos
+          dataMacroprocesos = data.Macroprocesos;
+          //validamos que no este vacio dataMacroprocesos
+          if (dataMacroprocesos.length <= 0) {
+            orgChart.innerHTML = htmlOrg;
+            return;
+          }
+          htmlOrg += `<div class="org-children">`;
+          dataMacroprocesos.forEach((itemMP) => {
+            htmlOrg += ` <div class="org-child">
+                                    <div class="org-node">
+                                        <i class="fa fa-university text-success"></i>
+                                        <h6 class="mb-1">${itemMP.mp_name}</h6>
+                                        <small>ID-${itemMP.idMacroprocess}</small>
+                                    </div>
+                                </div>`;
+          });
+          htmlOrg += `</div>`;
+          //mostramos el resultado
+          orgChart.innerHTML = htmlOrg;
+        });
+
+      //quitamos el d-none del elementLoader
+      elementLoader.classList.add("d-none");
+      //abrimos el modal
+      $("#modalReport").modal("show");
+    });
   });
 }
