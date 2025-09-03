@@ -91,6 +91,7 @@
                                             <textarea class="form-control" id="txtDescription" name="txtDescription"
                                                 rows="3" placeholder="Ingrese una breve descripción"
                                                 pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
+                                                title=""
                                                 aria-describedby="iconDescription"></textarea>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconDescription">
@@ -256,6 +257,7 @@
                                                 name="update_txtDescription" rows="3"
                                                 placeholder="Ingrese una breve descripción"
                                                 pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
+
                                                 aria-describedby="iconDescription"></textarea>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconDescription">
