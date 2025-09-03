@@ -185,6 +185,7 @@ function saveData() {
         return response.json();
       })
       .then((data) => {
+        //librerias de alertas
         toastr.options = {
           closeButton: true,
           onclick: null,

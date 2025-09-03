@@ -61,7 +61,7 @@ class Macroprocess extends Controllers
             registerLog("Ocurrió un error inesperado", "Método POST no encontrado al registrar un nuevo macroproceso", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "Método POST no encontrado",
+                "message" => "Método POST no encontrado, refresco por favor la pagina en intente nuevamente",
                 "type" => "error",
                 "status" => false
             );
@@ -78,7 +78,7 @@ class Macroprocess extends Controllers
             "NOMBRE" => $strName
         ));
         // Validación del formato de texto en el nombre del macroproceso (solo letras y espacios, mínimo 4 caracteres, máximo 250)
-        if (verifyData("(?=.{10,255}$)[\p{L}0-9\.,;:\-_()\s]+", $strName)) {
+        if (verifyData("[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,255}", $strName)) {
             registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un macroproceso", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
@@ -107,7 +107,7 @@ class Macroprocess extends Controllers
         $strName = ucwords($strName);
         $request = $this->model->insert_macroprocess($strName, $strDescription); //insert  macroprocess in database
         if ($request > 0) {
-            registerLog("Registro exitoso", "El macroproceso se ha registrado correctamente, al momento de registrar un usuario", 2, $_SESSION['login_info']['idUser']);
+            registerLog("Registro exitoso", "El macroproceso se ha registrado correctamente, con el Nombre = ".$strName." Descripcion = ".$strDescription." con ID = ".$request, 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Registro exitoso",
                 "message" => "El macroproceso se ha registrado correctamente",
