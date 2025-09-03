@@ -71,9 +71,8 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="txtName" name="txtName" required
                                                 placeholder="Ingrese el nombre" minlength="10" maxlength="255"
-                                                pattern="^(?=.{10,255}$)[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9 \.,;:\-_()]+$"
-                                                title="Permitido: letras, números, espacios y signos comunes (. , ; : () _ -)."
-                                                aria-describedby="iconNombre helpNombre">
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,255}$"
+                                                title="Solo se permiten: letras (con tilde y Ñ/ñ), números, espacios, punto, coma, punto y coma, dos puntos, guion alto, guion bajo, paréntesis, exclamación e interrogación. Longitud mínima 10, máxima 255.">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
                                                     <i class="fa fa-tag" aria-hidden="true"></i>
@@ -94,7 +93,7 @@
                                         <div class="input-group">
                                             <textarea class="form-control" id="txtDescription" name="txtDescription"
                                                 rows="3" placeholder="Ingrese una breve descripción"
-                                                pattern="^(?=.{10,}$)[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-_']+$"
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_()!?']{10,}$" minlength="10"
                                                 title="Permitido: letras, números, espacios y signos comunes (. , ; : - _ () ! ? ')."
                                                 aria-describedby="iconDescription helpDescription"></textarea>
                                             <div class="input-group-prepend">
@@ -244,8 +243,8 @@
                                             <input type="text" class="form-control" id="update_txtName"
                                                 name="update_txtName" required placeholder="Ingrese el nombre"
                                                 minlength="10" maxlength="255"
-                                                pattern="^(?=.{10,255}$)[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\.,;:\-_() ]+$"
-                                                title="Permitido: letras, números, espacios y signos comunes (. , ; : () _ -)."
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,255}$"
+                                                title="Solo se permiten: letras (con tilde y Ñ/ñ), números, espacios, punto, coma, punto y coma, dos puntos, guion alto, guion bajo, paréntesis, exclamación e interrogación. Longitud mínima 10, máxima 255."
                                                 aria-describedby="iconNombre helpNombre">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
@@ -277,7 +276,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                         <small id="helpDescription" class="form-text text-muted">
+                                        <small id="helpDescription" class="form-text text-muted">
                                             <span class="text-danger">*</span>
                                             Permitido un mínimo de 10 caracteres a más.
                                         </small>
