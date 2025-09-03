@@ -349,16 +349,6 @@
                         </div>
                     </div>
                 </div>
-
-                <script>
-                    // Activar nodo al hacer click
-                    document.querySelectorAll('.org-node').forEach(node => {
-                        node.addEventListener('click', function () {
-                            document.querySelectorAll('.org-node').forEach(n => n.classList.remove('active-node'));
-                            this.classList.add('active-node');
-                        });
-                    });
-                </script>
                 <!-- Fechas de registro y actualización -->
                 <div class="p-3 bg-light border rounded">
                     <p class="text-muted mb-1">

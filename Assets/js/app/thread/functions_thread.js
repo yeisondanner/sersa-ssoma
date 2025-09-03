@@ -570,146 +570,255 @@ function deleteData() {
       });
   });
 }
-//Funcion que carga los datos en el reporte del modal del thread
+// ===================================================================
+// Función que carga los datos en el reporte del modal del thread
+// ===================================================================
 function loadReport() {
   const btnReportItem = document.querySelectorAll(".report-item");
   btnReportItem.forEach((item) => {
-    item.addEventListener("click", (e) => {
+    item.addEventListener("click", async (e) => {
       e.preventDefault();
-      //quitamos el d-none del elementLoader
-      elementLoader.classList.remove("d-none");
-      ///obtenemos los atributos del btn update y los almacenamos en una constante
-      const id = item.getAttribute("data-id");
-      const name = item.getAttribute("data-name");
-      const description = item.getAttribute("data-description");
-      const dataStatus = item.getAttribute("data-status");
-      const dataRegistrationDate = item.getAttribute("data-registration");
-      const dataUpdateDate = item.getAttribute("data-update");
-      const dataMacroprocessName = item.getAttribute("data-macroprocess-name");
-      const dataProcessName = item.getAttribute("data-process-name");
-      //asignamos los valores obtenidos a los inputs del modal
-      document.getElementById("reportTitle").innerHTML = name;
-      document.getElementById("reportCode").innerHTML = "#" + id;
-      document.getElementById("reportDescription").innerHTML = description;
-      document.getElementById("reportEstado").innerHTML = dataStatus;
-      document.getElementById("reportRegistrationDate").innerHTML =
-        dataRegistrationDate;
-      document.getElementById(
-        "reportMacroprocess"
-      ).innerHTML = `<span class="fa fa-university" aria-hidden="true"></span> ${dataMacroprocessName}`;
-      document.getElementById(
-        "reportProcess"
-      ).innerHTML = `<span class="fa fa-bookmark" aria-hidden="true"></span> ${dataProcessName}`;
-      document.getElementById("reportUpdateDate").innerHTML = dataUpdateDate;
-      //obtenemos mediante fetch los valores que iran en el organigrama
-      fetch(`${base_url}/Thread/get_initial_structure`)
-        .then((response) => response.json())
-        .then((data) => {
-          //armamos el organigrama
-          const orgChart = document.getElementById("orgChart");
-          orgChart.innerHTML = "";
-          let htmlOrg;
-          //cargamos el primer bloque
-          htmlOrg = ` <div class="org-node">
-                                <i class="fa fa fa-star text-primary"></i>
-                                <h5 class="mb-1">${data.N1}</h5>
-                                <small>Dirección General</small>
-                            </div>`;
-          //ahora recorremos los Macroprocesos
-          dataMacroprocesos = data.Macroprocesos;
-          //validamos que no este vacio dataMacroprocesos
-          if (dataMacroprocesos.length <= 0) {
-            orgChart.innerHTML = htmlOrg;
-            return;
-          }
-          htmlOrg += `<div class="org-children">`;
-          //recorremos los macroprocesos
-          dataMacroprocesos.forEach((itemMP) => {
-            htmlOrg += ` <div class="org-child">
-                                    <div class="org-node">
-                                        <i class="fa fa-university text-primary"></i>
-                                        <h6 class="mb-1">${itemMP.mp_name}</h6>
-                                        <small>ID-${itemMP.idMacroprocess}</small>
-                                    </div>
-                                `;
-            //ahora recorremos los procesos asociados a los macroprocesos
-            dataProcess = itemMP.Procesos;
-            //validamos que no este vacio dataProcess
-            if (dataProcess.length <= 0) {
-              htmlOrg += "</div>";
-              orgChart.innerHTML = htmlOrg;
-              return;
-            }
-            htmlOrg += `<div class="org-children">`;
-            //recorremos los procesos
-            dataProcess.forEach((itemP) => {
-              htmlOrg += `<div class="org-child">
-                            <div class="org-node">
-                              <i class="fa fa-bookmark text-info"></i>
-                              <h6 class="mb-1">${itemP.p_name}</h6>
-                              <small>ID-${itemP.idProcess}</small>
-                            </div>
-                          `;
-              //ahora recorremos los trheads
-              dataThreads = itemP.Threads;
-              //validamos que no este vacio dataThreads
-              if (dataThreads.length <= 0) {
-                htmlOrg += "</div>";
-                orgChart.innerHTML = htmlOrg;
-                return;
-              }
-              htmlOrg += `<div class="org-children">`;
-              //recorremos los threads
-              dataThreads.forEach((itemT) => {
-                //mostramos un incono depdendiedo a lo stipos open_form,open_file,open_menu
-                icon = iconsThread(itemT);
-                htmlOrg += `<div class="org-child">
-                            <div class="org-node">
-                              ${icon}
-                              <h6 class="mb-1">${itemT.t_name}</h6>
-                              <small>ID-${itemT.idThreads}</small>                              
-                            </div>
-                          `;
-                //ahora recorremos los subprocesos
-                dataSubThreads = itemT.SubThreads;
-                //validamos que no este vacio dataThreads
-                if (dataSubThreads.length <= 0) {
-                  htmlOrg += "</div>";
-                  orgChart.innerHTML = htmlOrg;
-                  return;
-                }
-                htmlOrg += `<div class="org-children">`;
-                getThreadsRercursiveForOrg(itemT);
-                htmlOrg += `</div> </div>`;
-              });
-              htmlOrg += `</div> </div>`;
-            });
-            htmlOrg += `</div> </div>`;
-          });
-          htmlOrg += `</div>`;
-          //mostramos el resultado
-          orgChart.innerHTML = htmlOrg;
-        });
 
-      //quitamos el d-none del elementLoader
+      // Mostramos loader
+      elementLoader.classList.remove("d-none");
+
+      // Obtenemos atributos del botón seleccionado
+      const {
+        id: id,
+        name,
+        description,
+        status: dataStatus,
+        registration: dataRegistrationDate,
+        update: dataUpdateDate,
+        macroprocessName: dataMacroprocessName,
+        processName: dataProcessName,
+        idJs: dataIdJs,
+      } = getDataset(item);
+
+      // Asignamos los valores al modal
+      setModalData({
+        id,
+        name,
+        description,
+        dataStatus,
+        dataRegistrationDate,
+        dataUpdateDate,
+        dataMacroprocessName,
+        dataProcessName,
+        dataIdJs,
+      });
+
+      try {
+        // Obtenemos mediante fetch los valores que irán en el organigrama
+        const response = await fetch(
+          `${base_url}/Thread/get_initial_structure`
+        );
+        const data = await response.json();
+
+        // Construimos el organigrama
+        const orgChart = document.getElementById("orgChart");
+        orgChart.innerHTML = buildOrgChart(data);
+      } catch (error) {
+        console.error("Error al cargar organigrama:", error);
+      }
+      /**
+       *  Seleccionamos todos los nodos del organigrama
+       *
+       * */
+      // 1) Quitar activo
+      const arrOrgNode = document.querySelectorAll(".org-node");
+      arrOrgNode.forEach((n) => n.classList.remove("active-node"));
+
+      // 2) Marcar seleccionado
+      const selectedNode = document.getElementById(dataIdJs);
+      if (!selectedNode) return;
+      selectedNode.classList.add("active-node");
+
+      // Ocultamos loader y abrimos modal
       elementLoader.classList.add("d-none");
-      //abrimos el modal
       $("#modalReport").modal("show");
     });
   });
 }
-//funcion que devulve iconos de acuerdo al tipo de subproceso
-function iconsThread(itemT) {
-  if (itemT.t_type === "open_menu") {
-    icon = `<i class="fa fa-bars text-primary"></i> `;
-  } else if (itemT.t_type === "open_form") {
-    icon = `<i class="fa fa-pencil text-success"></i> `;
-  } else if (itemT.t_type === "open_file") {
-    icon = `<i class="fa fa-file text-warning"></i> `;
-  } else {
-    icon = `<small ><i class="fa fa-exclamation"></i> `;
-  }
-  return icon;
+
+// ===================================================================
+// Función para obtener los dataset de un elemento en un objeto limpio
+// ===================================================================
+function getDataset(element) {
+  return {
+    id: element.getAttribute("data-id"),
+    name: element.getAttribute("data-name"),
+    description: element.getAttribute("data-description"),
+    status: element.getAttribute("data-status"),
+    registration: element.getAttribute("data-registration"),
+    update: element.getAttribute("data-update"),
+    macroprocessName: element.getAttribute("data-macroprocess-name"),
+    processName: element.getAttribute("data-process-name"),
+    idJs: element.getAttribute("data-id-js"),
+  };
 }
-//funcion que devuelve los demas subprocesos utilizando recursividad
-function getThreadsRercursiveForOrg(item) {}
+
+// ===================================================================
+// Función que asigna valores en el modal
+// ===================================================================
+function setModalData({
+  id,
+  name,
+  description,
+  dataStatus,
+  dataRegistrationDate,
+  dataUpdateDate,
+  dataMacroprocessName,
+  dataProcessName,
+  dataIdJs,
+}) {
+  document.getElementById("reportTitle").innerHTML = name;
+  document.getElementById("reportCode").innerHTML = `#${id}`;
+  document.getElementById("reportDescription").innerHTML = description;
+  document.getElementById("reportEstado").innerHTML = dataStatus;
+  document.getElementById("reportRegistrationDate").innerHTML =
+    dataRegistrationDate;
+  document.getElementById("reportUpdateDate").innerHTML = dataUpdateDate;
+  document.getElementById(
+    "reportMacroprocess"
+  ).innerHTML = `<span class="fa fa-university" aria-hidden="true"></span> ${dataMacroprocessName}`;
+  document.getElementById(
+    "reportProcess"
+  ).innerHTML = `<span class="fa fa-bookmark" aria-hidden="true"></span> ${dataProcessName}`;
+}
+
+// ===================================================================
+// Función que construye el organigrama principal
+// ===================================================================
+function buildOrgChart(data) {
+  let html = `
+    <div class="org-node">
+      <i class="fa fa-star text-primary"></i>
+      <h5 class="mb-1">SISTEMA DE GESTION SEGURIDAD SALUD OCUPACIONAL HIGIENE Y MEDIO AMBIENTE</h5>
+      <small>${data.N1}</small>
+    </div>`;
+
+  if (!data.Macroprocesos?.length) return html;
+
+  html += `<div class="org-children">`;
+
+  data.Macroprocesos.forEach((mp) => {
+    html += `
+      <div class="org-child">
+        <div class="org-node" id="MP${mp.idMacroprocess}">
+          <i class="fa fa-university text-primary"></i>
+          <h6 class="mb-1">${mp.mp_name}</h6>
+          <small>ID-${mp.idMacroprocess}</small>
+        </div>
+        ${buildProcesses(mp.Procesos)}
+      </div>`;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+// ===================================================================
+// Función que construye los procesos dentro de un macroproceso
+// ===================================================================
+function buildProcesses(processes = []) {
+  if (!processes.length) return "";
+
+  let html = `<div class="org-children">`;
+
+  processes.forEach((p) => {
+    html += `
+      <div class="org-child">
+        <div class="org-node" id="P${p.idProcess}">
+          <i class="fa fa-bookmark text-info"></i>
+          <h6 class="mb-1">${p.p_name}</h6>
+          <small>ID-${p.idProcess}</small>
+        </div>
+        ${buildThreads(p.Threads)}
+      </div>`;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+// ===================================================================
+// Función que construye los threads dentro de un proceso
+// ===================================================================
+function buildThreads(threads = []) {
+  if (!threads.length) return "";
+
+  let html = `<div class="org-children">`;
+
+  threads.forEach((t) => {
+    html += `
+      <div class="org-child">
+        <div class="org-node" id="T${t.idThreads}">
+          ${iconsThread(t)}
+          <h6 class="mb-1">${t.t_name}</h6>
+          <small>ID-${t.idThreads}</small>
+        </div>
+        ${buildSubThreads(t.SubThreads)}
+      </div>`;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+// ===================================================================
+// Función que construye recursivamente los subthreads
+// ===================================================================
+function buildSubThreads(subThreads = []) {
+  if (!subThreads.length) return "";
+
+  let html = `<div class="org-children">`;
+  subThreads.forEach((st) => {
+    html += getThreadsRecursiveForOrg(st);
+  });
+  html += `</div>`;
+  return html;
+}
+
+// ===================================================================
+// Función que devuelve iconos de acuerdo al tipo de subproceso
+// ===================================================================
+function iconsThread(item) {
+  const icons = {
+    open_menu: `<i class="fa fa-bars text-primary"></i>`,
+    open_form: `<i class="fa fa-pencil text-success"></i>`,
+    open_file: `<i class="fa fa-file text-warning"></i>`,
+  };
+  return (
+    icons[item.t_type] || `<small><i class="fa fa-exclamation"></i></small>`
+  );
+}
+
+// ===================================================================
+// Función recursiva para subprocesos
+// ===================================================================
+function getThreadsRecursiveForOrg(item) {
+  let html = `
+    <div class="org-child">
+      <div class="org-node" id="T${item.idThreads}">
+        ${iconsThread(item)}
+        <h6 class="mb-1">${item.t_name}</h6>
+        <small>ID-${item.idThreads}</small>
+      </div>
+      ${buildSubThreads(item.SubThreads)}
+    </div>`;
+  return html;
+}
+
+//function que se encarga de activar el color de la opcion seleccionada
+function activeElementOrg() {
+  // Activar nodo al hacer click
+  document.querySelectorAll(".org-node").forEach((node) => {
+    node.addEventListener("click", function () {
+      document
+        .querySelectorAll(".org-node")
+        .forEach((n) => n.classList.remove("active-node"));
+      this.classList.add("active-node");
+    });
+  });
+}
