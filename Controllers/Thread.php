@@ -55,7 +55,7 @@ class Thread extends Controllers
             $data[$key]['t_registrationDate'] = dateFormat($value['t_registrationDate']);
             $data[$key]['t_updateDate'] = dateFormat($value['t_updateDate']);
             $data[$key]['actions'] = ' <div class="btn-group btn-group-sm" role="group">
-                                            <button class="btn btn-success update-item" type="button"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-success update-item"  data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" data-description="' . $value['t_description'] . '" data-status="' . $value['t_status'] . '" data-type="' . $value['t_type'] . '" type="button"><i class="fa fa-pencil"></i></button>
                                             <button class="btn btn-info report-item" data-id-js="T' . $value['idThreads'] . '" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" data-description="' . $value['t_description'] . '" data-status="' . $value['t_status'] . '" data-registration="' . dateFormat($value['t_registrationDate']) . '" data-update="' . dateFormat($value['t_updateDate']) . '" data-macroprocess-name="' . $value['mp_name'] . '" data-process-name="' . $value['p_name'] . '"  type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>      
                                             <button class="btn btn-danger delete-item" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" type="button"><i class="fa fa-remove"></i></button>
                                         </div>';
@@ -320,5 +320,121 @@ class Thread extends Controllers
         permissionInterface(14);
         $data = $this->model->select_all_macroprocesses_and_processes_with_children();
         toJson($data);
+    }
+    /**
+     * Metodo que se encarga de actualizar un proceso
+     * @return void
+     */
+    public function updateThread()
+    {
+        permissionInterface(14);
+        //validacion del Método POST
+        if (!$_POST) {
+            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de actualizar un subproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "Método POST no encontrado",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        isCsrf(); //validacion de ataque CSRF
+        //validamos que existan los inputs necesarios               
+        validateFields(["update_txtId", "update_txtName", "update_txtDescription", "update_slctStatus", "update_slctType"]);
+        //Captura de datos enviamos
+        $update_txtId = strClean($_POST["update_txtId"]);
+        $update_txtName = strClean($_POST["update_txtName"]);
+        $update_txtDescription = strClean($_POST["update_txtDescription"]);
+        $update_slctStatus = strClean($_POST["update_slctStatus"]);
+        $update_slctType = strClean($_POST["update_slctType"]);
+        //validacion de los campos que no llegen vacios
+        validateFieldsEmpty(array(
+            "ID SUBPROCESO" => $update_txtId,
+            "NOMBRE DEL SUBPROCESO" => $update_txtName,
+            "ESTADO DEL SUBPROCESO" => $update_slctStatus,
+            "TIPO" => $update_slctType
+        ));
+
+
+        //validacion de que el id sea numérico
+        if (!is_numeric($update_txtId)) {
+            registerLog("Ocurrió un error inesperado", "El id del subproceso debe ser numérico, al momento de actualizar un subproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del subproceso debe ser numérico",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //validamos que los procesos no sean mayores a 255 caracteres
+        if (strlen($update_txtName) > 255) {
+            registerLog("Ocurrió un error inesperado", "El nombre del subproceso no puede ser mayor a 255 caracteres, al momento de actualizar un proceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El nombre del subproceso no puede ser mayor a 255 caracteres",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //Validamos los caracteres permitidos en el nombre
+        if (verifyData("(?=.{10,255}$)[\p{L}0-9\.,;:\-_()\s]+", $update_txtName)) {
+            registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un subproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El campo nombre no cumple con el formato de texto",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        if ($update_txtDescription != "") {
+            if (verifyData("[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9\s.,;:!?()-]+", $update_txtDescription)) {
+                registerLog("Ocurrió un error inesperado", "El campo Descripción no cumple con el formato de texto al registrar un subproceso", 1, $_SESSION['login_info']['idUser']);
+                $data = array(
+                    "title" => "Ocurrió un error inesperado",
+                    "message" => "El campo descripción no cumple con el formato de texto",
+                    "type" => "error",
+                    "status" => false
+                );
+                toJson($data);
+            }
+        }
+        //validamos que el id del proceso exista en la base de datos
+        $result = $this->model->select_thread_by_id($update_txtId);
+        if (!$result) {
+            registerLog("Ocurrió un error inesperado", "No se pudo actualizar el subproceso, ya que el id no existe en la base de datos", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "El id del subproceso no existe, refresque la página y vuelva a intentarlo",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        $update_txtName = ucwords($update_txtName);
+        //registramos el proceso en la base de datos
+        $result = $this->model->update_thread($update_txtName, $update_txtDescription, $update_slctStatus, $update_slctType, $update_txtId);
+        if ($result) {
+            registerLog("Proceso actualizado", "Se actualizo la informacion del subproceso con el id: " . $update_txtId, 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "subproceso actualizado",
+                "message" => "Se actualizo el subproceso con el id: " . $update_txtId,
+                "type" => "success",
+                "status" => true
+            );
+            toJson($data);
+        } else {
+            registerLog("Ocurrió un error inesperado", "No se pudo actualizar el subproceso, al momento de actualizar un subproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se pudo actualizar el subproceso, al momento de actualizar un proceso",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
     }
 }

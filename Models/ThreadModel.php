@@ -83,11 +83,12 @@ class ThreadModel extends Mysql
         $query = "SELECT * FROM tb_threads WHERE idThreads = ?";
         $request = $this->select($query, [$id]);
         return $request;
-    }    /**
-         * Metodo que permite eliminar un subproceso
-         * @param int $id
-         * @return bool
-         */
+    }
+    /**
+     * Metodo que permite eliminar un subproceso
+     * @param int $id
+     * @return bool
+     */
     public function delete_thread(int $id): bool
     {
         $query = "DELETE FROM tb_threads WHERE idThreads = ?";
@@ -191,5 +192,31 @@ class ThreadModel extends Mysql
         // 4. Retornamos la lista de threads con su jerarquía completa
         return $threads;
     }
-
+    /**
+     * Metodo que se encarga de actualizar un thread
+     * @param string $name
+     * @param string $description
+     * @param string $status
+     * @param string $type
+     * @param int $id
+     * @return bool
+     */
+    public function update_thread(string $name, string $description, string $status, string $type, int $id)
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->status = $status;
+        $this->type = $type;
+        $this->id = $id;
+        $sql = "UPDATE `tb_threads` SET `t_name`=?, `t_description`=?, `t_status`=?, `t_type`=? WHERE  `idThreads`=?;";
+        $arrValue = array(
+            $this->name,
+            $this->description,
+            $this->status,
+            $this->type,
+            $this->id
+        );
+        $request = $this->update($sql, $arrValue);
+        return $request;
+    }
 }

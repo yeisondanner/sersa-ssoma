@@ -191,15 +191,12 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Botón -->
                         <div class="d-flex justify-content-center mt-3">
                             <button class="btn btn-primary btn-block" type="submit">
                                 <i class="fa fa-fw fa-lg fa-save"></i> Guardar
                             </button>
                         </div>
-
-
                     </form>
                 </div>
             </div>
@@ -374,7 +371,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalUpdateLabel">Actualizar información del Proceso</h5>
+                <h5 class="modal-title" id="modalUpdateLabel">Actualizar información del Subproceso</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -387,33 +384,8 @@
                         <input type="hidden" id="update_txtId" name="update_txtId" value="">
                         <div class="bg-light p-2 rounded">
                             <div class="row">
-                                <!-- Campo Macroproceso -->
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="control-label" for="update_slctMacroprocess">Macroproceso
-                                            <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <select type="text" class="form-control" id="update_slctMacroprocess"
-                                                name="update_slctMacroprocess" required aria-describedby="iconProcess">
-                                                <option disabled selected value="">Seleccione un elemento</option>
-                                                <?php if (!empty($data["page_macroprocess"])): ?>
-                                                    <?php foreach ($data["page_macroprocess"] as $macroprocess): ?>
-                                                        <option value="<?= $macroprocess['idMacroprocess'] ?>">
-                                                            <?= $macroprocess['mp_name'] ?>
-                                                        </option>
-                                                    <?php endforeach; ?>
-                                                <?php endif; ?>
-                                            </select>
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="iconProcess">
-                                                    <i class="fa fa-university" aria-hidden="true"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <!-- Campo Nombre -->
-                                <div class="col-md-12">
+                                <div class="col-md-8">
                                     <div class="form-group">
                                         <label class="control-label" for="update_txtName">Nombre <span
                                                 class="text-danger">*</span></label>
@@ -422,16 +394,36 @@
                                                 name="update_txtName" required placeholder="Ingrese el nombre"
                                                 minlength="10" maxlength="255"
                                                 pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\. ]{10,255}$"
-                                                aria-describedby="update_iconNombre">
+                                                aria-describedby="iconNombre">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text" id="update_iconNombre">
+                                                <span class="input-group-text" id="iconNombre">
                                                     <i class="fa fa-bookmark" aria-hidden="true"></i>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- Campo tipo -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label" for="update_slctType">Tipo <span
+                                                class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <select type="text" class="form-control" id="update_slctType"
+                                                name="update_slctType" required aria-describedby="iconType">
+                                                <option value="" selected disabled>Seleccione un tipo</option>
+                                                <option value="open_menu">Abrir o desglozar un menú</option>
+                                                <option value="open_file">Abrir un archivo</option>
+                                                <option value="open_form">Abrir un formulario</option>
+                                            </select>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="iconType">
+                                                    <i class="fa fa-tags" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Campo Descripción -->
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -441,15 +433,16 @@
                                                 name="update_txtDescription" rows="3"
                                                 placeholder="Ingrese una breve descripción"
                                                 pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
-                                                aria-describedby="update_iconDescription"></textarea>
+                                                aria-describedby="iconDescription"></textarea>
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text" id="update_iconDescription">
+                                                <span class="input-group-text" id="iconDescription">
                                                     <i class="fa fa-info-circle" aria-hidden="true"></i>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <!--Estado-->
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label" for="update_slctStatus">Estado</label>

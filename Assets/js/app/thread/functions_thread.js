@@ -10,6 +10,8 @@ window.addEventListener("DOMContentLoaded", (e) => {
     confirmationDelete();
     deleteData();
     loadReport();
+    loadDataUpdate();
+    updateDate();
   }, 1500);
 });
 
@@ -220,6 +222,7 @@ function loadTable() {
       $(".dataTables_paginate > .pagination").addClass("pagination-sm");
       confirmationDelete();
       loadReport();
+      loadDataUpdate();
     },
   });
 }
@@ -444,6 +447,7 @@ function saveData() {
           slctSubProcess.innerHTML = "";
           confirmationDelete();
           loadReport();
+          loadDataUpdate();
           //quitamos el d-none del elementLoader
           elementLoader.classList.add("d-none");
         }, 500);
@@ -464,6 +468,35 @@ function saveData() {
         );
         elementLoader.classList.add("d-none");
       });
+  });
+}
+//funcion que se encarga de mostrar el modal para actualizar los datos deel macroproceso
+function loadDataUpdate() {
+  const btnUpdateItem = document.querySelectorAll(".update-item");
+  btnUpdateItem.forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      //quitamos el d-none del elementLoader
+      elementLoader.classList.remove("d-none");
+      //obtenemos los atributos del btn update y los almacenamos en una constante
+      const id = item.getAttribute("data-id");
+      const name = item.getAttribute("data-name");
+      const description = item.getAttribute("data-description");
+      const status = item.getAttribute("data-status");
+      const type = item.getAttribute("data-type");
+      //asignamos los valores obtenidos a los inputs del modal
+      document.getElementById("update_txtId").value = id;
+      document.getElementById("update_txtName").value = name;
+      document.getElementById("update_txtDescription").value = description;
+      document.getElementById("update_slctStatus").value = status;
+      document.getElementById("update_slctType").value = type;
+      setTimeout(() => {
+        //quitamos el d-none del elementLoader
+        elementLoader.classList.add("d-none");
+      }, 500);
+      //abrir el modal
+      $("#modalUpdate").modal("show");
+    });
   });
 }
 // Función que confirma la eliminación
@@ -549,6 +582,7 @@ function deleteData() {
         setTimeout(() => {
           confirmationDelete();
           loadReport();
+          loadDataUpdate();
           elementLoader.classList.add("d-none");
         }, 500);
         return true;
@@ -567,6 +601,84 @@ function deleteData() {
           "Ocurrio un error inesperado"
         );
         elementLoader.classList.add("d-none");
+      });
+  });
+}
+//funcion que actualiza los datos del macroproceso enviandolos al servidor
+function updateDate() {
+  const formUpdate = document.getElementById("formUpdate");
+  formUpdate.addEventListener("submit", (e) => {
+    //enviamos el formulario por metodo PUT con todo archivo de imagen
+    e.preventDefault();
+    const formData = new FormData(formUpdate);
+    const header = new Headers();
+    const config = {
+      method: "POST",
+      headers: header,
+      node: "no-cache",
+      cors: "cors",
+      body: formData,
+    };
+    const url = base_url + "/Thread/updateThread";
+    //quitamos el d-none del elementLoader
+    elementLoader.classList.remove("d-none");
+    fetch(url, config)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "Error en la solicitud " +
+              response.status +
+              " - " +
+              response.statusText
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toastr.options = {
+          closeButton: true,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          progressBar: true,
+          onclick: null,
+        };
+        if (!data.status) {
+          toastr[data.type](data.message, data.title);
+          elementLoader.classList.add("d-none");
+          return false;
+        }
+        //limpiar el formulario
+        formUpdate.reset();
+        //ocultar el modal abierto
+        $("#modalUpdate").modal("hide");
+        //actualizar la tabla
+        table.ajax.reload(null, false);
+        toastr[data.type](data.message, data.title);
+        //recargar las funciones
+        setTimeout(() => {
+          loadDataUpdate();
+          loadReport();
+          confirmationDelete();
+          //quitamos el d-none del elementLoader
+          elementLoader.classList.add("d-none");
+        }, 500);
+        return true;
+      })
+      .catch((error) => {
+        toastr.options = {
+          closeButton: true,
+          timeOut: 0,
+          onclick: null,
+        };
+        toastr["error"](
+          "Error en la solicitud al servidor: " +
+            error.message +
+            " - " +
+            error.name,
+          "Ocurrio un error inesperado"
+        );
       });
   });
 }
