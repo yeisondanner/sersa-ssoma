@@ -623,14 +623,68 @@ function loadReport() {
             return;
           }
           htmlOrg += `<div class="org-children">`;
+          //recorremos los macroprocesos
           dataMacroprocesos.forEach((itemMP) => {
             htmlOrg += ` <div class="org-child">
                                     <div class="org-node">
-                                        <i class="fa fa-university text-success"></i>
+                                        <i class="fa fa-university text-primary"></i>
                                         <h6 class="mb-1">${itemMP.mp_name}</h6>
                                         <small>ID-${itemMP.idMacroprocess}</small>
                                     </div>
-                                </div>`;
+                                `;
+            //ahora recorremos los procesos asociados a los macroprocesos
+            dataProcess = itemMP.Procesos;
+            //validamos que no este vacio dataProcess
+            if (dataProcess.length <= 0) {
+              htmlOrg += "</div>";
+              orgChart.innerHTML = htmlOrg;
+              return;
+            }
+            htmlOrg += `<div class="org-children">`;
+            //recorremos los procesos
+            dataProcess.forEach((itemP) => {
+              htmlOrg += `<div class="org-child">
+                            <div class="org-node">
+                              <i class="fa fa-bookmark text-info"></i>
+                              <h6 class="mb-1">${itemP.p_name}</h6>
+                              <small>ID-${itemP.idProcess}</small>
+                            </div>
+                          `;
+              //ahora recorremos los trheads
+              dataThreads = itemP.Threads;
+              //validamos que no este vacio dataThreads
+              if (dataThreads.length <= 0) {
+                htmlOrg += "</div>";
+                orgChart.innerHTML = htmlOrg;
+                return;
+              }
+              htmlOrg += `<div class="org-children">`;
+              //recorremos los threads
+              dataThreads.forEach((itemT) => {
+                //mostramos un incono depdendiedo a lo stipos open_form,open_file,open_menu
+                icon = iconsThread(itemT);
+                htmlOrg += `<div class="org-child">
+                            <div class="org-node">
+                              ${icon}
+                              <h6 class="mb-1">${itemT.t_name}</h6>
+                              <small>ID-${itemT.idThreads}</small>                              
+                            </div>
+                          `;
+                //ahora recorremos los subprocesos
+                dataSubThreads = itemT.SubThreads;
+                //validamos que no este vacio dataThreads
+                if (dataSubThreads.length <= 0) {
+                  htmlOrg += "</div>";
+                  orgChart.innerHTML = htmlOrg;
+                  return;
+                }
+                htmlOrg += `<div class="org-children">`;
+                getThreadsRercursiveForOrg(itemT);
+                htmlOrg += `</div> </div>`;
+              });
+              htmlOrg += `</div> </div>`;
+            });
+            htmlOrg += `</div> </div>`;
           });
           htmlOrg += `</div>`;
           //mostramos el resultado
@@ -644,3 +698,18 @@ function loadReport() {
     });
   });
 }
+//funcion que devulve iconos de acuerdo al tipo de subproceso
+function iconsThread(itemT) {
+  if (itemT.t_type === "open_menu") {
+    icon = `<i class="fa fa-bars text-primary"></i> `;
+  } else if (itemT.t_type === "open_form") {
+    icon = `<i class="fa fa-pencil text-success"></i> `;
+  } else if (itemT.t_type === "open_file") {
+    icon = `<i class="fa fa-file text-warning"></i> `;
+  } else {
+    icon = `<small ><i class="fa fa-exclamation"></i> `;
+  }
+  return icon;
+}
+//funcion que devuelve los demas subprocesos utilizando recursividad
+function getThreadsRercursiveForOrg(item) {}
