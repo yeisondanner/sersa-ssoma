@@ -232,8 +232,8 @@ class Macroprocess extends Controllers
             if ($requestMP["idMacroprocess"] != $update_txtId) {
                 if ($requestMP) {
                     registerLog("Ocurrió un error inesperado", "Actualización rechazada debido a que el nombre ya está en uso. Nombre ingresado = '" . $update_txtName .
-                                "'. ID del registro a actualizar = " . $update_txtId .
-                                ". ID que ya posee ese nombre = " . ($requestMP['idMacroprocess'] ?? 'N/D') . "", 1, $_SESSION['login_info']['idUser']);
+                                "'; ID del registro a actualizar = " . $update_txtId .
+                                "; ID que ya posee ese nombre = " . ($requestMP['idMacroprocess'] ?? 'N/D') . "", 1, $_SESSION['login_info']['idUser']);
                     $data = array(
                         "title" => "Ocurrió un error inesperado",
                         "message" => "Ya existe un macroproceso con ese nombre. Cámbialo e inténtalo nuevamente",
