@@ -49,5 +49,17 @@ class DashboardModel extends Mysql
         $request = $this->select($sql, [$this->id]);
         return $request;
     }
+    /**
+     * Metodo que obtiene todos procesos asociados al macroproceso
+     * @param  int $id
+     * @return mixed
+     */
+    public function select_process_by_id(int $id)
+    {
+        $this->id = $id;
+        $sql = "SELECT*FROM tb_process AS tbp WHERE tbp.macroprocess_id=? AND tbp.p_status='Activo';";
+        $request = $this->select_all($sql, [$this->id]);
+        return $request;
+    }
 
 }

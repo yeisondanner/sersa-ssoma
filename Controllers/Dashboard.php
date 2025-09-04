@@ -25,11 +25,11 @@ class Dashboard extends Controllers
             if (count($arrayIds) == 1) {
                 $idMacroprocess = $arrayIds[0];
                 $dataMacroprocess = $this->model->select_macroprocess_by_id($idMacroprocess);
-                dep($dataMacroprocess);
-                die();
+                $function = $dataProcess = $this->proceses_associed_macroprocess_by_id($idMacroprocess, $dataMacroprocess);
             }
+        } else {
+            $function = $this->index();
         }
-        $function = $this->index();
         $data['page_id'] = 2;
         $data['page_title'] = "Panel de control";
         $data['page_description'] = "Panel de control";
@@ -69,6 +69,7 @@ class Dashboard extends Controllers
     }
     /**
      * Metodo que se encarga de mostrar el componente principal del los componentes del SSOMA
+     * @return  string
      */
     public function index()
     {
@@ -89,27 +90,17 @@ class Dashboard extends Controllers
                             <i class="fa fa-university"></i>
                         </div>
                         <h5>' . $v["mp_name"] . '</h5>
-                        <p>' . limitarCaracteres($v["mp_description"], 50, "...") . '</p>
+                        <p class="text-justify" title="' . $v["mp_description"] . '">' . limitarCaracteres($v["mp_description"], 50, "...") . '</p>
                         <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["mp_registrationDate"]) . '</div>
                     </a>
                 </div>';
         endforeach;
         $html .= ' </div>
         <!-- Botones Flotantes -->
-        <div class="floating-buttons">
-            <!-- Botón Anterior -->
-            <button class="btn btn-primary" title="Anterior">
-                <i class="fa fa-arrow-left"></i>
-            </button>
-
+        <div class="floating-buttons">          
             <!-- Botón Recargar -->
             <button class="btn btn-success" title="Recargar" onclick="location.reload()">
                 <i class="fa fa-refresh"></i>
-            </button>
-
-            <!-- Botón Siguiente -->
-            <button class="btn btn-primary" title="Siguiente">
-                <i class="fa fa-arrow-right"></i>
             </button>
         </div>
         <!-- Activar tooltips solo en hover -->
@@ -122,4 +113,99 @@ class Dashboard extends Controllers
         </script>';
         return $html;
     }
+    /** 
+     * Metodo que se encarga de obtener el componente con todos procesos vinculados a los macroprocesos
+     * @param  int $id
+     * @return string
+     */
+    public function proceses_associed_macroprocess_by_id($id, array $data)
+    {
+        $dataProcess = $this->model->select_process_by_id($id);
+        $html = "";
+        $html .= '
+
+
+        <div class="app-title pt-5">
+            <div class="w-100">
+                <h1 class="text-primary mb-3"><i class="fa fa-university"></i>' . $data["mp_name"] . '</h1>
+                <p class="mb-2">' . $data["mp_description"] . '</p>
+                <hr class="w-100">
+                    <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">
+                        <li class="breadcrumb-item"><a
+                                href="' . base_url() . '/dashboard/" class="text-white"><i class="fa fa fa-university fa-lg"></i></a></li>
+                        <li class="breadcrumb-item"><a
+                                href="' . base_url() . '/dashboard/dashboard/' . $data["idMacroprocess"] . '" class="text-white">' . $data["mp_name"] . '</a></li>
+                    </ul>
+            </div>          
+        
+        </div>
+        
+        <!--Listado de los macroprocesos-->
+        <div class="row">';
+
+        foreach ($dataProcess as $k => $v):
+            $html .= '
+                <!-- Card 1 -->
+                <div class="col-md-4 mb-4">
+                    <a href="' . base_url() . '/dashboard/dashboard/' . $v["idProcess"] . '"
+                        class="card custom-card p-4 text-center h-100" data-toggle="tooltip" data-placement="top"
+                        title="Haz clic para ver más sobre ' . $v["p_name"] . '">
+                        <div class="icon-wrapper bg-primary mx-auto">
+                            <i class="fa fa-bookmark"></i>
+                        </div>
+                        <h5>' . $v["p_name"] . '</h5>
+                        <p class="text-justify" title="' . $v["p_description"] . '">' . limitarCaracteres($v["p_description"], 50, "...") . '</p>
+                        <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["p_registrationDate"]) . '</div>
+                    </a>
+                </div>';
+        endforeach;
+        //metodo que se encarga de configurar los botones de navegacion
+        $arrayMacroprocess = $this->model->select_macroprocess_active();
+        $position = 0;
+        foreach ($arrayMacroprocess as $key => $value) {
+            if ($value['idMacroprocess'] == $id) {
+                $position = $key;
+                break;
+            }
+        }
+        $btnLeft = "";
+        if ($position > 0) {
+            $btnLeft = '<!-- Botón Anterior -->
+            <button class="btn btn-primary" title="Anterior - ' . $arrayMacroprocess[($position - 1)]['mp_name'] . '" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $arrayMacroprocess[($position - 1)]['idMacroprocess'] . '`">
+                <i class="fa fa-arrow-left"></i>
+            </button>';
+        }
+        $btnRight = '';
+        if ($position < (count($arrayMacroprocess)-1)) {
+            $btnRight = '   <!-- Botón Siguiente -->
+            <button class="btn btn-primary" title="Siguiente - ' . $arrayMacroprocess[($position + 1)]['mp_name'] . '" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $arrayMacroprocess[($position + 1)]['idMacroprocess'] . '`">
+                <i class="fa fa-arrow-right"></i>
+            </button>';
+        }
+        $html .= ' </div>
+        <!-- Botones Flotantes -->
+        <div class="floating-buttons">
+            ' . $btnLeft . '
+            <!-- Botón Subir nivel -->
+            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . '`">
+                <i class="fa fa-arrow-up"></i>
+            </button>
+
+            <!-- Botón Recargar -->
+            <button class="btn btn-success" title="Recargar" onclick="location.reload()">
+                <i class="fa fa-refresh"></i>
+            </button>
+            ' . $btnRight . '
+        </div>
+        <!-- Activar tooltips solo en hover -->
+        <script>
+            $(function () {
+                $(`[data-toggle="tooltip"]`).tooltip({
+                    trigger: `hover`
+                })
+            })
+        </script>';
+        return $html;
+    }
+
 }
