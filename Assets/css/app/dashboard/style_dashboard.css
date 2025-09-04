@@ -18,7 +18,7 @@
   background: var(--color-primary);
   color: var(--white);
   transition: all 400ms ease-in-out;
-  animation: pulse 600ms infinite ease-in-out;
+  animation: pulse 800ms infinite ease-in-out;
 }
 @keyframes pulse {
   0% {
@@ -66,4 +66,28 @@
   font-weight: 500;
   color: #999;
   text-align: right;
+}
+.floating-buttons {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1050;
+}
+
+.floating-buttons .btn {
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+.floating-buttons .btn:hover {
+  transform: scale(1.1);
 }

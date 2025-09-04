@@ -8,8 +8,28 @@ class Dashboard extends Controllers
         parent::__construct();
     }
 
-    public function dashboard()
+    public function dashboard($values)
     {
+        $arrayIds = explode(",", $values);
+        //obtenemos la ruta del servidor
+        $query_string = $_SERVER["QUERY_STRING"];
+        //validmoas que el array de id no este vacio
+        if (!empty($values)) {
+            //ahora validamos que todo los datos del array sean numericos
+            if (!isNumericArray($arrayIds)) {
+                //redireccionamos con js al notfound
+                echo "<script>window.location.href='" . base_url() . "/errors/notfound" . "';</script>";
+                die();
+            }
+            //validamos si el array solo es logitud de 1 quiere decir que estamos dentro de un macroprocess
+            if (count($arrayIds) == 1) {
+                $idMacroprocess = $arrayIds[0];
+                $dataMacroprocess = $this->model->select_macroprocess_by_id($idMacroprocess);
+                dep($dataMacroprocess);
+                die();
+            }
+        }
+        $function = $this->index();
         $data['page_id'] = 2;
         $data['page_title'] = "Panel de control";
         $data['page_description'] = "Panel de control";
@@ -43,7 +63,63 @@ class Dashboard extends Controllers
                 "color" => "warning",
             ),
         );
+        $data["page_widget_component"] = $function;
         registerLog("Información de navegación", "El usuario entro a :" . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
         $this->views->getView($this, "dashboard", $data);
+    }
+    /**
+     * Metodo que se encarga de mostrar el componente principal del los componentes del SSOMA
+     */
+    public function index()
+    {
+        $arrayMacroprocess = $this->model->select_macroprocess_active();
+        $html = "";
+        $html .= '
+        <!--Listado de los macroprocesos-->
+        <div class="row">';
+
+        foreach ($arrayMacroprocess as $k => $v):
+            $html .= '
+                <!-- Card 1 -->
+                <div class="col-md-4 mb-4">
+                    <a href="' . base_url() . '/dashboard/dashboard/' . $v["idMacroprocess"] . '"
+                        class="card custom-card p-4 text-center h-100" data-toggle="tooltip" data-placement="top"
+                        title="Haz clic para ver más sobre ' . $v["mp_name"] . '">
+                        <div class="icon-wrapper bg-primary mx-auto">
+                            <i class="fa fa-university"></i>
+                        </div>
+                        <h5>' . $v["mp_name"] . '</h5>
+                        <p>' . limitarCaracteres($v["mp_description"], 50, "...") . '</p>
+                        <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["mp_registrationDate"]) . '</div>
+                    </a>
+                </div>';
+        endforeach;
+        $html .= ' </div>
+        <!-- Botones Flotantes -->
+        <div class="floating-buttons">
+            <!-- Botón Anterior -->
+            <button class="btn btn-primary" title="Anterior">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+
+            <!-- Botón Recargar -->
+            <button class="btn btn-success" title="Recargar" onclick="location.reload()">
+                <i class="fa fa-refresh"></i>
+            </button>
+
+            <!-- Botón Siguiente -->
+            <button class="btn btn-primary" title="Siguiente">
+                <i class="fa fa-arrow-right"></i>
+            </button>
+        </div>
+        <!-- Activar tooltips solo en hover -->
+        <script>
+            $(function () {
+                $(`[data-toggle="tooltip"]`).tooltip({
+                    trigger: `hover`
+                })
+            })
+        </script>';
+        return $html;
     }
 }

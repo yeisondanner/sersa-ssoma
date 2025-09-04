@@ -1218,3 +1218,41 @@ function renderTemplate(string $path, array $variables = []): string
     // Obtener el contenido procesado y limpiar el buffer
     return ob_get_clean();
 }
+/**
+ * Verifica si un array contiene únicamente valores numéricos.
+ *
+ * Esta función valida dos cosas:
+ *   1. Que el parámetro proporcionado sea realmente un array.
+ *   2. Que todos los elementos del array sean numéricos (enteros, flotantes o cadenas numéricas).
+ *
+ * Se utiliza la función nativa `is_numeric()` de PHP, que considera numéricos:
+ *   - Enteros: 10, -5
+ *   - Decimales: 3.14, -0.5
+ *   - Cadenas numéricas: "100", "3.1416", "0"
+ *
+ * Ejemplos de uso:
+ *   esArrayNumerico([1, 2, 3]);          // true
+ *   esArrayNumerico([10, "20", 30.5]);   // true
+ *   esArrayNumerico([10, "hola", 30]);   // false
+ *   esArrayNumerico("123");              // false (no es array)
+ *
+ * @param array $array El array a validar.
+ * @return bool true si todos los elementos son numéricos, false en caso contrario.
+ */
+function isNumericArray(array $array): bool
+{
+    // Verificar que el argumento realmente sea un array
+    if (!is_array($array)) {
+        return false;
+    }
+
+    // Iterar por cada valor y validar que sea numérico
+    foreach ($array as $value) {
+        if (!is_numeric($value)) {
+            return false;
+        }
+    }
+
+    // Si llegó hasta aquí, todos los elementos son numéricos
+    return true;
+}
