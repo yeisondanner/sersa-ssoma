@@ -363,7 +363,7 @@ class Macroprocess extends Controllers
 
             $data = array(
                 "title" => "Eliminación correcta",
-                "message" => "Se eliminó correctamente el macroproceso «{$name}»; ID: {$id}",
+                "message" => "Se eliminó correctamente el macroproceso «{$name}»",
                 "type" => "success",
                 "status" => true
             );
