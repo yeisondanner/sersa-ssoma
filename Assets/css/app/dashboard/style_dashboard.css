@@ -1,30 +1,69 @@
-.card-hover .card-body {
-  background: rgba(255, 255, 255, 0.1); /* transparencia */
-  backdrop-filter: blur(12px); /* el efecto vidrio */
-  -webkit-backdrop-filter: blur(12px);
+.custom-card {
+  border: none;
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  color: black;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #fff;
+  overflow: hidden;
+  text-decoration: none; /* quita el subrayado */
+  color: inherit; /* mantiene colores del texto */
+  display: block;
 }
 
-/* Animación al pasar el mouse */
-.card-hover:hover .card-body {
-  transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+.custom-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-primary);
+  color: var(--white);
+  transition: all 400ms ease-in-out;
+  animation: pulse 600ms infinite ease-in-out;
 }
-
-.icon-circle {
-  width: 40px;
-  height: 40px;
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+  }
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.95);
+  }
+}
+.custom-card:hover .date,
+.custom-card:hover p {
+  color: var(--white) !important;
+}
+.custom-card:hover .icon-wrapper {
+  background-color: var(--white) !important;
+  color: var(--color-primary) !important;
+}
+.icon-wrapper {
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 15px;
 }
 
-.icon-circle i {
-  color: black;
+.custom-card h5 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.custom-card p {
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+.custom-card .date {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #999;
+  text-align: right;
 }
