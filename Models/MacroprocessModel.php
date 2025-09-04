@@ -17,7 +17,7 @@ class MacroprocessModel extends Mysql
     public function select_macroprocess(): array
     {
         $query = "SELECT * FROM tb_macroprocess 
-                    ORDER BY idMacroprocess ASC;";
+                    ORDER BY idMacroprocess DESC;";
         $request = $this->select_all($query, []);
         return $request;
     }
@@ -93,6 +93,18 @@ class MacroprocessModel extends Mysql
         $arrValues = [$this->id];
         $request = $this->select($query, $arrValues);
         //validamos que el request no esté vacío, esto significa que el macroproceso tiene registros asociados, devolvera true y si no false
+        return $request;
+    }
+    /**
+     * Metodo que te permite obtener los macroprocesos con el nombre
+     * @param string $name
+     * @return array
+     */
+    public function select_macroprocess_by_name(string $name)
+    {
+        $this->name = $name;
+        $sql = "SELECT*FROM tb_macroprocess AS tbmp WHERE tbmp.mp_name=?;";
+        $request = $this->select($sql, [$this->name]);
         return $request;
     }
 }

@@ -44,7 +44,7 @@ function loadTable() {
       {
         extend: "excelHtml5",
         text: "<i class='fa fa-file-excel-o'></i> Excel",
-        title: "Reporte de gestion de macroprocesos en Excel",
+        title: "Reporte de gestión de Macroprocesos en Excel",
         className: "btn btn-success",
         exportOptions: {
           columns: [0, 1, 2, 3, 4, 5],
@@ -53,7 +53,7 @@ function loadTable() {
       {
         extend: "csvHtml5",
         text: "<i class='fa fa-file-text'></i> CSV",
-        title: "Reporte de gestion de macroprocesos en CSV",
+        title: "Reporte de gestión de Macroprocesos en CSV",
         className: "btn btn-info",
         exportOptions: {
           columns: [0, 1, 2, 3, 4, 5],
@@ -62,7 +62,7 @@ function loadTable() {
       {
         extend: "pdfHtml5",
         text: "<i class='fa fa-file-pdf-o'></i> PDF",
-        title: "Reporte de gestion de macroprocesos en PDF",
+        title: "Reporte de gestión de Macroprocesos en PDF",
         className: "btn btn-danger",
         orientation: "landscape",
         pageSize: "LEGAL",
@@ -233,7 +233,7 @@ function saveData() {
       });
   });
 }
-//funcion que se encarga de mostrar el modal para actualizar los datos deel macroproceso
+//funcion que se encarga de mostrar el modal para actualizar los datos del macroproceso
 function loadDataUpdate() {
   const btnUpdateItem = document.querySelectorAll(".update-item");
   btnUpdateItem.forEach((item) => {
@@ -381,7 +381,7 @@ function confirmationDelete() {
         "¿Está seguro de eliminar el Macroproceso <strong>" +
         name +
         " </strong>?";
-      //Asiganamos los valores obtenidos y los enviamos a traves de un atributo dentro del btn de confirmacion de eliminar
+      //Asignamos los valores obtenidos y los enviamos a traves de un atributo dentro del btn de confirmacion de eliminar
       const confirmDelete = document.getElementById("confirmDelete");
       confirmDelete.setAttribute("data-id", id);
       confirmDelete.setAttribute("data-name", name);
