@@ -7,75 +7,138 @@ class Dashboard extends Controllers
         isSession();
         parent::__construct();
     }
-
+    /**
+     * Controlador del Panel de Control (Dashboard).
+     * Gestiona la navegación según el nivel (Macroproceso, Proceso, Hilo, Subhilo).
+     */
     public function dashboard($values)
     {
+        // Convertimos el string de IDs en array
         $arrayIds = explode(",", $values);
-        //obtenemos la ruta del servidor
-        $query_string = $_SERVER["QUERY_STRING"];
-        //validmoas que el array de id no este vacio
-        if (!empty($values)) {
-            //ahora validamos que todo los datos del array sean numericos
-            if (!isNumericArray($arrayIds)) {
-                //redireccionamos con js al notfound
-                echo "<script>window.location.href='" . base_url() . "/errors/notfound" . "';</script>";
-                die();
-            }
-            //obtencion de informacion generales
-            $idMacroprocess = $arrayIds[0];
-            $dataMacroprocess = $this->model->select_macroprocess_by_id($idMacroprocess);
-            //validamos si el array solo es logitud de 1 quiere decir que estamos dentro de un macroprocess
-            if (count($arrayIds) == 1) {
-                $function = $this->proceses_associed_macroprocess_by_id($idMacroprocess, $dataMacroprocess);
-            } else if (count($arrayIds) == 2) {
-                $idProcess = $arrayIds[1];
-                $dataProcess = ["Macroprocess" => $dataMacroprocess, "Process" => $this->model->select_process_by_id($idProcess)];
-                $function = $this->thread_associed_process_by_id($idProcess, $dataProcess);
-            } else {
-                $idProcess = $arrayIds[1];
-                $dataProcess = ["Macroprocess" => $dataMacroprocess, "Process" => $this->model->select_process_by_id($idProcess)];
-                $function = $this->subthread_by_thread_by_process_by_macroprocess($arrayIds, $dataProcess);
-            }
-        } else {
-            $function = $this->index();
+
+        // Si no hay parámetros, mostrar vista principal del dashboard
+        if (empty($values)) {
+            return $this->renderDashboard($this->index());
         }
-        $data['page_id'] = 2;
-        $data['page_title'] = "Panel de control";
-        $data['page_description'] = "Panel de control";
-        $data['page_container'] = "Dashboard";
-        $data['page_view'] = 'dashboard';
-        $data['page_js_css'] = "dashboard";
-        $data['page_vars'] = ["login", "login_info"];
-        $data['page_widget'] = array(
-            array(
+
+        // Validar que todos los IDs sean numéricos
+        if (!isNumericArray($arrayIds)) {
+            $this->redirectNotFound();
+        }
+
+        // -------------------------------
+        // 1. Obtener Macroproceso
+        // -------------------------------
+        $idMacroprocess = $arrayIds[0];
+        $dataMacroprocess = $this->model->select_macroprocess_by_id($idMacroprocess);
+
+        // -------------------------------
+        // 2. Determinar nivel de navegación
+        // -------------------------------
+        $function = null;
+        $idProcess = $arrayIds[1] ?? null;
+
+        switch (count($arrayIds)) {
+            case 1: // Solo Macroproceso
+                $function = $this->proceses_associed_macroprocess_by_id($idMacroprocess, $dataMacroprocess);
+                break;
+
+            case 2: // Macroproceso -> Proceso
+                $dataProcess = [
+                    "Macroprocess" => $dataMacroprocess,
+                    "Process" => $this->model->select_process_by_id($idProcess)
+                ];
+                $function = $this->thread_associed_process_by_id($idProcess, $dataProcess);
+                break;
+
+            default: // Macroproceso -> Proceso -> Hilo/Subhilo
+                $dataProcess = [
+                    "Macroprocess" => $dataMacroprocess,
+                    "Process" => $this->model->select_process_by_id($idProcess)
+                ];
+                $function = $this->subthread_by_thread_by_process_by_macroprocess($arrayIds, $dataProcess);
+                break;
+        }
+
+        // Renderizar dashboard con el contenido dinámico
+        return $this->renderDashboard($function);
+    }
+
+    /**
+     * Redirige a página de error Not Found usando JS.
+     */
+    private function redirectNotFound()
+    {
+        echo "<script>window.location.href='" . base_url() . "/errors/notfound';</script>";
+        die();
+    }
+
+    /**
+     * Renderiza la vista del Dashboard con parámetros comunes.
+     *
+     * @param mixed $component Contenido dinámico del dashboard según navegación.
+     */
+    private function renderDashboard($component)
+    {
+        $data = [
+            'page_id' => 2,
+            'page_title' => "Panel de control",
+            'page_description' => "Panel de control",
+            'page_container' => "Dashboard",
+            'page_view' => 'dashboard',
+            'page_js_css' => "dashboard",
+            'page_vars' => ["login", "login_info"],
+            'page_widget' => $this->getWidgets(),
+            'page_widget_component' => $component,
+        ];
+
+        // Registrar log de navegación
+        registerLog(
+            "Información de navegación",
+            "El usuario entró a: " . $data['page_title'],
+            3,
+            $_SESSION['login_info']['idUser']
+        );
+
+        // Renderizar vista
+        $this->views->getView($this, "dashboard", $data);
+    }
+
+    /**
+     * Devuelve los widgets fijos que aparecen en el dashboard.
+     *
+     * @return array
+     */
+    private function getWidgets()
+    {
+        return [
+            [
                 "title" => "Usuarios",
                 "icon" => "fa fa-users",
                 "value" => $this->model->select_count_users()['CantidadUsuariosActivos'],
                 "link" => base_url() . "/users",
-                "text" => "Cantidad de usuarios que tienen acceso al sistema y que estan activos",
+                "text" => "Cantidad de usuarios activos en el sistema",
                 "color" => "primary",
-            ),
-            array(
+            ],
+            [
                 "title" => "Roles",
                 "icon" => "fa fa-tags",
                 "value" => $this->model->select_count_roles()['CantidadRoles'],
                 "link" => base_url() . "/roles",
-                "text" => "Cantidad de roles que existen en el sistema y que estan activos",
+                "text" => "Cantidad de roles existentes y activos en el sistema",
                 "color" => "info",
-            ),
-            array(
+            ],
+            [
                 "title" => "Espacio Disponible",
                 "icon" => "fa fa-hdd-o",
                 "value" => "Dispo.: 1GB de 2GB",
                 "link" => base_url() . "/roles",
-                "text" => "Cantidad de espacio disponible en el sistema para su cuenta",
+                "text" => "Espacio disponible en el sistema para la cuenta",
                 "color" => "warning",
-            ),
-        );
-        $data["page_widget_component"] = $function;
-        registerLog("Información de navegación", "El usuario entro a :" . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
-        $this->views->getView($this, "dashboard", $data);
+            ],
+        ];
     }
+
     /**
      * Metodo que se encarga de mostrar el componente principal del los componentes del SSOMA
      * @return  string
@@ -83,43 +146,143 @@ class Dashboard extends Controllers
     public function index()
     {
         $arrayMacroprocess = $this->model->select_macroprocess_active();
+        $url = base_url();
         $html = "";
-        $html .= '
-        <!--Listado de los macroprocesos-->
-        <div class="row">';
+        $html .= <<<HTML
+                    <!--Listado de los macroprocesos-->
+                    <div class="row"> 
+                HTML;
 
         foreach ($arrayMacroprocess as $k => $v):
-            $html .= '
-                <!-- Card 1 -->
-                <div class="col-md-4 mb-4">
-                    <a href="' . base_url() . '/dashboard/dashboard/' . $v["idMacroprocess"] . '"
-                        class="card custom-card p-4 text-center h-100" data-toggle="tooltip" data-placement="top"
-                        title="Haz clic para ver más sobre ' . $v["mp_name"] . '">
-                        <div class="icon-wrapper bg-primary mx-auto">
-                            <i class="fa fa-university"></i>
-                        </div>
-                        <h5>' . $v["mp_name"] . '</h5>
-                        <p class="text-justify" title="' . $v["mp_description"] . '">' . limitarCaracteres($v["mp_description"], 50, "...") . '</p>
-                        <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["mp_registrationDate"]) . '</div>
-                    </a>
-                </div>';
+            $desc = limitarCaracteres($v["mp_description"], 50, "...");
+            $dateFormat = dateFormat($v["mp_registrationDate"]);
+            $urlCard = $url . '/dashboard/dashboard/' . $v["idMacroprocess"];
+            $html .= $this->renderCard([
+                'url' => $urlCard,
+                'icon' => 'fa fa-university',
+                'name' => $v["mp_name"],
+                'description_full' => $v["mp_description"],
+                'description_short' => $desc,
+                'date' => $dateFormat
+            ]);
         endforeach;
-        $html .= ' </div>
-        <!-- Botones Flotantes -->
-        <div class="floating-buttons">          
-            <!-- Botón Recargar -->
-            <button class="btn btn-success" title="Recargar" onclick="location.reload()">
-                <i class="fa fa-refresh"></i>
-            </button>
-        </div>
-        <!-- Activar tooltips solo en hover -->
-        <script>
-            $(function () {
-                $(`[data-toggle="tooltip"]`).tooltip({
-                    trigger: `hover`
-                })
-            })
-        </script>';
+        $html .= '</div>';
+        /**
+         * =================================================================================================
+         * Seccion de botones  flotantes
+         * =================================================================================================
+         */
+        $timesMProcess = [
+            "id" => "",
+            "name" => ""
+        ];
+        $html .= $this->renderButtonsNavigation(
+            $timesMProcess,
+            0,                         // ID actual
+            "",        // baseUrl
+            "",          // backUrl
+            "id",                       // clave ID
+            "name",                          // clave nombre
+            [                                   // opciones
+                'showBack' => false,
+                'showReload' => true,
+                'showPrev' => false,
+                'showNext' => false,
+            ]
+        );
+        $html .= <<<HTML
+                    <script>
+                        $(function () {
+                            $(`[data-toggle="tooltip"]`).tooltip({
+                                        trigger: `hover`
+                                    })
+                                })
+                  </script>
+                  HTML;
+        return $html;
+    }
+    /**
+     * Renderización de una tarjeta (card) HTML adaptable con Bootstrap y FontAwesome.
+     *
+     * Esta función se encarga de construir dinámicamente un bloque de tarjeta 
+     * a partir de los datos recibidos en un array asociativo. El componente 
+     * renderizado utiliza la estructura de Bootstrap 4 (`col-md-4`, `card`, etc.) 
+     * y está optimizado para incluir un ícono, nombre, descripciones y fecha.
+     * 
+     * Además, se incorpora un tooltip (Bootstrap) que muestra información adicional 
+     * al posicionar el cursor sobre el componente.
+     *
+     * --- Estructura esperada del array de entrada ---
+     * El parámetro `$data` debe contener las siguientes claves obligatorias:
+     * 
+     * - **url** (string): URL a la cual dirigirá el enlace de la tarjeta.
+     * - **icon** (string): Clase(s) CSS de FontAwesome para mostrar un ícono representativo.
+     * - **name** (string): Nombre o título de la tarjeta.
+     * - **description_full** (string): Descripción completa (se muestra como tooltip).
+     * - **description_short** (string): Descripción resumida (se muestra en el cuerpo de la tarjeta).
+     * - **date** (string): Fecha relacionada con el contenido (ejemplo: "2025-09-05").
+     *
+     * --- Ejemplo de uso ---
+     * ```php
+     * $cardData = [
+     *     'url' => 'https://ejemplo.com/detalle',
+     *     'icon' => 'fa fa-book',
+     *     'name' => 'Documentación',
+     *     'description_full' => 'Documentación técnica completa del sistema.',
+     *     'description_short' => 'Resumen de la documentación.',
+     *     'date' => '2025-09-05'
+     * ];
+     * 
+     * echo $this->renderCard($cardData);
+     * ```
+     *
+     * --- Salida generada ---
+     * Devuelve un bloque HTML equivalente a:
+     * ```html
+     * <div class="col-md-4 mb-4">
+     *   <a href="https://ejemplo.com/detalle"
+     *      class="card custom-card p-4 text-center h-100"
+     *      data-toggle="tooltip" data-placement="top"
+     *      title="Haz clic para ver más sobre Documentación">
+     *      <div class="icon-wrapper bg-primary mx-auto">
+     *          <i class="fa fa-book"></i>
+     *      </div>
+     *      <h5>Documentación</h5>
+     *      <p class="text-justify" title="Documentación técnica completa del sistema.">
+     *          Resumen de la documentación.
+     *      </p>
+     *      <div class="date"><i class="fa fa-calendar"></i> 2025-09-05</div>
+     *   </a>
+     * </div>
+     * ```
+     *
+     * @param  array $data Array asociativo con los datos de la tarjeta 
+     *                     (claves: url, icon, name, description_full, description_short, date).
+     * @return string HTML generado para la tarjeta lista para renderizar en la vista.
+     */
+    private function renderCard(array $data)
+    {
+        $html = "";
+        $html .= <<<HTML
+            <!-- Card Component -->
+            <div class="col-md-4 mb-4">
+                <a href="{$data['url']}"
+                   class="card custom-card p-4 text-center h-100"
+                   data-toggle="tooltip" data-placement="top"
+                   title="Haz clic para ver más sobre {$data['name']}">
+                   <div class="icon-wrapper bg-primary mx-auto">
+                       <i class="{$data['icon']}"></i>
+                   </div>
+                   <h5>{$data['name']}</h5>
+                   <p class="text-justify" title="{$data['description_full']}">
+                       {$data['description_short']}
+                   </p>
+                   <div class="date">
+                       <i class="fa fa-calendar"></i> {$data['date']}
+                   </div>
+                </a>
+            </div>
+        HTML;
         return $html;
     }
     /** 
@@ -130,88 +293,77 @@ class Dashboard extends Controllers
     public function proceses_associed_macroprocess_by_id(int $id, array $data)
     {
         $dataProcess = $this->model->select_process_associed_macroprocess_by_id($id);
+        $url = base_url();
         $html = "";
-        $html .= '
-        <div class="app-title pt-5">
-            <div class="w-100">
-                <h1 class="text-primary mb-3"><i class="fa fa-university"></i>' . $data["mp_name"] . '</h1>
-                <p class="mb-2">' . $data["mp_description"] . '</p>
-                <hr class="w-100">
-                    <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">
-                        <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/" class="text-white"><i class="fa fa fa-globe fa-lg"></i></a></li>
-                        <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/dashboard/' . $data["idMacroprocess"] . '" class="text-white"><i class="fa fa fa-university"></i> ' . $data["mp_name"] . '</a></li>
-                    </ul>
-            </div>          
-        
-        </div>
-        
-        <!--Listado de los macroprocesos-->
-        <div class="row">';
-
+        //renderisamos la cabezera y breadcrumbs
+        $html .= $this->renderHeadAndBreadcrumbs([
+            "name" => $data["mp_name"],
+            "icon" => "fa fa-university",
+            "description" => $data["mp_description"],
+            "url" => $url . "/dashboard/dashboard",
+            "macroprocess" => [
+                "name" => $data["mp_name"],
+                "id" => $data["idMacroprocess"],
+                'icon' => 'fa fa-university'
+            ],
+        ]);
+        $html .= <<<HTML
+                        <!--Listado de los macroprocesos-->
+                        <div class="row">
+                    HTML;
         foreach ($dataProcess as $k => $v):
-            $html .= '
-                <!-- Card 1 -->
-                <div class="col-md-4 mb-4">
-                    <a href="' . base_url() . '/dashboard/dashboard/' . $data["idMacroprocess"] . '/' . $v["idProcess"] . '"
-                        class="card custom-card p-4 text-center h-100" data-toggle="tooltip" data-placement="top"
-                        title="Haz clic para ver más sobre ' . $v["p_name"] . '">
-                        <div class="icon-wrapper bg-primary mx-auto">
-                            <i class="fa fa-bookmark"></i>
-                        </div>
-                        <h5>' . $v["p_name"] . '</h5>
-                        <p class="text-justify" title="' . $v["p_description"] . '">' . limitarCaracteres($v["p_description"], 50, "...") . '</p>
-                        <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["p_registrationDate"]) . '</div>
-                    </a>
-                </div>';
+            $desc = limitarCaracteres($v["p_description"], 50, "...");
+            $dateFormat = dateFormat($v["p_registrationDate"]);
+            $urlCard = $url . '/dashboard/dashboard/' . $data["idMacroprocess"] . '/' . $v["idProcess"];
+            $html .= $this->renderCard([
+                'url' => $urlCard,
+                'icon' => 'fa fa-bookmark',
+                'name' => $v["p_name"],
+                'description_full' => $v["p_description"],
+                'description_short' => $desc,
+                'date' => $dateFormat
+            ]);
+
         endforeach;
+        $html .= ' </div>';
         //metodo que se encarga de configurar los botones de navegacion
         $arrayMacroprocess = $this->model->select_macroprocess_active();
         $position = 0;
+        $timesMProcess = [];
         foreach ($arrayMacroprocess as $key => $value) {
             if ($value['idMacroprocess'] == $id) {
-                $position = $key;
-                break;
+                $currentId = $value['idMacroprocess'];
             }
+            $timesMProcess[$key] = [
+                "id" => $value['idMacroprocess'],
+                "name" => $value['mp_name']
+            ];
         }
-        $btnLeft = "";
-        if ($position > 0) {
-            $btnLeft = '<!-- Botón Anterior -->
-            <button class="btn btn-primary" title="Anterior - ' . $arrayMacroprocess[($position - 1)]['mp_name'] . '" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $arrayMacroprocess[($position - 1)]['idMacroprocess'] . '`">
-                <i class="fa fa-arrow-left"></i>
-            </button>';
-        }
-        $btnRight = '';
-        if ($position < (count($arrayMacroprocess) - 1)) {
-            $btnRight = '   <!-- Botón Siguiente -->
-            <button class="btn btn-primary" title="Siguiente - ' . $arrayMacroprocess[($position + 1)]['mp_name'] . '" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $arrayMacroprocess[($position + 1)]['idMacroprocess'] . '`">
-                <i class="fa fa-arrow-right"></i>
-            </button>';
-        }
-        $html .= ' </div>
-        <!-- Botones Flotantes -->
-        <div class="floating-buttons">
-            ' . $btnLeft . '
-            <!-- Botón Subir nivel -->
-            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . '`">
-                <i class="fa fa-arrow-up"></i>
-            </button>
-
-            <!-- Botón Recargar -->
-            <button class="btn btn-success" title="Recargar" onclick="location.reload()">
-                <i class="fa fa-refresh"></i>
-            </button>
-            ' . $btnRight . '
-        </div>
-        <!-- Activar tooltips solo en hover -->
-        <script>
-            $(function () {
-                $(`[data-toggle="tooltip"]`).tooltip({
-                    trigger: `hover`
-                })
-            })
-        </script>';
+        $urlLevelUp = $url . '/dashboard/dashboard';
+        $baseUrl = $url . '/dashboard/dashboard';
+        $html .= $this->renderButtonsNavigation(
+            $timesMProcess,
+            $currentId,                         // ID actual
+            $baseUrl,        // baseUrl
+            $urlLevelUp,          // backUrl
+            "id",                       // clave ID
+            "name",                          // clave nombre
+            [                                   // opciones
+                'showBack' => true,
+                'showReload' => true,
+                'showPrev' => true,
+                'showNext' => true,
+            ]
+        );
+        $html .= <<<HTML
+                    <script>
+                        $(function () {
+                            $(`[data-toggle="tooltip"]`).tooltip({
+                                        trigger: `hover`
+                                    })
+                                })
+                    </script>
+                  HTML;
         return $html;
     }
     /**
@@ -223,54 +375,49 @@ class Dashboard extends Controllers
     {
         $idMacroprocess = $data['Macroprocess']["idMacroprocess"];
         $dataThread = $this->model->select_thread_associed_process_associed_macroprocess_by_id($idprocess, $idMacroprocess);
+        $url = base_url();
         $html = "";
-        //elemento cabezera
-        $html .= '
-        <div class="app-title pt-5">
-            <div class="w-100">
-                <h1 class="text-primary mb-3"><i class="fa fa-bookmark"></i>' . $data['Process']["p_name"] . '</h1>
-                <p class="mb-2">' . $data['Process']["p_description"] . '</p>
-                <hr class="w-100">
-                    <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">
-                        <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/" class="text-white"><i class="fa fa fa-globe fa-lg"></i></a></li>
-                                <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '" class="text-white"><i class="fa fa fa-university"></i> ' . $data['Macroprocess']["mp_name"] . '</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $data['Process']["idProcess"] . '" class="text-white"><i class="fa fa fa-bookmark"></i> ' . $data['Process']["p_name"] . '</a></li>
-                    </ul>
-            </div>          
-        
-        </div>';
+        //renderisamos la cabezera y breadcrumbs
+        $html .= $this->renderHeadAndBreadcrumbs([
+            "name" => $data['Process']["p_name"],
+            "icon" => "fa fa-bookmark",
+            "description" => $data['Process']["p_description"],
+            "url" => $url . "/dashboard/dashboard",
+            "macroprocess" => [
+                "name" => $data['Macroprocess']["mp_name"],
+                "id" => $idMacroprocess,
+                'icon' => 'fa fa-university'
+            ],
+            "process" => [
+                "name" => $data['Process']["p_name"],
+                "id" => $data['Process']["idProcess"],
+                'icon' => 'fa fa-bookmark'
+            ]
+        ]);
         //elemento contenido
-        $html .= ' <!--Listado de los macroprocesos-->
-        <div class="row">';
+        $html .= <<<HTML
+                    <!--Listado de los macroprocesos-->
+                    <div class="row">
+                HTML;
         foreach ($dataThread as $k => $v):
-            //validdamos el que tipo de menu es
-            if ($v['t_type'] == "open_menu") {
-                $icon = "<i class='fa fa-bars'></i>";
-            } else if ($v['t_type'] == "open_file") {
-                $icon = "<i class='fa fa-file'></i>";
-
-            } else if ($v["t_type"] == "open_form") {
-                $icon = "<i class='fa fa-pencil'></i>";
-            } else {
-                $icon = "<i class='fa fa-exclamation'></i>";
-            }
-            $html .= '
-                <!-- Card 1 -->
-                <div class="col-md-4 mb-4">
-                    <a href="' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $data['Process']["idProcess"] . '/' . $v["idThreads"] . '"
-                        class="card custom-card p-4 text-center h-100" data-toggle="tooltip" data-placement="top"
-                        title="Haz clic para ver más sobre ' . $v["t_name"] . '">
-                        <div class="icon-wrapper bg-primary mx-auto">
-                            ' . $icon . '
-                        </div>
-                        <h5>' . $v["t_name"] . '</h5>
-                        <p class="text-justify" title="' . $v["t_description"] . '">' . limitarCaracteres($v["t_description"], 50, "...") . '</p>
-                        <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["t_registrationDate"]) . '</div>
-                    </a>
-                </div>';
+            // Icono dinámico según tipo de thread
+            $icon = match ($v['t_type']) {
+                "open_menu" => "fa fa-bars",
+                "open_file" => "fa fa-file",
+                "open_form" => "fa fa-pencil",
+                default => "fa fa-exclamation",
+            };
+            $desc = limitarCaracteres($v["t_description"], 50, "...");
+            $dateFormat = dateFormat($v["t_registrationDate"]);
+            $urlCard = $url . '/dashboard/dashboard/' . $idMacroprocess . '/' . $data['Process']["idProcess"] . '/' . $v["idThreads"];
+            $html .= $this->renderCard([
+                'url' => $urlCard,
+                'icon' => $icon,
+                'name' => $v["t_name"],
+                'description_full' => $v["t_description"],
+                'description_short' => $desc,
+                'date' => $dateFormat
+            ]);
         endforeach;
         $html .= '</div>';
         //metodo que se encarga de configurar los botones de navegacion
@@ -322,132 +469,405 @@ class Dashboard extends Controllers
         </script>';
         return $html;
     }
+
     /**
-     * Metodo que encarga de obtener los subthreas hijas
+     * Método que obtiene los subthreads hijos de un thread específico
+     * y renderiza toda la vista (breadcrumbs, subthreads, navegación).
+     *
+     * @param array $arrids  Arreglo de IDs que representan la ruta de navegación.
+     *                       Ejemplo: [1, 2, 3, 4] (Macroprocess, Process, Thread padre, Thread hijo actual).
+     * @param array $data    Información adicional de Macroprocess y Process obtenida del modelo.
+     *
+     * @return string        HTML completo para renderizar en la vista.
      */
     public function subthread_by_thread_by_process_by_macroprocess(array $arrids, array $data)
     {
-        $idThread = $arrids[(count($arrids) - 1)];
-        $dataThread = $this->model->select_thread_id($idThread);
-        $html = '';
-        $idMacroprocess = $data['Macroprocess']["idMacroprocess"];
+        // Identificadores base
+        $idThread = end($arrids); // último ID = thread actual
+        $idMacro = $data['Macroprocess']["idMacroprocess"];
         $idProcess = $data['Process']["idProcess"];
-        //elemento cabezera
-        $html .= '
-        <div class="app-title pt-5">
-            <div class="w-100">
-                <h1 class="text-primary mb-3"><i class="fa fa-tag"></i> ' . $dataThread['t_name'] . '</h1>
-                <p class="mb-2">' . $dataThread['t_description'] . '</p>
-                <hr class="w-100">
-                    <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">                    
-                     <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/" class="text-white"><i class="fa fa fa-globe fa-lg"></i></a></li>
-                                           <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '" class="text-white"><i class="fa fa fa-university"></i> ' . $data['Macroprocess']["mp_name"] . '</a></li>
-                        <li class="breadcrumb-item"><a
-                                href="' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $data['Process']["idProcess"] . '" class="text-white"><i class="fa fa fa-bookmark"></i> ' . $data['Process']["p_name"] . '</a></li>                        
-                    
-                                ';
-        $url = base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $data['Process']["idProcess"];
-        $urlIdSinUltimo = array_slice($arrids, 2, -1);
-        $urlFinalNavegacion = $url . "/" . implode("/", $urlIdSinUltimo);
-        foreach (array_slice($arrids, 2) as $key => $value) {
-            //omitime que el ultimo bucle se concatene
+        $dataThread = $this->model->select_thread_id($idThread);
+        $baseUrl = base_url() . '/dashboard/dashboard';
 
-            $url .= '/' . $value;
-            $infoThread = $this->model->select_thread_id($value);
-            $html .= '<li class="breadcrumb-item"><a
-                                href="' . $url . '" class="text-white"><i class="fa fa fa-tag"></i> ' . $infoThread["t_name"] . '</a></li>';
+        // 1. Renderizamos la cabezera y breadcrumbs
+        $html = $this->renderHeadAndBreadcrumbs([
+            "name" => $dataThread['t_name'],
+            "icon" => "fa fa-tag",
+            "description" => $dataThread['t_description'],
+            "url" => $baseUrl,
+            "macroprocess" => [
+                "name" => $data['Macroprocess']["mp_name"],
+                "id" => $idMacro,
+                'icon' => 'fa fa-university'
+            ],
+            "process" => [
+                "name" => $data['Process']["p_name"],
+                "id" => $idProcess,
+                'icon' => 'fa fa-bookmark'
+            ],
+            "dataIds" => $arrids
+        ]);
+        // 2. Renderizamos las tarjetas de subthreads
+        $dataSubthreads = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess(
+            $idProcess,
+            $idMacro,
+            $idThread
+        );
+        $html .= '<div class="row">';
+        foreach ($dataSubthreads as $sub => $v) {
+            // Armamos URL dinámica
+            $url = "$baseUrl/$idMacro/$idProcess/" . implode("/", array_slice($arrids, 2));
+            //adicionamos el id del subthread
+            $url .= '/' . $v["idThreads"];
+            // $html .= $this->renderCard($sub, $baseUrl, $idMacro, $idProcess, $arrids);
+            $desc = limitarCaracteres($v["t_description"], 50, "...");
+            $dateFormat = dateFormat($v["t_registrationDate"]);
+            // Icono dinámico según tipo de thread
+            $icon = match ($v['t_type']) {
+                "open_menu" => "fa fa-bars",
+                "open_file" => "fa fa-file",
+                "open_form" => "fa fa-pencil",
+                default => "fa fa-exclamation",
+            };
+            $html .= $this->renderCard([
+                'url' => $url,
+                'icon' => $icon,
+                'name' => $v["t_name"],
+                'description_full' => $v["t_description"],
+                'description_short' => $desc,
+                'date' => $dateFormat
+            ]);
         }
-        $html .= '</ul>
-            </div>          
-        
-        </div>';
-        //obtenemos los elementos hijo
-        $dataSubthreads = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess($idProcess, $idMacroprocess, $idThread);
-        //elemento contenido
-        $html .= ' <!--Listado de los macroprocesos-->
-        <div class="row">';
-        foreach ($dataSubthreads as $k => $v):
-            //validdamos el que tipo de menu es
-            if ($v['t_type'] == "open_menu") {
-                $icon = "<i class='fa fa-bars'></i>";
-            } else if ($v['t_type'] == "open_file") {
-                $icon = "<i class='fa fa-file'></i>";
-
-            } else if ($v["t_type"] == "open_form") {
-                $icon = "<i class='fa fa-pencil'></i>";
-            } else {
-                $icon = "<i class='fa fa-exclamation'></i>";
-            }
-            $html .= '
-                <!-- Card 1 -->
-                <div class="col-md-4 mb-4">
-                    <a href="' . $url . '/' . $v["idThreads"] . '"
-                        class="card custom-card p-4 text-center h-100" data-toggle="tooltip" data-placement="top"
-                        title="Haz clic para ver más sobre ' . $v["t_name"] . '">
-                        <div class="icon-wrapper bg-primary mx-auto">
-                            ' . $icon . '
-                        </div>
-                        <h5>' . $v["t_name"] . '</h5>
-                        <p class="text-justify" title="' . $v["t_description"] . '">' . limitarCaracteres($v["t_description"], 50, "...") . '</p>
-                        <div class="date"><i class="fa fa-calendar"></i> ' . dateFormat($v["t_registrationDate"]) . '</div>
-                    </a>
-                </div>';
-        endforeach;
         $html .= '</div>';
 
-        /**
-         * ============================================================================ 
-         *metodo que se encarga de configurar los botones de navegacion
-         *=============================================================================
-         **/
-        $arrayProcess = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess($idProcess, $idMacroprocess, $dataThread["threads_father"]);
-        $position = 0;
-        //esto se encarga de devolve la posicion de array
-        foreach ($arrayProcess as $key => $value) {
-            if ($value['idThreads'] == $idThread) {
-                $position = $key;
-                break;
-            }
-        }
-        $btnLeft = "";
+        // 3. Renderizamos botones de navegación flotantes
+        $html .= $this->renderNavigationButtons($dataThread, $idThread, $idProcess, $idMacro, $arrids, $baseUrl);
+
+        // 4. Activamos tooltips con jQuery
+        $html .= <<<HTML
+                    <script>
+                        $(function () {
+                            $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+                        });
+                    </script>
+                    HTML;
+
+        return $html;
+    }
+    /**
+     * Renderiza los botones de navegación flotantes:
+     * - Anterior
+     * - Subir nivel
+     * - Recargar
+     * - Siguiente
+     *
+     * @param array  $dataThread   Thread actual
+     * @param int    $idThread     ID del Thread actual
+     * @param int    $idProcess    ID del Process
+     * @param int    $idMacro      ID del Macroprocess
+     * @param array  $arrids       IDs de navegación
+     * @param string $baseUrl      URL base del dashboard
+     *
+     * @return string              HTML de los botones flotantes
+     */
+    private function renderNavigationButtons(array $dataThread, int $idThread, int $idProcess, int $idMacro, array $arrids, string $baseUrl): string
+    {
+        // Obtenemos los threads hermanos para saber posición
+        $arrayProcess = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess(
+            $idProcess,
+            $idMacro,
+            $dataThread["threads_father"]
+        );
+
+        // URL base para subir nivel
+        $urlFinal = "$baseUrl/$idMacro/$idProcess/" . implode("/", array_slice($arrids, 2, -1));
+
+        // Posición del thread actual dentro del array
+        $position = array_search($idThread, array_column($arrayProcess, 'idThreads'));
+
+        $btnLeft = $btnRight = "";
+
+        // Botón "Anterior"
         if ($position > 0) {
-            $btnLeft = '<!-- Botón Anterior -->
-            <button class="btn btn-primary" title="Anterior - ' . $arrayProcess[($position - 1)]['t_name'] . '" onclick="window.location.href=`' . $urlFinalNavegacion . '/' . $arrayProcess[($position - 1)]['idThreads'] . '`">
+            $prev = $arrayProcess[$position - 1];
+            $btnLeft = <<<HTML
+                            <button class="btn btn-primary" title="Anterior - {$prev['t_name']}" 
+                                onclick="window.location.href='$urlFinal/{$prev['idThreads']}'">
+                                <i class="fa fa-arrow-left"></i>
+                            </button>
+                        HTML;
+        }
+
+        // Botón "Siguiente"
+        if ($position < count($arrayProcess) - 1) {
+            $next = $arrayProcess[$position + 1];
+            $btnRight = <<<HTML
+                            <button class="btn btn-primary" title="Siguiente - {$next['t_name']}" 
+                                onclick="window.location.href='$urlFinal/{$next['idThreads']}'">
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                        HTML;
+        }
+
+        // Botones flotantes finales
+        return <<<HTML
+                    <div class="floating-buttons">
+                        $btnLeft
+                        <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href='$urlFinal'">
+                            <i class="fa fa-arrow-up"></i>
+                        </button>
+                        <button class="btn btn-success" title="Recargar" onclick="location.reload()">
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                        $btnRight
+                    </div>
+                HTML;
+    }
+    /**
+     * Renderización dinámica de encabezado y breadcrumbs de navegación.
+     *
+     * Este método construye de forma programática el bloque superior de una vista,
+     * compuesto por un encabezado principal (título, ícono y descripción) y una
+     * lista de breadcrumbs que representan la ruta jerárquica de navegación
+     * dentro del sistema.
+     *
+     * La estructura está basada en componentes de **Bootstrap 4**, utilizando clases
+     * utilitarias para colores, tipografía y espaciado. Además, incorpora íconos
+     * de **FontAwesome**.
+     *
+     * --- Estructura esperada del array `$data` ---
+     * El parámetro `$data` debe contener la siguiente información:
+     *
+     * - **url** (string): Ruta base del módulo o componente.
+     * - **icon** (string): Clase CSS de FontAwesome para el ícono principal.
+     * - **name** (string): Nombre o título principal de la vista.
+     * - **description** (string): Texto descriptivo que se muestra debajo del título.
+     * - **macroprocess** (array): Información del macroproceso actual:
+     *    - **id** (int|string): Identificador único del macroproceso.
+     *    - **icon** (string): Clase de ícono FontAwesome asociada.
+     *    - **name** (string): Nombre del macroproceso.
+     * - **process** *(opcional, array)*: Información del proceso asociado:
+     *    - **id** (int|string): Identificador del proceso.
+     *    - **icon** (string): Clase de ícono FontAwesome asociada.
+     *    - **name** (string): Nombre del proceso.
+     * - **dataIds** *(opcional, array)*: Identificadores jerárquicos adicionales (threads)
+     *   que representan subniveles dentro del breadcrumb.  
+     *   Cada `id` se utiliza para recuperar datos mediante el método 
+     *   `select_thread_id($id)` del modelo.
+     *
+     * --- Ejemplo de uso ---
+     * ```php
+     * $data = [
+     *     'url' => 'https://ejemplo.com/dashboard',
+     *     'icon' => 'fa fa-cogs',
+     *     'name' => 'Gestión de Procesos',
+     *     'description' => 'Panel de control de macroprocesos y procesos',
+     *     'macroprocess' => [
+     *         'id' => 1,
+     *         'icon' => 'fa fa-sitemap',
+     *         'name' => 'Macroproceso Principal'
+     *     ],
+     *     'process' => [
+     *         'id' => 2,
+     *         'icon' => 'fa fa-cog',
+     *         'name' => 'Proceso Secundario'
+     *     ],
+     *     'dataIds' => [1, 2, 15, 27] // Threads jerárquicos adicionales
+     * ];
+     *
+     * echo $this->renderHeadAndBreadcrumbs($data);
+     * ```
+     *
+     * --- Salida generada ---
+     * Se construye un bloque HTML similar a:
+     * ```html
+     * <div class="app-title pt-5">
+     *   <div class="w-100">
+     *     <h1 class="text-primary mb-3">
+     *       <i class="fa fa-cogs"></i> Gestión de Procesos
+     *     </h1>
+     *     <p class="mb-2">Panel de control de macroprocesos y procesos</p>
+     *     <hr class="w-100">
+     *     <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">
+     *       <li class="breadcrumb-item">
+     *         <a href="https://ejemplo.com/dashboard" class="text-white">
+     *           <i class="fa fa-globe fa-lg"></i>
+     *         </a>
+     *       </li>
+     *       <li class="breadcrumb-item">
+     *         <a href="https://ejemplo.com/dashboard/1" class="text-white">
+     *           <i class="fa fa-sitemap"></i> Macroproceso Principal
+     *         </a>
+     *       </li>
+     *       <li class="breadcrumb-item">
+     *         <a href="https://ejemplo.com/dashboard/1/2" class="text-white">
+     *           <i class="fa fa-cog"></i> Proceso Secundario
+     *         </a>
+     *       </li>
+     *       <li class="breadcrumb-item">
+     *         <a href="https://ejemplo.com/dashboard/1/2/15" class="text-white">
+     *           <i class="fa fa-cogs"></i> Subnivel Thread
+     *         </a>
+     *       </li>
+     *     </ul>
+     *   </div>
+     * </div>
+     * ```
+     *
+     * --- Notas importantes ---
+     * - Si no existe `process`, el breadcrumb se cierra después de `macroprocess`.
+     * - Si existe `dataIds`, se itera a partir del tercer elemento (`array_slice($data['dataIds'], 2)`),
+     *   concatenando la URL y obteniendo la información de cada thread desde el modelo.
+     * - Si no existe `dataIds`, el breadcrumb se cierra sin añadir más niveles.
+     *
+     * @param  array $data Datos necesarios para construir el encabezado y breadcrumbs.
+     * @return string HTML generado con la estructura completa del encabezado y breadcrumbs.
+     */
+    private function renderHeadAndBreadcrumbs(array $data): string
+    {
+        $html = "";
+        // Encabezado principal
+        $html .= <<<HTML
+            <div class="app-title pt-5">
+                <div class="w-100">
+                    <h1 class="text-primary mb-3"><i class="{$data['icon']}"></i>{$data['name']}</h1>
+                    <p class="mb-2">{$data['description']}</p>
+                    <hr class="w-100">
+                        <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">
+                            <li class="breadcrumb-item"><a
+                                    href="{$data['url']}" class="text-white"><i class="fa fa fa-globe fa-lg"></i></a></li>
+                            <li class="breadcrumb-item"><a
+                                    href="{$data['url']}/{$data['macroprocess']['id']}" class="text-white"><i class="{$data['macroprocess']['icon']}"></i> {$data['macroprocess']['name']}</a></li>
+        HTML;
+
+        // Validación: si existe un proceso
+        if (isset($data['process'])) {
+            $html .= <<<HTML
+                            <li class="breadcrumb-item"><a
+                                    href="{$data['url']}/{$data['macroprocess']['id']}/{$data['process']['id']}" class="text-white"><i class="{$data['process']['icon']}"></i> {$data['process']['name']}</a></li>
+            HTML;
+        } else {
+            $html .= <<<HTML
+                        </ul>
+                 </div>                       
+            </div>
+            HTML;
+        }
+
+        // Validación: si existen threads adicionales (dataIds)
+        if (isset($data['dataIds'])) {
+            $url = $data['url'] . '/' . $data['macroprocess']['id'] . "/" . $data['process']['id'];
+
+            // Iteramos threads intermedios
+            foreach (array_slice($data['dataIds'], 2) as $threadId) {
+                $url .= "/$threadId";
+                $infoThread = $this->model->select_thread_id($threadId);
+                $html .= <<<HTML
+                                <li class="breadcrumb-item">
+                                    <a href="$url" class="text-white"><i class="{$data['icon']}"></i> {$infoThread["t_name"]}</a>
+                                </li>
+                HTML;
+            }
+
+            $html .= <<<HTML
+                        </ul>
+                </div>                       
+            </div>
+            HTML;
+        } else {
+            $html .= <<<HTML
+                        </ul>
+                </div>                       
+            </div>
+            HTML;
+        }
+
+        return $html;
+    }
+    /**
+     * Renderiza botones de navegación dinámicos (anterior, siguiente, subir nivel, recargar).
+     *
+     * @param array  $items        Lista ordenada de elementos (ej: registros, páginas, threads).
+     * @param mixed  $currentId    ID del elemento actual.
+     * @param string $baseUrl      URL base para navegación (sin el ID).
+     * @param string $backUrl      URL para "subir nivel".
+     * @param string $idKey        Clave usada como identificador en el array (default: 'id').
+     * @param string $nameKey      Clave usada como nombre/etiqueta (default: 'name').
+     * @param array  $options      Opciones extra:
+     *                             - showBack   (bool) mostrar botón "Subir un nivel"
+     *                             - showReload (bool) mostrar botón "Recargar"
+     *                             - showPrev   (bool) mostrar botón "Anterior"
+     *                             - showNext   (bool) mostrar botón "Siguiente"
+     *
+     * @return string HTML con los botones flotantes.
+     */
+    private function renderButtonsNavigation(
+        array $items,
+        $currentId,
+        string $baseUrl,
+        string $backUrl = "#",
+        string $idKey = "id",
+        string $nameKey = "name",
+        array $options = []
+    ): string {
+        $defaults = [
+            'showBack' => true,
+            'showReload' => true,
+            'showPrev' => true,
+            'showNext' => true,
+        ];
+        $options = array_merge($defaults, $options);
+
+        // Buscar posición del elemento actual
+        $position = array_search($currentId, array_column($items, $idKey));
+        $btnLeft = $btnRight = $btnUp = $btnReload = "";
+        // Botón "Anterior"
+        if ($options['showPrev'] && $position > 0) {
+            $prev = $items[$position - 1];
+            $btnLeft = <<<HTML
+            <button class="btn btn-primary" title="Anterior - {$prev[$nameKey]}" 
+                onclick="window.location.href='$baseUrl/{$prev[$idKey]}'">
                 <i class="fa fa-arrow-left"></i>
-            </button>';
+            </button>
+        HTML;
         }
-        $btnRight = '';
-        if ($position < (count($arrayProcess) - 1)) {
-            $btnRight = '   <!-- Botón Siguiente -->
-            <button class="btn btn-primary" title="Siguiente - ' . $arrayProcess[($position + 1)]['t_name'] . '" onclick="window.location.href=`' . $urlFinalNavegacion . '/' . $arrayProcess[($position + 1)]['idThreads'] . '`">
+
+        // Botón "Siguiente"
+        if ($options['showNext'] && $position !== false && $position < count($items) - 1) {
+            $next = $items[$position + 1];
+            $btnRight = <<<HTML
+            <button class="btn btn-primary" title="Siguiente - {$next[$nameKey]}" 
+                onclick="window.location.href='$baseUrl/{$next[$idKey]}'">
                 <i class="fa fa-arrow-right"></i>
-            </button>';
+            </button>
+        HTML;
         }
-        $html .= '
-        <!-- Botones Flotantes -->
-        <div class="floating-buttons">
-            ' . $btnLeft . '
-            <!-- Botón Subir nivel -->
-            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . $urlFinalNavegacion . '`">
+
+        // Botón "Subir nivel"
+        if ($options['showBack']) {
+            $btnUp = <<<HTML
+            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href='$backUrl'">
                 <i class="fa fa-arrow-up"></i>
             </button>
+        HTML;
+        }
 
-            <!-- Botón Recargar -->
+        // Botón "Recargar"
+        if ($options['showReload']) {
+            $btnReload = <<<HTML
             <button class="btn btn-success" title="Recargar" onclick="location.reload()">
                 <i class="fa fa-refresh"></i>
             </button>
-            ' . $btnRight . '
-        </div>
-        <!-- Activar tooltips solo en hover -->
-        <script>
-            $(function () {
-                $(`[data-toggle="tooltip"]`).tooltip({
-                    trigger: `hover`
-                })
-            })
-        </script>';
-        return $html;
+        HTML;
+        }
+
+        return <<<HTML
+                    <div class="floating-buttons">
+                        $btnLeft
+                        $btnUp
+                        $btnReload
+                        $btnRight
+                    </div>
+                HTML;
     }
 }
