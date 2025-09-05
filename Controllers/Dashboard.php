@@ -31,6 +31,9 @@ class Dashboard extends Controllers
         // -------------------------------
         $idMacroprocess = $arrayIds[0];
         $dataMacroprocess = $this->model->select_macroprocess_by_id($idMacroprocess);
+        if (empty($dataMacroprocess)) {
+            $this->redirectNotFound();
+        }
 
         // -------------------------------
         // 2. Determinar nivel de navegación
@@ -52,9 +55,10 @@ class Dashboard extends Controllers
                 break;
 
             default: // Macroproceso -> Proceso -> Hilo/Subhilo
+                $dataProcess = $this->model->select_process_by_id($idProcess);
                 $dataProcess = [
                     "Macroprocess" => $dataMacroprocess,
-                    "Process" => $this->model->select_process_by_id($idProcess)
+                    "Process" => $dataProcess,
                 ];
                 $function = $this->subthread_by_thread_by_process_by_macroprocess($arrayIds, $dataProcess);
                 break;
@@ -206,7 +210,7 @@ class Dashboard extends Controllers
      * @param  int $id
      * @return string
      */
-    public function proceses_associed_macroprocess_by_id(int $id, array $data)
+    public function proceses_associed_macroprocess_by_id(int $id, array $data): string
     {
         $dataProcess = $this->model->select_process_associed_macroprocess_by_id($id);
         $url = base_url();
@@ -287,7 +291,7 @@ class Dashboard extends Controllers
      * @param int $idprocess
      * @return mixed
      */
-    public function thread_associed_process_by_id(int $idprocess, array $data)
+    public function thread_associed_process_by_id(int $idprocess, array $data): string
     {
         $idMacroprocess = $data['Macroprocess']["idMacroprocess"];
         $dataThread = $this->model->select_thread_associed_process_associed_macroprocess_by_id($idprocess, $idMacroprocess);
@@ -396,7 +400,7 @@ class Dashboard extends Controllers
      *
      * @return string        HTML completo para renderizar en la vista.
      */
-    public function subthread_by_thread_by_process_by_macroprocess(array $arrids, array $data)
+    public function subthread_by_thread_by_process_by_macroprocess(array $arrids, array $data): string
     {
         // Identificadores base
         $idThread = end($arrids); // último ID = thread actual
@@ -862,7 +866,7 @@ class Dashboard extends Controllers
      *                     (claves: url, icon, name, description_full, description_short, date).
      * @return string HTML generado para la tarjeta lista para renderizar en la vista.
      */
-    private function renderCard(array $data)
+    private function renderCard(array $data): string
     {
         $html = "";
         $html .= <<<HTML
