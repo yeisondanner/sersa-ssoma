@@ -173,7 +173,7 @@ class Process extends Controllers
             }
         }
         //falta valida que el nombre no exista en la base de datos
-        //validamos que no exista el mismo nombre en la bd
+        //validamos que no exista el mismo proceso en un macroproceso existentte bd
         $requestP = $this->model->select_process_by_name_and_macro($strName, $intMacroprocessId);
         if ($requestP) {
             registerLog("Ocurrió un error inesperado", "Registro cancelado debido a que ya existe un proceso con ese nombre en el macroproceso ID={$intMacroprocessId}. Nombre='{$strName}'", 1, $_SESSION['login_info']['idUser']);
