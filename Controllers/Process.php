@@ -74,10 +74,11 @@ class Process extends Controllers
         $id = intval($_GET['id']);
         // Validamos que el ID sea válido
         if ($id <= 0) {
-            registerLog("Ocurrió un error inesperado", "ID de proceso no válido", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Consulta rechazada: el ID de proceso no es válido (<= 0). ID recibido = '" . ($_GET['id'] ?? 'N/D') .
+                        "'. Ruta: " . (($_SERVER['REQUEST_URI'] ?? '') ?: 'N/D'), 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "ID de proceso no válido",
+                "message" => "El ID del proceso no es válido. Intente nuevamente",
                 "type" => "error",
                 "status" => false
             );
@@ -86,10 +87,10 @@ class Process extends Controllers
         // Obtenemos el proceso por su ID
         $data = $this->model->select_processes_by_id($id);
         if (!$data) {
-            registerLog("Ocurrió un error inesperado", "No se encontró el proceso con ID $id", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No se encontró el proceso solicitado. ID = " . $id . ". Ruta: " . (($_SERVER['REQUEST_URI'] ?? '') ?: 'N/D'), 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "No se encontro ningun proceso asociado a este Macroproceso",
+                "message" => "No existe el proceso con ID indicado",
                 "type" => "error",
                 "status" => false
             );
@@ -113,10 +114,11 @@ class Process extends Controllers
         permissionInterface(13);
         // Validación del método POST
         if (!$_POST) {
-            registerLog("Ocurrió un error inesperado", "Método POST no encontrado al registrar un nuevo proceso", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Registro de proceso bloqueado: se esperaba POST y se recibió " . ($_SERVER['REQUEST_METHOD'] ?? 'N/D') .
+                        ". Ruta: " . (($_SERVER['REQUEST_URI'] ?? '') ?: 'N/D'), 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "Método POST no encontrado",
+                "message" => "La solicitud para registrar el proceso no es válida",
                 "type" => "error",
                 "status" => false
             );
@@ -134,12 +136,12 @@ class Process extends Controllers
             "NOMBRE" => $strName,
             "MACROPROCESO" => $intMacroprocessId
         ));
-        // Validación del formato de texto en el nombre del macroproceso (solo letras y espacios, mínimo 4 caracteres, máximo 250)
-        if (verifyData("(?=.{10,255}$)[\p{L}0-9\.,;:\-_()\s]+", $strName)) {
-            registerLog("Ocurrió un error inesperado", "El campo Nombre no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
+        // Validación del formato de texto en el nombre del proceso (solo letras y espacios, mínimo 10 caracteres, máximo 250)
+        if (verifyData("[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)]{10,255}", $strName)) {
+            registerLog("Ocurrió un error inesperado", "Validación de formato de texto fallida para registrar 'Nombre' de un macroproceso. Regla aplicada: 10–255 caracteres; letras (incl. tildes y Ñ/ñ), números, signos de puntuación básicos (. , ; :), y símbolos simples (- ( ) _ )", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El campo nombre no cumple con el formato de texto",
+                "message" => "En el campo 'Nombre' usa entre 10 y 255 caracteres con letras, números, espacios, signos y símbolos permitidos (. , ; : _ ( ) -)",
                 "type" => "error",
                 "status" => false
             );
@@ -147,10 +149,11 @@ class Process extends Controllers
         }
         //Validamos que el macro proceso sea numerico
         if (!is_numeric($intMacroprocessId)) {
-            registerLog("Ocurrió un error inesperado", "El campo Macroproceso no es numérico", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Registro rechazado: el identificador de Macroproceso debe ser numérico. Valor recibido='" . $intMacroprocessId .
+                        "'. Ruta: " . (($_SERVER['REQUEST_URI'] ?? '') ?: 'N/D'), 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El campo macroproceso debe ser un número, por favor recargue la página e inténtelo de nuevo.",
+                "message" => "Selecciona un macroproceso válido. El identificador debe ser numérico",
                 "type" => "error",
                 "status" => false
             );
@@ -158,11 +161,11 @@ class Process extends Controllers
         }
         // Validación del formato de la descripción del rol (permite letras, números, guiones, espacios, mínimo 20 caracteres)
         if ($strDescription != "") {
-            if (verifyData("[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9\s.,;:!?()-]+", $strDescription)) {
-                registerLog("Ocurrió un error inesperado", "El campo Descripción no cumple con el formato de texto al registrar un proceso", 1, $_SESSION['login_info']['idUser']);
+            if (verifyData("[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!¿\?\(\)\-]{10,}", $strDescription)) {
+                registerLog("Ocurrió un error inesperado", "Validación de formato de texto fallida para actualizar 'Descripción' de un macroproceso. Regla aplicada: mínimo 10 caracteres; letras (incl. tildes y Ñ/ñ), números, signos de puntuación básicos (. , ; :), y símbolos simples (- ( ) _ )", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrió un error inesperado",
-                    "message" => "El campo descripción no cumple con el formato de texto",
+                    "message" => "En el campo 'Descripción' usa al menos 10 caracteres con letras (incl. tildes y Ñ/ñ), números, signos y símbolos permitidos (. , ; : - _ ( ) ! ¿?)",
                     "type" => "error",
                     "status" => false
                 );
@@ -170,6 +173,18 @@ class Process extends Controllers
             }
         }
         //falta valida que el nombre no exista en la base de datos
+        //validamos que no exista el mismo nombre en la bd
+        $requestP = $this->model->select_process_by_name_and_macro($strName, $intMacroprocessId);
+        if ($requestP) {
+            registerLog("Ocurrió un error inesperado", "Registro cancelado debido a que ya existe un proceso con ese nombre en el macroproceso ID={$intMacroprocessId}. Nombre='{$strName}'", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "Ya existe un proceso con ese nombre en el macroproceso seleccionado",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
         //convertimos que el nombre tenga la primera letra en mayuscula
         $strName = ucwords($strName);
         $request = $this->model->insert_process($strName, $strDescription, $intMacroprocessId); //insert  process in database

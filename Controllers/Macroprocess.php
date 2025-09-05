@@ -286,7 +286,7 @@ class Macroprocess extends Controllers
 
         //Validacion de que el Método sea DELETE
         if ($_SERVER["REQUEST_METHOD"] !== "DELETE") {
-            registerLog("Ocurrió un error inesperado", "Método DELETE no encontrado, al momento de eliminar un macroproceso", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Método DELETE no encontrado al momento de eliminar un macroproceso", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "La solicitud para eliminar el macroproceso no es válida",
