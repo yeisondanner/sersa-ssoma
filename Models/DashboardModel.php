@@ -109,12 +109,29 @@ class DashboardModel extends Mysql
      * @param int $idMacroprocess
      * @return mixed
      */
-    public function select_subthread_associed_thread_associed_process_associed_macroprocess(int $idfather, int $idprocess, int $idmacroprocess)
+    public function select_subthread_associed_thread_associed_process_associed_macroprocess(int $idprocess, int $idmacroprocess, $idfather = null)
     {
-        $this->id = $idfather;
+
         $this->idprocess = $idprocess;
         $this->idmacroprocess = $idmacroprocess;
-        $sql = "SELECT
+        if ($idfather === null) {
+            $sql = "SELECT
+                    tbt.*
+                FROM
+                    tb_threads AS tbt
+                    INNER JOIN tb_process AS tbp ON tbp.idProcess = tbt.process_id
+                    INNER JOIN tb_macroprocess AS tbm ON tbm.idMacroprocess = tbp.macroprocess_id
+                WHERE
+                    tbm.mp_status = 'Activo'
+                    AND tbp.p_status = 'Activo'
+                    AND tbt.t_status = 'Activo'
+                    AND tbt.threads_father is null
+                    AND tbm.idMacroprocess=?
+                    AND tbp.idProcess=?;";
+            $arrvalue = [$this->idmacroprocess, $this->idprocess];
+        } else {
+            $this->id = $idfather;
+            $sql = "SELECT
                     tbt.*
                 FROM
                     tb_threads AS tbt
@@ -127,7 +144,9 @@ class DashboardModel extends Mysql
                     AND tbt.threads_father = ?
                     AND tbm.idMacroprocess=?
                     AND tbp.idProcess=?;";
-        $request = $this->select_all($sql, [$this->id, $this->idmacroprocess, $this->idprocess]);
+            $arrvalue = [$this->id, $this->idmacroprocess, $this->idprocess];
+        }
+        $request = $this->select_all($sql, $arrvalue);
         return $request;
     }
 }

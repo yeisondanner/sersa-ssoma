@@ -228,7 +228,7 @@ class Dashboard extends Controllers
         $html .= '
         <div class="app-title pt-5">
             <div class="w-100">
-                <h1 class="text-primary mb-3"><i class="fa fa-university"></i>' . $data['Process']["p_name"] . '</h1>
+                <h1 class="text-primary mb-3"><i class="fa fa-bookmark"></i>' . $data['Process']["p_name"] . '</h1>
                 <p class="mb-2">' . $data['Process']["p_description"] . '</p>
                 <hr class="w-100">
                     <ul class="app-breadcrumb breadcrumb bg-primary text-white p-2">
@@ -302,7 +302,7 @@ class Dashboard extends Controllers
         <div class="floating-buttons">
             ' . $btnLeft . '
             <!-- Botón Subir nivel -->
-            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . '`">
+            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '`">
                 <i class="fa fa-arrow-up"></i>
             </button>
 
@@ -349,7 +349,11 @@ class Dashboard extends Controllers
                     
                                 ';
         $url = base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $data['Process']["idProcess"];
+        $urlIdSinUltimo = array_slice($arrids, 2, -1);
+        $urlFinalNavegacion = $url . "/" . implode("/", $urlIdSinUltimo);
         foreach (array_slice($arrids, 2) as $key => $value) {
+            //omitime que el ultimo bucle se concatene
+
             $url .= '/' . $value;
             $infoThread = $this->model->select_thread_id($value);
             $html .= '<li class="breadcrumb-item"><a
@@ -360,7 +364,7 @@ class Dashboard extends Controllers
         
         </div>';
         //obtenemos los elementos hijo
-        $dataSubthreads = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess($idThread, $idProcess, $idMacroprocess);
+        $dataSubthreads = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess($idProcess, $idMacroprocess, $idThread);
         //elemento contenido
         $html .= ' <!--Listado de los macroprocesos-->
         <div class="row">';
@@ -398,11 +402,11 @@ class Dashboard extends Controllers
          *metodo que se encarga de configurar los botones de navegacion
          *=============================================================================
          **/
-        $arrayProcess = $this->model->select_process_associed_macroprocess_by_id($idMacroprocess);
+        $arrayProcess = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess($idProcess, $idMacroprocess, $dataThread["threads_father"]);
         $position = 0;
         //esto se encarga de devolve la posicion de array
         foreach ($arrayProcess as $key => $value) {
-            if ($value['idProcess'] == $idprocess) {
+            if ($value['idThreads'] == $idThread) {
                 $position = $key;
                 break;
             }
@@ -410,14 +414,14 @@ class Dashboard extends Controllers
         $btnLeft = "";
         if ($position > 0) {
             $btnLeft = '<!-- Botón Anterior -->
-            <button class="btn btn-primary" title="Anterior - ' . $arrayProcess[($position - 1)]['p_name'] . '" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $arrayProcess[($position - 1)]['idProcess'] . '`">
+            <button class="btn btn-primary" title="Anterior - ' . $arrayProcess[($position - 1)]['t_name'] . '" onclick="window.location.href=`' . $urlFinalNavegacion . '/' . $arrayProcess[($position - 1)]['idThreads'] . '`">
                 <i class="fa fa-arrow-left"></i>
             </button>';
         }
         $btnRight = '';
         if ($position < (count($arrayProcess) - 1)) {
             $btnRight = '   <!-- Botón Siguiente -->
-            <button class="btn btn-primary" title="Siguiente - ' . $arrayProcess[($position + 1)]['p_name'] . '" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . $idMacroprocess . '/' . $arrayProcess[($position + 1)]['idProcess'] . '`">
+            <button class="btn btn-primary" title="Siguiente - ' . $arrayProcess[($position + 1)]['t_name'] . '" onclick="window.location.href=`' . $urlFinalNavegacion . '/' . $arrayProcess[($position + 1)]['idThreads'] . '`">
                 <i class="fa fa-arrow-right"></i>
             </button>';
         }
@@ -426,7 +430,7 @@ class Dashboard extends Controllers
         <div class="floating-buttons">
             ' . $btnLeft . '
             <!-- Botón Subir nivel -->
-            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . base_url() . '/dashboard/dashboard/' . '`">
+            <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href=`' . $urlFinalNavegacion . '`">
                 <i class="fa fa-arrow-up"></i>
             </button>
 
