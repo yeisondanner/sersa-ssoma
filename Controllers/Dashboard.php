@@ -201,90 +201,6 @@ class Dashboard extends Controllers
                   HTML;
         return $html;
     }
-    /**
-     * Renderización de una tarjeta (card) HTML adaptable con Bootstrap y FontAwesome.
-     *
-     * Esta función se encarga de construir dinámicamente un bloque de tarjeta 
-     * a partir de los datos recibidos en un array asociativo. El componente 
-     * renderizado utiliza la estructura de Bootstrap 4 (`col-md-4`, `card`, etc.) 
-     * y está optimizado para incluir un ícono, nombre, descripciones y fecha.
-     * 
-     * Además, se incorpora un tooltip (Bootstrap) que muestra información adicional 
-     * al posicionar el cursor sobre el componente.
-     *
-     * --- Estructura esperada del array de entrada ---
-     * El parámetro `$data` debe contener las siguientes claves obligatorias:
-     * 
-     * - **url** (string): URL a la cual dirigirá el enlace de la tarjeta.
-     * - **icon** (string): Clase(s) CSS de FontAwesome para mostrar un ícono representativo.
-     * - **name** (string): Nombre o título de la tarjeta.
-     * - **description_full** (string): Descripción completa (se muestra como tooltip).
-     * - **description_short** (string): Descripción resumida (se muestra en el cuerpo de la tarjeta).
-     * - **date** (string): Fecha relacionada con el contenido (ejemplo: "2025-09-05").
-     *
-     * --- Ejemplo de uso ---
-     * ```php
-     * $cardData = [
-     *     'url' => 'https://ejemplo.com/detalle',
-     *     'icon' => 'fa fa-book',
-     *     'name' => 'Documentación',
-     *     'description_full' => 'Documentación técnica completa del sistema.',
-     *     'description_short' => 'Resumen de la documentación.',
-     *     'date' => '2025-09-05'
-     * ];
-     * 
-     * echo $this->renderCard($cardData);
-     * ```
-     *
-     * --- Salida generada ---
-     * Devuelve un bloque HTML equivalente a:
-     * ```html
-     * <div class="col-md-4 mb-4">
-     *   <a href="https://ejemplo.com/detalle"
-     *      class="card custom-card p-4 text-center h-100"
-     *      data-toggle="tooltip" data-placement="top"
-     *      title="Haz clic para ver más sobre Documentación">
-     *      <div class="icon-wrapper bg-primary mx-auto">
-     *          <i class="fa fa-book"></i>
-     *      </div>
-     *      <h5>Documentación</h5>
-     *      <p class="text-justify" title="Documentación técnica completa del sistema.">
-     *          Resumen de la documentación.
-     *      </p>
-     *      <div class="date"><i class="fa fa-calendar"></i> 2025-09-05</div>
-     *   </a>
-     * </div>
-     * ```
-     *
-     * @param  array $data Array asociativo con los datos de la tarjeta 
-     *                     (claves: url, icon, name, description_full, description_short, date).
-     * @return string HTML generado para la tarjeta lista para renderizar en la vista.
-     */
-    private function renderCard(array $data)
-    {
-        $html = "";
-        $html .= <<<HTML
-            <!-- Card Component -->
-            <div class="col-md-4 mb-4">
-                <a href="{$data['url']}"
-                   class="card custom-card p-4 text-center h-100"
-                   data-toggle="tooltip" data-placement="top"
-                   title="Haz clic para ver más sobre {$data['name']}">
-                   <div class="icon-wrapper bg-primary mx-auto">
-                       <i class="{$data['icon']}"></i>
-                   </div>
-                   <h5>{$data['name']}</h5>
-                   <p class="text-justify" title="{$data['description_full']}">
-                       {$data['description_short']}
-                   </p>
-                   <div class="date">
-                       <i class="fa fa-calendar"></i> {$data['date']}
-                   </div>
-                </a>
-            </div>
-        HTML;
-        return $html;
-    }
     /** 
      * Metodo que se encarga de obtener el componente con todos procesos vinculados a los macroprocesos
      * @param  int $id
@@ -541,8 +457,29 @@ class Dashboard extends Controllers
         $html .= '</div>';
 
         // 3. Renderizamos botones de navegación flotantes
-        $html .= $this->renderNavigationButtons($dataThread, $idThread, $idProcess, $idMacro, $arrids, $baseUrl);
+        // Obtenemos los threads hermanos para saber posición
+        $arrayProcess = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess(
+            $idProcess,
+            $idMacro,
+            $dataThread["threads_father"]
+        );
+        // URL base para subir nivel
+        $urlFinal = "$baseUrl/$idMacro/$idProcess/" . implode("/", array_slice($arrids, 2, -1));
 
+        $html .= $this->renderButtonsNavigation(
+            $arrayProcess,
+            $idThread,                         // ID actual
+            $urlFinal,        // baseUrl
+            $urlFinal,          // backUrl
+            "idThreads",                       // clave ID
+            "t_name",                          // clave nombre
+            [                                   // opciones
+                'showBack' => true,
+                'showReload' => true,
+                'showPrev' => true,
+                'showNext' => true,
+            ]
+        );
         // 4. Activamos tooltips con jQuery
         $html .= <<<HTML
                     <script>
@@ -553,75 +490,6 @@ class Dashboard extends Controllers
                     HTML;
 
         return $html;
-    }
-    /**
-     * Renderiza los botones de navegación flotantes:
-     * - Anterior
-     * - Subir nivel
-     * - Recargar
-     * - Siguiente
-     *
-     * @param array  $dataThread   Thread actual
-     * @param int    $idThread     ID del Thread actual
-     * @param int    $idProcess    ID del Process
-     * @param int    $idMacro      ID del Macroprocess
-     * @param array  $arrids       IDs de navegación
-     * @param string $baseUrl      URL base del dashboard
-     *
-     * @return string              HTML de los botones flotantes
-     */
-    private function renderNavigationButtons(array $dataThread, int $idThread, int $idProcess, int $idMacro, array $arrids, string $baseUrl): string
-    {
-        // Obtenemos los threads hermanos para saber posición
-        $arrayProcess = $this->model->select_subthread_associed_thread_associed_process_associed_macroprocess(
-            $idProcess,
-            $idMacro,
-            $dataThread["threads_father"]
-        );
-
-        // URL base para subir nivel
-        $urlFinal = "$baseUrl/$idMacro/$idProcess/" . implode("/", array_slice($arrids, 2, -1));
-
-        // Posición del thread actual dentro del array
-        $position = array_search($idThread, array_column($arrayProcess, 'idThreads'));
-
-        $btnLeft = $btnRight = "";
-
-        // Botón "Anterior"
-        if ($position > 0) {
-            $prev = $arrayProcess[$position - 1];
-            $btnLeft = <<<HTML
-                            <button class="btn btn-primary" title="Anterior - {$prev['t_name']}" 
-                                onclick="window.location.href='$urlFinal/{$prev['idThreads']}'">
-                                <i class="fa fa-arrow-left"></i>
-                            </button>
-                        HTML;
-        }
-
-        // Botón "Siguiente"
-        if ($position < count($arrayProcess) - 1) {
-            $next = $arrayProcess[$position + 1];
-            $btnRight = <<<HTML
-                            <button class="btn btn-primary" title="Siguiente - {$next['t_name']}" 
-                                onclick="window.location.href='$urlFinal/{$next['idThreads']}'">
-                                <i class="fa fa-arrow-right"></i>
-                            </button>
-                        HTML;
-        }
-
-        // Botones flotantes finales
-        return <<<HTML
-                    <div class="floating-buttons">
-                        $btnLeft
-                        <button class="btn btn-warning" title="Subir un nivel" onclick="window.location.href='$urlFinal'">
-                            <i class="fa fa-arrow-up"></i>
-                        </button>
-                        <button class="btn btn-success" title="Recargar" onclick="location.reload()">
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                        $btnRight
-                    </div>
-                HTML;
     }
     /**
      * Renderización dinámica de encabezado y breadcrumbs de navegación.
@@ -785,21 +653,84 @@ class Dashboard extends Controllers
         return $html;
     }
     /**
-     * Renderiza botones de navegación dinámicos (anterior, siguiente, subir nivel, recargar).
+     * Renderiza un conjunto de botones flotantes de navegación dinámicos.
      *
-     * @param array  $items        Lista ordenada de elementos (ej: registros, páginas, threads).
-     * @param mixed  $currentId    ID del elemento actual.
-     * @param string $baseUrl      URL base para navegación (sin el ID).
-     * @param string $backUrl      URL para "subir nivel".
-     * @param string $idKey        Clave usada como identificador en el array (default: 'id').
-     * @param string $nameKey      Clave usada como nombre/etiqueta (default: 'name').
-     * @param array  $options      Opciones extra:
-     *                             - showBack   (bool) mostrar botón "Subir un nivel"
-     *                             - showReload (bool) mostrar botón "Recargar"
-     *                             - showPrev   (bool) mostrar botón "Anterior"
-     *                             - showNext   (bool) mostrar botón "Siguiente"
+     * Este método genera los botones de navegación "Anterior", "Siguiente",
+     * "Subir un nivel" y "Recargar", en base a una lista de elementos ordenados
+     * y el elemento actualmente activo. Se adapta a los datos recibidos mediante
+     * un array asociativo y permite configurar qué botones mostrar u ocultar.
      *
-     * @return string HTML con los botones flotantes.
+     * Los botones están diseñados con Bootstrap 4 (`btn`, `btn-primary`, etc.)
+     * y utilizan íconos de FontAwesome. Se devuelven dentro de un contenedor
+     * `<div class="floating-buttons">`, lo que permite su ubicación flotante 
+     * mediante CSS personalizado.
+     *
+     * --- Parámetros ---
+     * @param array  $items     Lista ordenada de elementos para navegación.
+     *                          Cada elemento debe ser un array asociativo que incluya:
+     *                          - `$idKey`   (por defecto: `id`)   → identificador único.
+     *                          - `$nameKey` (por defecto: `name`) → etiqueta/nombre descriptivo.
+     * 
+     * @param mixed  $currentId Identificador del elemento actual. Debe coincidir con `$idKey` de `$items`.
+     *
+     * @param string $baseUrl   URL base para construir enlaces de navegación
+     *                          (se concatena con el ID del elemento destino).
+     *
+     * @param string $backUrl   URL usada en el botón "Subir un nivel" (default: "#").
+     *
+     * @param string $idKey     Nombre de la clave que identifica el ID en `$items` (default: "id").
+     *
+     * @param string $nameKey   Nombre de la clave que identifica el nombre/etiqueta en `$items` (default: "name").
+     *
+     * @param array  $options   Opciones adicionales para personalizar la visibilidad de los botones:
+     *                          - `showBack`   (bool, default: true) → Mostrar botón "Subir un nivel".
+     *                          - `showReload` (bool, default: true) → Mostrar botón "Recargar".
+     *                          - `showPrev`   (bool, default: true) → Mostrar botón "Anterior".
+     *                          - `showNext`   (bool, default: true) → Mostrar botón "Siguiente".
+     *
+     * --- Ejemplo de uso ---
+     * ```php
+     * $items = [
+     *     ['id' => 1, 'name' => 'Introducción'],
+     *     ['id' => 2, 'name' => 'Capítulo 1'],
+     *     ['id' => 3, 'name' => 'Capítulo 2'],
+     * ];
+     * 
+     * echo $this->renderButtonsNavigation(
+     *     $items,
+     *     2,                        // ID actual
+     *     '/dashboard/view',        // baseUrl
+     *     '/dashboard',             // backUrl
+     *     'id', 'name',             // claves
+     *     ['showReload' => false]   // desactiva el botón "Recargar"
+     * );
+     * ```
+     *
+     * --- Salida generada ---
+     * Ejemplo de bloque HTML devuelto:
+     * ```html
+     * <div class="floating-buttons">
+     *   <button class="btn btn-primary" title="Anterior - Introducción" 
+     *       onclick="window.location.href='/dashboard/view/1'">
+     *       <i class="fa fa-arrow-left"></i>
+     *   </button>
+     *   <button class="btn btn-warning" title="Subir un nivel" 
+     *       onclick="window.location.href='/dashboard'">
+     *       <i class="fa fa-arrow-up"></i>
+     *   </button>
+     *   <button class="btn btn-primary" title="Siguiente - Capítulo 2" 
+     *       onclick="window.location.href='/dashboard/view/3'">
+     *       <i class="fa fa-arrow-right"></i>
+     *   </button>
+     * </div>
+     * ```
+     *
+     * --- Consideraciones ---
+     * - Si `$currentId` no se encuentra en `$items`, no se mostrarán botones "Anterior" ni "Siguiente".
+     * - Es recomendable sanitizar las variables `$baseUrl` y `$backUrl` en escenarios con entrada externa.
+     * - Los estilos flotantes (`.floating-buttons`) deben definirse en CSS para posicionar el contenedor.
+     *
+     * @return string HTML generado con los botones de navegación.
      */
     private function renderButtonsNavigation(
         array $items,
@@ -821,6 +752,7 @@ class Dashboard extends Controllers
         // Buscar posición del elemento actual
         $position = array_search($currentId, array_column($items, $idKey));
         $btnLeft = $btnRight = $btnUp = $btnReload = "";
+
         // Botón "Anterior"
         if ($options['showPrev'] && $position > 0) {
             $prev = $items[$position - 1];
@@ -862,12 +794,97 @@ class Dashboard extends Controllers
         }
 
         return <<<HTML
-                    <div class="floating-buttons">
-                        $btnLeft
-                        $btnUp
-                        $btnReload
-                        $btnRight
-                    </div>
-                HTML;
+            <div class="floating-buttons">
+                $btnLeft
+                $btnUp
+                $btnReload
+                $btnRight
+            </div>
+        HTML;
+    }
+
+    /**
+     * Renderización de una tarjeta (card) HTML adaptable con Bootstrap y FontAwesome.
+     *
+     * Esta función se encarga de construir dinámicamente un bloque de tarjeta 
+     * a partir de los datos recibidos en un array asociativo. El componente 
+     * renderizado utiliza la estructura de Bootstrap 4 (`col-md-4`, `card`, etc.) 
+     * y está optimizado para incluir un ícono, nombre, descripciones y fecha.
+     * 
+     * Además, se incorpora un tooltip (Bootstrap) que muestra información adicional 
+     * al posicionar el cursor sobre el componente.
+     *
+     * --- Estructura esperada del array de entrada ---
+     * El parámetro `$data` debe contener las siguientes claves obligatorias:
+     * 
+     * - **url** (string): URL a la cual dirigirá el enlace de la tarjeta.
+     * - **icon** (string): Clase(s) CSS de FontAwesome para mostrar un ícono representativo.
+     * - **name** (string): Nombre o título de la tarjeta.
+     * - **description_full** (string): Descripción completa (se muestra como tooltip).
+     * - **description_short** (string): Descripción resumida (se muestra en el cuerpo de la tarjeta).
+     * - **date** (string): Fecha relacionada con el contenido (ejemplo: "2025-09-05").
+     *
+     * --- Ejemplo de uso ---
+     * ```php
+     * $cardData = [
+     *     'url' => 'https://ejemplo.com/detalle',
+     *     'icon' => 'fa fa-book',
+     *     'name' => 'Documentación',
+     *     'description_full' => 'Documentación técnica completa del sistema.',
+     *     'description_short' => 'Resumen de la documentación.',
+     *     'date' => '2025-09-05'
+     * ];
+     * 
+     * echo $this->renderCard($cardData);
+     * ```
+     *
+     * --- Salida generada ---
+     * Devuelve un bloque HTML equivalente a:
+     * ```html
+     * <div class="col-md-4 mb-4">
+     *   <a href="https://ejemplo.com/detalle"
+     *      class="card custom-card p-4 text-center h-100"
+     *      data-toggle="tooltip" data-placement="top"
+     *      title="Haz clic para ver más sobre Documentación">
+     *      <div class="icon-wrapper bg-primary mx-auto">
+     *          <i class="fa fa-book"></i>
+     *      </div>
+     *      <h5>Documentación</h5>
+     *      <p class="text-justify" title="Documentación técnica completa del sistema.">
+     *          Resumen de la documentación.
+     *      </p>
+     *      <div class="date"><i class="fa fa-calendar"></i> 2025-09-05</div>
+     *   </a>
+     * </div>
+     * ```
+     *
+     * @param  array $data Array asociativo con los datos de la tarjeta 
+     *                     (claves: url, icon, name, description_full, description_short, date).
+     * @return string HTML generado para la tarjeta lista para renderizar en la vista.
+     */
+    private function renderCard(array $data)
+    {
+        $html = "";
+        $html .= <<<HTML
+            <!-- Card Component -->
+            <div class="col-md-4 mb-4">
+                <a href="{$data['url']}"
+                   class="card custom-card p-4 text-center h-100"
+                   data-toggle="tooltip" data-placement="top"
+                   title="Haz clic para ver más sobre {$data['name']}">
+                   <div class="icon-wrapper bg-primary mx-auto">
+                       <i class="{$data['icon']}"></i>
+                   </div>
+                   <h5>{$data['name']}</h5>
+                   <p class="text-justify" title="{$data['description_full']}">
+                       {$data['description_short']}
+                   </p>
+                   <div class="date">
+                       <i class="fa fa-calendar"></i> {$data['date']}
+                   </div>
+                </a>
+            </div>
+        HTML;
+        return $html;
     }
 }
