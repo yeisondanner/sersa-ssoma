@@ -28,7 +28,7 @@
                                     <th>Nombre</th>
                                     <th>Descripción</th>
                                     <th>Estado</th>
-                                    <th>Fecha registro</th>
+                                    <th>Fecha de registro</th>
                                     <th>Fecha de actualización</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -70,16 +70,20 @@
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="txtName" name="txtName" required
-                                                placeholder="Ingrese el nombre" minlength="10" maxlength="255"
-                                                pattern="^(?=.{10,255}$)[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\.,;:\-_() ]+$"
-                                                title="10–255 caracteres. Permitidos: letras (con acentos), números, . , ; : - _ ( ) y espacios."
-                                                aria-describedby="iconNombre">
+                                                placeholder="Ingrese el nombre" 
+                                                minlength="10" maxlength="255"
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,255}$"
+                                                title="Solo se permiten: letras (con tilde y Ñ/ñ), números, espacios, punto, coma, punto y coma, dos puntos, guion alto, guion bajo, paréntesis, exclamación e interrogación. Longitud mínima 10, máxima 255.">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
                                                     <i class="fa fa-tag" aria-hidden="true"></i>
                                                 </span>
                                             </div>
                                         </div>
+                                        <small id="helpNombre" class="form-text text-muted">
+                                            <span class="text-danger">*</span>
+                                            Permitido un mínimo de 10 - 255 caracteres.
+                                        </small>
                                     </div>
                                 </div>
 
@@ -90,15 +94,20 @@
                                         <div class="input-group">
                                             <textarea class="form-control" id="txtDescription" name="txtDescription"
                                                 rows="3" placeholder="Ingrese una breve descripción"
-                                                pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
-                                                title=""
-                                                aria-describedby="iconDescription"></textarea>
+                                                minlength="10"
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,}$"
+                                                title="Solo se permiten: letras (con tilde y Ñ/ñ), números, espacios, punto, coma, punto y coma, dos puntos, guion alto, guion bajo, paréntesis, exclamación e interrogación. Longitud mínima 10."
+                                                aria-describedby="iconDescription helpDescription"></textarea>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconDescription">
                                                     <i class="fa fa-info-circle" aria-hidden="true"></i>
                                                 </span>
                                             </div>
                                         </div>
+                                        <small id="helpDescription" class="form-text text-muted">
+                                            <span class="text-danger">*</span>
+                                            Permitido un mínimo de 10 caracteres a más.
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -236,15 +245,19 @@
                                             <input type="text" class="form-control" id="update_txtName"
                                                 name="update_txtName" required placeholder="Ingrese el nombre"
                                                 minlength="10" maxlength="255"
-                                                pattern="^(?=.{10,255}$)[A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9\.,;:\-_() ]+$"
-                                                title="10–255 caracteres. Permitidos: letras (con acentos), números, . , ; : - _ ( ) y espacios."
-                                                aria-describedby="iconNombre">
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,255}$"
+                                                title="Solo se permiten: letras (con tilde y Ñ/ñ), números, espacios, punto, coma, punto y coma, dos puntos, guion alto, guion bajo, paréntesis, exclamación e interrogación. Longitud mínima 10, máxima 255."
+                                                aria-describedby="iconNombre helpNombre">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconNombre">
                                                     <i class="fa fa-tag" aria-hidden="true"></i>
                                                 </span>
                                             </div>
                                         </div>
+                                        <small id="helpNombre" class="form-text text-muted">
+                                            <span class="text-danger">*</span>
+                                            Permitido un mínimo de 10 - 255 caracteres.
+                                        </small>
                                     </div>
                                 </div>
 
@@ -256,15 +269,20 @@
                                             <textarea class="form-control" id="update_txtDescription"
                                                 name="update_txtDescription" rows="3"
                                                 placeholder="Ingrese una breve descripción"
-                                                pattern="^[a-zA-ZÁÉÍÓÚáéíóúÜüÑñ0-9 \.,;:!\?\(\)\-]+$"
-
-                                                aria-describedby="iconDescription"></textarea>
+                                                minlength="10"
+                                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ0-9\s\.,;:\-_\(\)!¿\?]{10,}$"
+                                                title="Solo se permiten: letras (con tilde y Ñ/ñ), números, espacios, punto, coma, punto y coma, dos puntos, guion alto, guion bajo, paréntesis, exclamación e interrogación. Longitud mínima 10."
+                                                aria-describedby="iconDescription helpDescription"></textarea>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="iconDescription">
                                                     <i class="fa fa-info-circle" aria-hidden="true"></i>
                                                 </span>
                                             </div>
                                         </div>
+                                        <small id="helpDescription" class="form-text text-muted">
+                                            <span class="text-danger">*</span>
+                                            Permitido un mínimo de 10 caracteres a más.
+                                        </small>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
