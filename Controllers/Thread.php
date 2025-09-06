@@ -506,6 +506,10 @@ class Thread extends Controllers
             toJson($data);
         }
     }
+    /**
+     * metodo que te permite insertar archivos asociados al thread
+     * @return never
+     */
     public function set_file_on_thread()
     {
         permissionInterface(15);
@@ -562,7 +566,7 @@ class Thread extends Controllers
                 );
                 toJson($data);
             }
-            $route .= "/".$txtName .".". $extension;
+            $route .= "/" . $txtName . "." . $extension;
             //una vez validado subimos el archivo
             if (!move_uploaded_file($file["tmp_name"], $route)) {
                 registerLog("Ocurrio un error inesperado", "No se pudo subir el archivo vinculado al subproceso", 1, $_SESSION['login_info']['idUser']);
@@ -592,5 +596,15 @@ class Thread extends Controllers
             );
             toJson($data);
         }
+    }
+    /**
+     * Metodo que se encarga de obtener todos los archivos asociados a los subprocesos
+     * @return mixed
+     **/
+    public function get_files_associed_threads()
+    {
+        permissionInterface(15);
+        $data = $this->model->select_files_associed_threads($_SESSION['idThread'], "tb_threads");
+        toJson($data);
     }
 }

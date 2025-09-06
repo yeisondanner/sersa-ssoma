@@ -310,4 +310,17 @@ class ThreadModel extends Mysql
         $request = $this->select_all($query, [$this->id, $this->name, $this->file_extension]);
         return $request;
     }
+    /**
+     * Metodo que se encarga de obtener los archvios asociados a los subprocesos
+     * @param int $id
+     * @return array
+     */
+    public function select_files_associed_threads(int $id, string $name)
+    {
+        $this->id = $id;
+        $this->name_table = $name;
+        $sql = "SELECT*FROM tb_file AS tbf WHERE tbf.register_id=? AND tbf.f_name_table=?;";
+        $rqst = $this->select_all($sql, [$this->id, $this->name_table]);
+        return $rqst;
+    }
 }

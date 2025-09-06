@@ -28,15 +28,10 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
-                                    <th>Macroproceso</th>
-                                    <th>Proceso</th>
-                                    <th title="Se asocia al id del subproceso que hace en este caso de padre">Subproceso
-                                        Padre</th>
-                                    <th>Id Subproceso</th>
-                                    <th>Subproceso</th>
-                                    <th>Descripción</th>
+                                    <th>Nombre</th>
                                     <th>Tipo</th>
-                                    <th>Estado</th>
+                                    <th>Peso</th>
+                                    <th>¿Descargar?</th>
                                     <th>Fecha registro</th>
                                     <th>Fecha de actualización</th>
                                     <th>Acciones</th>
