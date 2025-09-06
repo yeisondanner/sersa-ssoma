@@ -9,6 +9,17 @@ class ThreadModel extends Mysql
     private int $process_id;
     private int $threads_father;
     private string $type;
+    private int $thread_id;
+    private int $folder_id;
+    private int $user_id;
+    private string $file_name;
+    private string $file_extension;
+    private int $file_size;
+    private string $file_favorite;
+    private string $name_table;
+    private int $register_id;
+    private string $file_donwload;
+    private string $file_path;
 
     public function __construct()
     {
@@ -217,6 +228,86 @@ class ThreadModel extends Mysql
             $this->id
         );
         $request = $this->update($sql, $arrValue);
+        return $request;
+    }
+
+    /**
+     * Inserta un nuevo archivo en la base de datos.
+     *
+     * Este método registra la información de un archivo en la tabla `tb_file`, incluyendo datos como el usuario propietario,
+     * la carpeta de almacenamiento, nombre, extensión, tamaño, ruta, favoritos, tabla relacionada, identificador de registro
+     * y estado de descarga.
+     *
+     * @param int    $user_id        ID del usuario propietario del archivo.
+     * @param int    $folder_id      ID de la carpeta donde se almacena el archivo.
+     * @param string $file_name      Nombre del archivo.
+     * @param string $file_extension Extensión del archivo.
+     * @param int    $file_size      Tamaño del archivo en bytes.
+     * @param string $file_path      Ruta física o lógica del archivo.
+     * @param string $file_favorite  Indica si el archivo es favorito ('0' por defecto).
+     * @param string $name_table     Nombre de la tabla relacionada al archivo.
+     * @param int    $register_id    ID del registro relacionado en la tabla indicada.
+     * @param string $file_donwload  Estado de descarga del archivo ('No' por defecto).
+     *
+     * @return mixed Resultado de la operación de inserción en la base de datos.
+     */
+    public function insert_file(
+        int $user_id,
+        int $folder_id,
+        string $file_name,
+        string $file_extension,
+        int $file_size,
+        string $file_path,
+        string $file_favorite = '0',
+        string $name_table,
+        int $register_id,
+        string $file_donwload = "No"
+    ) {
+        $this->user_id = $user_id;
+        $this->folder_id = $folder_id;
+        $this->file_name = $file_name;
+        $this->file_extension = $file_extension;
+        $this->file_size = $file_size;
+        $this->file_path = $file_path;
+        $this->file_favorite = $file_favorite;
+        $this->name_table = $name_table;
+        $this->register_id = $register_id;
+        $this->file_donwload = $file_donwload;
+        $sql = <<<SQL
+                    INSERT INTO `tb_file` 
+                    (`user_id`, `folder_id`, `f_name`, `f_extension`, `f_size`, `f_path`, `f_favorites`, `f_name_table`, `register_id`, `f_donwload`) 
+                    VALUES 
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                SQL;
+        $arrValues = [
+            $this->user_id,
+            $this->folder_id,
+            $this->file_name,
+            $this->file_extension,
+            $this->file_size,
+            $this->file_path,
+            $this->file_favorite,
+            $this->name_table,
+            $this->register_id,
+            $this->file_donwload
+        ];
+        $rqst = $this->insert($sql, $arrValues);
+        return $rqst;
+    }
+    /**
+     * Metodo que se encarga de consultar a la base de datos si existe un archivo con el id, nombre y extension
+     * @param  int $id
+     * @param  string $name
+     * @param  string $extension
+     * @return array
+     */
+    public function select_file_by_id_name_extension(int $id, string $name, string $extension): array
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->file_extension = $extension;
+        $query = "SELECT * FROM tb_file WHERE folder_id = ? AND f_name = ? AND f_extension = ?";
+        $request = $this->select_all($query, [$this->id, $this->name, $this->file_extension]);
         return $request;
     }
 }

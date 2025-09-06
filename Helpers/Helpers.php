@@ -1067,7 +1067,7 @@ function validateFieldsEmpty(array $fields)
 function deleteSessionVariable(array $data)
 {
     // Lista de todas las variables de sesión utilizadas globalmente en el sistema
-    $allSessionVariables = ["permission_data", "login", "login_info", "data_token", "lastConsult"];
+    $allSessionVariables = ["permission_data", "login", "login_info", "data_token", "lastConsult", "idThread"];
 
     // Variables que deben mantenerse activas en esta vista
     $varsToKeep = $data["page_vars"] ?? [];

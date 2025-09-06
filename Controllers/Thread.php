@@ -40,6 +40,37 @@ class Thread extends Controllers
         registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
         $this->views->getView($this, "thread", $data);
     }
+    public function file($value)
+    {
+        //obtenemos el valor 
+        $id = decryption($value);
+        //verificamos si es un numero
+        if (!is_numeric($id)) {
+            $this->redirectNotFound();
+        }
+        $dataThread = $this->model->select_thread_by_id($id);
+        $data['page_id'] = 15;
+        permissionInterface($data['page_id']);
+        $data['page_title'] = "Subproceso: " . $dataThread['t_name'];
+        $data['page_description'] = $dataThread['t_description'];
+        $data['page_container'] = "Thread";
+        $data['page_view'] = 'file';
+        $data['page_js_css'] = "file";
+        $data['page_vars'] = ["login", "login_info", "lastConsult", "idThread"];//mantienes las raviables de sesion que son necesariass;
+        $data['page_thread'] = $dataThread;
+        //creamos una variable de sesion para almacenar el valor del id obtenido
+        $_SESSION['idThread'] = $dataThread['idThreads'];
+        registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
+        $this->views->getView($this, "file", $data);
+    }
+    /**
+     * Redirige a página de error Not Found usando JS.
+     */
+    private function redirectNotFound()
+    {
+        echo "<script>window.location.href='" . base_url() . "/errors/notfound';</script>";
+        die();
+    }
     /**
      * Metodo que devuelve todos los subprocesos a la vista de threads
      * @return void
@@ -54,13 +85,51 @@ class Thread extends Controllers
             $data[$key]['cont'] = $cont++;
             $data[$key]['t_registrationDate'] = dateFormat($value['t_registrationDate']);
             $data[$key]['t_updateDate'] = dateFormat($value['t_updateDate']);
-            $data[$key]['actions'] = ' <div class="btn-group btn-group-sm" role="group">
-                                            <button class="btn btn-success update-item"  data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" data-description="' . $value['t_description'] . '" data-status="' . $value['t_status'] . '" data-type="' . $value['t_type'] . '" type="button"><i class="fa fa-pencil"></i></button>
-                                            <button class="btn btn-info report-item" data-id-js="T' . $value['idThreads'] . '" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" data-description="' . $value['t_description'] . '" data-status="' . $value['t_status'] . '" data-registration="' . dateFormat($value['t_registrationDate']) . '" data-update="' . dateFormat($value['t_updateDate']) . '" data-macroprocess-name="' . $value['mp_name'] . '" data-process-name="' . $value['p_name'] . '"  type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>      
-                                            <button class="btn btn-danger delete-item" data-id="' . $value['idThreads'] . '" data-name="' . $value['t_name'] . '" type="button"><i class="fa fa-remove"></i></button>
-                                        </div>';
+            $data[$key]['actions'] = $this->render_buttons($value);
         }
         toJson($data);
+    }
+    /**
+     * 
+     */
+    private function render_buttons(array $value): string
+    {   //obtenemos la variables de registro y actualizacion y variables generales
+        $urlbase = base_url();
+        $dateRegistration = dateFormat($value['t_registrationDate']);
+        $dateUpdate = dateFormat($value['t_updateDate']);
+        $id = encryption($value['idThreads']);
+        //verificamos que tipo de registro es
+        $btnsType = match ($value['t_type']) {
+            'open_form' => <<<HTML
+                                <a href="" class="btn btn-primary">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                        HTML,
+
+            'open_menu' => '',
+
+            'open_file' => <<<HTML
+                                <a href="$urlbase/thread/file/$id" class="btn btn-warning">
+                                    <i class="fa fa-file"></i>
+                                </a>
+                        HTML,
+
+            default => <<<HTML
+                                <a href="" class="btn btn-danger">
+                                    <i class="fa fa-ban"></i>
+                                </a>
+                        HTML
+        };
+        $html = <<<HTML
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-success update-item"  data-id="{$value['idThreads']}" data-name="{$value['t_name']}" data-description="{$value['t_description']}" data-status="{$value['t_status']}" data-type="{$value['t_type']}" type="button"><i class="fa fa-pencil"></i></button>
+                        $btnsType
+                        <button class="btn btn-info report-item" data-id-js="T{$value['idThreads']}" data-id="{$value['idThreads']}" data-name="{$value['t_name']}" data-description="{$value['t_description']}" data-status="{$value['t_status']}" data-registration="$dateRegistration" data-update="$dateUpdate" data-macroprocess-name="{$value['mp_name']}" data-process-name="{$value['p_name']}"  type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>      
+                        <button class="btn btn-danger delete-item" data-id="{$value['idThreads']}" data-name="{$value['t_name']}" type="button"><i class="fa fa-remove"></i></button>
+                    </div>
+        HTML;
+        return $html;
+
     }
     /**
      * Metodo que se encarga de obtener los subprocesos por su id asociado a un proceso en especifico, esto devuelve a la vista de thread
@@ -431,6 +500,81 @@ class Thread extends Controllers
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "No se pudo actualizar el subproceso, al momento de actualizar un proceso",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+    }
+    public function set_file_on_thread()
+    {
+        permissionInterface(15);
+        // Validación del método POST
+        if (!$_POST) {
+            registerLog("Ocurrió un error inesperado", "Método POST no encontrado al registrar un nuevo subproceso", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "Método POST no encontrado",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        isCsrf(); //validacion de ataque CSRF
+        //validamos que existan los inputs necesarios        
+        validateFields(["txtName", "slctDonwload"]);
+        //obtenemos los valores
+        $txtName = strClean($_POST["txtName"]);
+        $slctDonwload = strClean($_POST["slctDonwload"]);
+        $file = $_FILES["flFile"];
+        // Validación de campos vacíos
+        validateFieldsEmpty(array(
+            "NOMBRE" => $txtName,
+            "¿SE PUEDE DESCARGAR?" => $slctDonwload
+        ));
+        //obtenemos la extension del archivo
+        $extension = pathinfo($file["name"], PATHINFO_EXTENSION);
+        //validamos que no exista un archivo con ese nombre
+        $dataFiles = $this->model->select_file_by_id_name_extension(1, $txtName, $extension);
+        if ($dataFiles) {
+            registerLog("Ocurrio un error inesperado", "El archivo que esta intentando registrar ya se encuentra registrado en la base de datos y subido", 1, $_SESSION["login_info"]["idUser"]);
+            $data = array(
+                "title" => "Ocurrio un error inesperado",
+                "message" => "El archivo que esta intentando subir ya existe",
+                "type" => "error",
+                "status" => false
+            );
+            toJson($data);
+        }
+        //insertamos el registro en el modelo que se encarga de registrar en la bd
+        $rqst = $this->model->insert_file($_SESSION['login_info']['idUser'], 1, $txtName, $extension, $file['size'], '', 0, 'tb_threads', $_SESSION['idThread'], $slctDonwload);
+        if ($rqst) {
+            $route = getRoute();
+            $route .= 'data/root';
+            //subimos el archivo al servidor
+            if (!verifyFolder($route)) {
+                registerLog("Ocurrio un error inesperado", "La ruta no existe ya se intento crear", 1, $_SESSION['login_info']['idUser']);
+                $data = array(
+                    "title" => "Ocurrio un error inesperado",
+                    "message" => "La ruta solicitada no existe por favor intente crealo manualmente",
+                    "type" => "error",
+                    "status" => false
+                );
+                toJson($data);
+            }
+            registerLog("Registro correcto", "Se completo de manera satisfactoria el registro del archivo", 2, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Registro satisfactorio",
+                "message" => "Archivo registrado de manera correcta",
+                "type" => "success",
+                "status" => true
+            );
+            toJson($data);
+        } else {
+            registerLog("Ocurrió un error inesperado", "No se pudo registrar el archivo", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+                "title" => "Ocurrió un error inesperado",
+                "message" => "No se pudo registrar el archivo",
                 "type" => "error",
                 "status" => false
             );
