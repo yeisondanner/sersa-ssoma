@@ -562,6 +562,18 @@ class Thread extends Controllers
                 );
                 toJson($data);
             }
+            $route .= "/".$txtName .".". $extension;
+            //una vez validado subimos el archivo
+            if (!move_uploaded_file($file["tmp_name"], $route)) {
+                registerLog("Ocurrio un error inesperado", "No se pudo subir el archivo vinculado al subproceso", 1, $_SESSION['login_info']['idUser']);
+                $data = array(
+                    'title' => 'Ocurrio un error inesperado',
+                    'message' => 'No se pudo subir el archivo vinculado al subproceso',
+                    'type' => 'error',
+                    'status' => false
+                );
+                toJson($data);
+            }
             registerLog("Registro correcto", "Se completo de manera satisfactoria el registro del archivo", 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Registro satisfactorio",
